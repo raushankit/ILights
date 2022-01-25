@@ -19,7 +19,6 @@ import com.raushankit.ILghts.fragments.LoginFragment;
 import com.raushankit.ILghts.fragments.SignUpFragment;
 import com.raushankit.ILghts.utils.callbacks.CallBack;
 import com.raushankit.ILghts.viewModel.FragViewModel;
-import com.raushankit.ILghts.viewModel.UserViewModel;
 
 public class WorkActivity extends AppCompatActivity {
 
@@ -36,13 +35,11 @@ public class WorkActivity extends AppCompatActivity {
         fragViewModel.getSelectedItem().observe(this, item ->{
             if(item.equals(ControllerFragActions.OPEN_SETTINGS)) {
                 startActivity(settingsIntent);
-            }
-        });
-        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        userViewModel.getRoleData().observe(this, role -> {
-            if(role != null && role.getAccessLevel() <= 0){
+            }else if(item.equals(ControllerFragActions.BLOCK_EVENT)){
                 startActivity(signOutIntent);
                 finish();
+            }else{
+                Log.d(TAG, "onCreate: unknown event");
             }
         });
         changeFragment = value -> replaceFragment(value.name());

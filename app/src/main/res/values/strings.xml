@@ -94,7 +94,7 @@
 
     <!-- controller page -->
     <string name="controller_title">Controller</string>
-    <string name="controller_board_status">Board is ONLINE</string>
+    <string name="controller_board_status">Board is %1$s</string>
     <string name="controller_update_failure">Failed to update data</string>
     <string name="controller_item_details">Pin Configuration %1$d\n\nTurned %2$s by %3$s\nat %4$s</string>
 

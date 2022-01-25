@@ -1,5 +1,7 @@
 package com.raushankit.ILghts.storage;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
@@ -37,6 +39,8 @@ public class UserRepository {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user != null){
             userId = user.getUid();
+        }else{
+            Log.e(TAG, "UserRepository: user is null");
         }
         userLiveData = new UserLiveData("/users/" + userId);
         roleLiveData = new RoleLiveData("/role/" + userId);

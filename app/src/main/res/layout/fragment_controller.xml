@@ -46,7 +46,6 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginBottom="@dimen/_15sdp"
             android:padding="@dimen/_4sdp"
-            android:text="@string/controller_board_status"
             android:textSize="@dimen/_11sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/frag_controller_title_text"

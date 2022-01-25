@@ -10,16 +10,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.raushankit.ILghts.model.Role;
 
-public class RoleLiveData extends LiveData<Role> {
-    private static final String TAG = "ROLE_LIVEDATA";
+public class PulseLiveData extends LiveData<Long> {
+    private static final String TAG = "PulseLiveData";
     private final DatabaseReference db;
 
     private final ValueEventListener listener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
-            postValue(snapshot.getValue(Role.class));
+            postValue(snapshot.getValue(Long.class));
         }
 
         @Override
@@ -28,9 +27,7 @@ public class RoleLiveData extends LiveData<Role> {
         }
     };
 
-    public RoleLiveData(@NonNull String path){
-        db = FirebaseDatabase.getInstance().getReference(path);
-    }
+    public PulseLiveData(){db = FirebaseDatabase.getInstance().getReference("control/board_data/heart_beat");}
 
     @Override
     protected void onActive() {

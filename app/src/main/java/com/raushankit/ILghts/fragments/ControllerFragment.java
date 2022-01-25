@@ -20,12 +20,12 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.PinListAdapter;
 import com.raushankit.ILghts.entity.ControllerFragActions;
 import com.raushankit.ILghts.model.PinData;
 import com.raushankit.ILghts.viewModel.FragViewModel;
+import com.raushankit.ILghts.viewModel.StatusViewModel;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
 import java.util.Calendar;
@@ -94,7 +94,14 @@ public class ControllerFragment extends Fragment {
                 }
             }
         });
+        userViewModel.getRoleData().observe(getViewLifecycleOwner(), role -> {
+            if(role.getAccessLevel() <= 0){
+                fragViewModel.selectItem(ControllerFragActions.BLOCK_EVENT);
+            }
+        });
+        StatusViewModel statusViewModel = new ViewModelProvider(requireActivity()).get(StatusViewModel.class);
         userViewModel.getUserData().observe(getViewLifecycleOwner(), user -> name.set(user.getName()));
+        statusViewModel.getStatusData().observe(getViewLifecycleOwner(), aBoolean -> boardStatus.setText(getString(R.string.controller_board_status, (aBoolean?"ONLINE":"OFFLINE"))));
         recyclerView.setAdapter(adapter);
         return view;
     }
