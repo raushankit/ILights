@@ -342,7 +342,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                         if(verifyEmailPreference != null) verifyEmailPreference.setSummary(R.string.email_verified);
                     }
                     else if(value.equals(InfoType.ADMIN_VISIBILITY) || value.equals(InfoType.ADMIN_INVISIBILITY)){
-                        if(adminCategory != null) adminCategory.setEnabled(value.equals(InfoType.ADMIN_VISIBILITY));
+                        if(adminCategory != null) adminCategory.setVisible(value.equals(InfoType.ADMIN_VISIBILITY));
                     }
                 }else if(value instanceof VersionInfo){
                     if(updatePreference != null){

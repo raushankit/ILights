@@ -4,7 +4,7 @@
     <!--The outline turns to colorPrimary when the EditText is in focus-->
     <item android:state_enabled="true" android:state_focused="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/custom_edit_text_background" />
+            <solid android:color="@color/pin_item_background" />
             <corners android:radius="@dimen/_122sdp" />
         </shape>
     </item>
@@ -12,7 +12,7 @@
     <!--The outline turns to grey when the EditText is out of focus-->
     <item android:state_enabled="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/custom_edit_text_background" />
+            <solid android:color="@color/pin_item_background" />
             <corners android:radius="@dimen/_122sdp" />
         </shape>
     </item>

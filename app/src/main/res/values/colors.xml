@@ -38,7 +38,7 @@
     <color name="controller_background">#eeeeee</color>
     <color name="pin_item_background">@color/white</color>
     <color name="pin_item_switch_track">#dedede</color>
-    <color name="pin_item_shimmer_frame">#b3b3b3</color>
+    <color name="pin_item_shimmer_frame">#c3c3c3</color>
     <color name="pin_item_switch_thumb">@color/white</color>
     <color name="controller_title_status_offline_background">#ee0000</color>
     <color name="controller_title_status_online_background">#00cc00</color>

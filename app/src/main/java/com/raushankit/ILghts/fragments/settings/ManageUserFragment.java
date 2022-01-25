@@ -5,15 +5,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -22,6 +19,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -86,9 +84,9 @@ public class ManageUserFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_manage_user, container, false);
         EditText editText = view.findViewById(R.id.manage_user_edit_text);
-        ProgressBar progressBar = view.findViewById(R.id.manage_user_progress_bar);
         FloatingActionButton searchButton = view.findViewById(R.id.manage_user_search_button);
         RecyclerView userListView = view.findViewById(R.id.manage_users_list_recyclerview);
+        ShimmerFrameLayout shimmerFrameLayout = view.findViewById(R.id.manage_user_shimmer_frame);
         ((SimpleItemAnimator) Objects.requireNonNull(userListView.getItemAnimator())).setSupportsChangeAnimations(false);
         userListView.addItemDecoration(new DividerItemDecoration(userListView.getContext(), DividerItemDecoration.VERTICAL));
         AdminUserAdapter adapter = new AdminUserAdapter(value -> {
@@ -112,7 +110,8 @@ public class ManageUserFragment extends Fragment {
         searchButton.setOnClickListener(v -> {
             if(!TextUtils.isEmpty(editText.getText())){
                 forceKeyboard(false);
-                progressBar.setVisibility(View.VISIBLE);
+                shimmerFrameLayout.startShimmer();
+                shimmerFrameLayout.setVisibility(View.VISIBLE);
                 Query query = db.child("users").orderByChild(isSearchFilterEmail?"email":"name").equalTo(editText.getText().toString().toLowerCase(Locale.ROOT));
                 List<AdminUser> users = new ArrayList<>();
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -124,7 +123,8 @@ public class ManageUserFragment extends Fragment {
                         if(users.isEmpty()){
                             Snackbar.make(view, getString(R.string.no_user_with_this_email, (isSearchFilterEmail?"email address":"name")), BaseTransientBottomBar.LENGTH_SHORT).show();
                         }
-                        progressBar.setVisibility(View.GONE);
+                        shimmerFrameLayout.setVisibility(View.GONE);
+                        shimmerFrameLayout.stopShimmer();
                         adapter.submitList(users);
                     }
 
@@ -140,7 +140,8 @@ public class ManageUserFragment extends Fragment {
             if(i == EditorInfo.IME_ACTION_SEARCH){
                 if(!TextUtils.isEmpty(editText.getText())){
                     forceKeyboard(false);
-                    progressBar.setVisibility(View.VISIBLE);
+                    shimmerFrameLayout.startShimmer();
+                    shimmerFrameLayout.setVisibility(View.VISIBLE);
                     Query query = db.child("users").orderByChild(isSearchFilterEmail?"email":"name").equalTo(editText.getText().toString().toLowerCase(Locale.ROOT));
                     List<AdminUser> users = new ArrayList<>();
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -152,7 +153,8 @@ public class ManageUserFragment extends Fragment {
                             if(users.isEmpty()){
                                 Snackbar.make(view, getString(R.string.no_user_with_this_email, (isSearchFilterEmail?"email address":"name")), BaseTransientBottomBar.LENGTH_SHORT).show();
                             }
-                            progressBar.setVisibility(View.GONE);
+                            shimmerFrameLayout.startShimmer();
+                            shimmerFrameLayout.setVisibility(View.VISIBLE);
                             adapter.submitList(users);
                         }
 

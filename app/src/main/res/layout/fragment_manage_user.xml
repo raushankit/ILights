@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/controller_background"
     tools:context=".fragments.settings.ManageUserFragment">
 
     <EditText
@@ -39,27 +40,38 @@
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/email_search_hint" />
 
-    <ProgressBar
-        android:id="@+id/manage_user_progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/manage_user_shimmer_frame"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_20sdp"
-        android:indeterminate="true"
-        app:layout_constraintTop_toBottomOf="@id/manage_user_edit_text"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:animationCache="true"
+        android:visibility="visible"
+        app:shimmer_auto_start="true"
+        app:shimmer_repeat_mode="restart"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:indeterminateTint="@color/circular_progress_color"
-        android:indeterminateTintMode="src_atop"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/manage_user_edit_text">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <include layout="@layout/user_list_item_shimmer"/>
+            <include layout="@layout/user_list_item_shimmer"/>
+            <include layout="@layout/user_list_item_shimmer"/>
+            <include layout="@layout/user_list_item_shimmer"/>
+            <include layout="@layout/user_list_item_shimmer"/>
+            <include layout="@layout/user_list_item_shimmer"/>
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/manage_users_list_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:paddingStart="@dimen/_3sdp"
         android:paddingEnd="@dimen/_3sdp"
-        app:flow_verticalGap="@dimen/_50sdp"
         app:layout_constraintTop_toBottomOf="@+id/manage_user_edit_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

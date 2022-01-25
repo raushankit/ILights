@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/_18sdp"
+    android:layout_marginTop="@dimen/_5sdp"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/frag_user_list_item_shimmer_title"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_18sdp"
+        android:background="@color/pin_item_shimmer_frame" />
+
+    <View
+        android:id="@+id/frag_user_list_item_shimmer_switch"
+        android:layout_width="@dimen/_70sdp"
+        android:layout_height="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:background="@color/pin_item_shimmer_frame"
+        android:layout_marginTop="@dimen/_10sdp"/>
+
+</LinearLayout>

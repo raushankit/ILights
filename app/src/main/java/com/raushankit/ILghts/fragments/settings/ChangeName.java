@@ -37,13 +37,6 @@ public class ChangeName extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param prevUserName Parameter 1.
-     * @return A new instance of fragment ChangeName.
-     */
     public static ChangeName newInstance(String prevUserName, String userUid) {
         ChangeName fragment = new ChangeName();
         Bundle args = new Bundle();

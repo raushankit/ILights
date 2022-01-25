@@ -43,7 +43,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:enabled="true"
+        app:isPreferenceVisible="false"
         app:iconSpaceReserved="false"
         app:key="admin_category"
         app:title="@string/admin_header">
@@ -53,7 +53,7 @@
             app:entries="@array/admin_search_entries"
             app:entryValues="@array/admin_search_values"
             app:key="admin_search"
-            app:defaultValue="by_email"
+            app:defaultValue="by_name"
             app:dialogTitle="Search Users"
             app:title="@string/search_users"
             app:useSimpleSummaryProvider="true" />
