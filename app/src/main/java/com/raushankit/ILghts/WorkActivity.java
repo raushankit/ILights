@@ -54,7 +54,6 @@ public class WorkActivity extends AppCompatActivity {
         if(receiveIntent == null) return;
         String page = receiveIntent.getStringExtra(PageKeys.WHICH_PAGE.name());
         if(page == null) return;
-        Log.e(TAG, "switchFrags: page_name = " + page);
         replaceFragment(page);
     }
 
@@ -90,6 +89,8 @@ public class WorkActivity extends AppCompatActivity {
             window.setStatusBarColor(getColor(R.color.controller_title_background));
             ft.replace(R.id.work_main_frame, ControllerFragment.newInstance());
             ft.commit();
+        }else{
+            Log.d(TAG, "replaceFragment: invalid Fragment action");
         }
     }
 }

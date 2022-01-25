@@ -8,7 +8,6 @@ import android.util.Pair;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +24,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,7 +60,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private String[] themeEntries;
     private String name;
     private AlertDialogFragment alertDialogFragment;
-    private ProgressBar progressBar;
+    private ShimmerFrameLayout shimmerFrameLayout;
+    private ConstraintLayout userLayout;
     private FirebaseAuth mAuth;
     private Intent badAuthIntent;
     private int accessLevel;
@@ -101,7 +102,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         window.setStatusBarColor(getColor(R.color.splash_screen_bg_end));
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         themeEntries = getResources().getStringArray(R.array.theme_values);
-        progressBar = findViewById(R.id.settings_progress_bar);
+        shimmerFrameLayout = findViewById(R.id.settings_user_data_shimmer);
+        userLayout = findViewById(R.id.settings_user_data);
         implementListeners();
         fillUserdata();
         if (savedInstanceState == null) {
@@ -256,7 +258,9 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     }
 
     private void dataReceiveEvent() {
-        progressBar.setVisibility(View.GONE);
+        userLayout.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.stopShimmer();
+        shimmerFrameLayout.setVisibility(View.GONE);
         if(fragCallback != null){
             fragCallback.onClick(InfoType.PROFILE_VISIBILITY);
             fragCallback.onClick(Objects.requireNonNull(mAuth.getCurrentUser()).isEmailVerified()?InfoType.EMAIL_VERIFIED:InfoType.EMAIL_NOT_VERIFIED);

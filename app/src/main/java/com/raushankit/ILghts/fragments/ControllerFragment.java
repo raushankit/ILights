@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.PinListAdapter;
 import com.raushankit.ILghts.entity.ControllerFragActions;
@@ -40,7 +42,7 @@ public class ControllerFragment extends Fragment {
     private DatabaseReference db;
     private FirebaseAuth mAuth;
 
-    private ControllerFragment() {
+    public ControllerFragment() {
         // Required empty public constructor
     }
 
@@ -61,6 +63,7 @@ public class ControllerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_controller, container, false);
         db = FirebaseDatabase.getInstance().getReference();
         settingsButton = view.findViewById(R.id.frag_controller_settings_button);
+        TextView boardStatus = view.findViewById(R.id.frag_controller_board_status);
         shimmerFrameLayout = view.findViewById(R.id.frag_controller_shimmer_container);
         shimmerFrameLayout.setVisibility(View.VISIBLE);
         shimmerFrameLayout.startShimmer();

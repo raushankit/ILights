@@ -52,5 +52,4 @@
         app:layout_constraintStart_toStartOf="@id/user_info_profile_pic"
         app:layout_constraintTop_toBottomOf="@+id/user_info_profile_pic" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

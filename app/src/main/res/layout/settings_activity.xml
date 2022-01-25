@@ -1,22 +1,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@drawable/splash_background">
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/settings_user_data_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:animationCache="true"
+        android:visibility="visible"
+        app:shimmer_auto_start="true"
+        app:shimmer_repeat_mode="restart">
+        <include layout="@layout/user_data_shimmer"/>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <include
         android:id="@+id/settings_user_data"
+        android:visibility="gone"
         layout="@layout/user_data"/>
-
-    <ProgressBar
-        android:id="@+id/settings_progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_14sdp"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/circular_progress_color"
-        android:visibility="visible"
-        android:indeterminateTintMode="src_atop"/>
 
     <FrameLayout
         android:id="@+id/settings_fragment"

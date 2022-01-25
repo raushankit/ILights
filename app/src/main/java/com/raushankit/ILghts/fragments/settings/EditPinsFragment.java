@@ -1,6 +1,7 @@
 package com.raushankit.ILghts.fragments.settings;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +47,7 @@ public class EditPinsFragment extends Fragment {
         ShimmerFrameLayout shimmerFrameLayout = view.findViewById(R.id.frag_edit_pin_shimmer_frame);
 
         List<Integer> pinList = new ArrayList<>();
-        AtomicInteger allPin = new AtomicInteger();
+        AtomicInteger allPin = new AtomicInteger(0);
 
         EditPinAdapter adapter = new EditPinAdapter(getString(R.string.add_pin_item_title), value -> settingCommViewModel.selectItem(new Pair<>("edit_pin", value)));
         recyclerView.setAdapter(adapter);
@@ -78,6 +79,8 @@ public class EditPinsFragment extends Fragment {
                 }
                 pinList.forEach(pin -> pins.set(pin,Boolean.FALSE));
                 settingCommViewModel.selectItem(new Pair<>("add_pin", pins));
+            }else{
+                Log.d(TAG, "onCreateView: bad request");
             }
         });
         return view;
