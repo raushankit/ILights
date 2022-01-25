@@ -1,7 +1,7 @@
 package com.raushankit.ILghts.entity;
 
 public enum SharedRefKeys {
-    DEFAULT_VALUE("defaukt-value"),
+    DEFAULT_VALUE("default-value"),
     AUTH_SUCCESSFUL("auth-successful"),
     AUTH_TYPE("auth-type"),
     USER_NAME("user-name"),

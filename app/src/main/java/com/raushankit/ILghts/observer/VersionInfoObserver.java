@@ -10,7 +10,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.raushankit.ILghts.model.Role;
 import com.raushankit.ILghts.model.VersionInfo;
 
 public class VersionInfoObserver extends LiveData<VersionInfo> {

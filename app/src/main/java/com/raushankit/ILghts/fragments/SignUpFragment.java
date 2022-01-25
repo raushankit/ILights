@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -222,10 +223,12 @@ public class SignUpFragment extends Fragment {
                 sharedRepo.insert(SharedRefKeys.AUTH_SUCCESSFUL, Boolean.TRUE.toString());
                 changeFrags.onClick(PageKeys.CONTROLLER_PAGE);
             }else{
-                String errorStr = userUpdates.createUserMetaData(uid, new User(mp.get(SharedRefKeys.USER_NAME),mp.get(SharedRefKeys.USER_EMAIL)));
+                String errorStr = userUpdates.createUserMetaData(uid, new User(Objects.requireNonNull(mp.get(SharedRefKeys.USER_NAME)), Objects.requireNonNull(mp.get(SharedRefKeys.USER_EMAIL))));
                 if(errorStr != null){
                     loadingDialogFragment.dismiss();
                     showAlert(new Exception(errorStr));
+                }else{
+                    Log.d(TAG, "updateMetadata: no error");
                 }
             }
         });

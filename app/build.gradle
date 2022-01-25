@@ -10,8 +10,8 @@ android {
         applicationId "com.raushankit.ILghts"
         minSdk 24
         targetSdk 31
-        versionCode 1
-        versionName "1.0.0.0"
+        versionCode 15
+        versionName "2.3.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug

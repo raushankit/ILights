@@ -122,22 +122,6 @@ public class RoleDialogFragment extends DialogFragment implements View.OnClickLi
         }
     }
 
-    public int getRadioId(){
-        int level = (role.getAccessLevel() + 4)%4;
-        if(level<=0){
-            return R.id.role_dialog_radio_block;
-        }
-        else if(level==1){
-            return R.id.role_dialog_radio_user;
-        }
-        else if(level==2){
-            return R.id.role_dialog_radio_admin;
-        }
-        else {
-            return R.id.role_dialog_radio_developer;
-        }
-    }
-
     @Override
     public void onClick(View view) {
         if(callBack != null && view.getId() == R.id.role_dialog_positive_button){

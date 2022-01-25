@@ -35,7 +35,8 @@
             android:src="@drawable/ic_baseline_settings_24"
             app:layout_constraintBottom_toBottomOf="@+id/frag_controller_title_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/frag_controller_title_text" />
+            app:layout_constraintTop_toTopOf="@+id/frag_controller_title_text"
+            android:contentDescription="@string/frag_controller_settings_button_desc" />
 
         <TextView
             android:id="@+id/frag_controller_board_status"

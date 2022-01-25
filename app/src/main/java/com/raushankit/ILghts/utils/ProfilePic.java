@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import com.raushankit.ILghts.R;
 
 public class ProfilePic extends View {
-    private static final String TAG = "ProfilePic";
     private String name;
     private float radius = 0;
     private final Point dimens = new Point();

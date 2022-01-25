@@ -102,6 +102,9 @@
     <string name="text_box_placeholder">Random Text</string>
     <string name="access_level_place_holder">Access Level: %1$s</string>
 
+    <!-- Content_description page -->
+    <string name="frag_controller_settings_button_desc">setting button</string>
+
     <!-- Display Preference -->
     <string name="display_header">Display</string>
     <string name="theme_header">Theme</string>

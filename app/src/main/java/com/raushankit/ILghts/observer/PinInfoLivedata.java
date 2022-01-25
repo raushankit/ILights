@@ -14,7 +14,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.model.PinInfo;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class PinInfoLivedata extends LiveData<Map<String, PinInfo>> {
