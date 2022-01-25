@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="error">#CF6679</color>
+    <color name="pure_red">#ff0000</color>
+    <color name="pure_green">#00ff00</color>
+    <color name="google_red">#DE5426</color>
+    <color name="shamrock_green">#009e60</color>
+    <color name="pink">#fe019a</color>
+    <color name="transparent">#00000000</color>
+    <color name="dark_pink">#920058</color>
+
+    <color name="splash_screen_bg_start">@color/white</color>
+    <color name="splash_screen_bg_end">#ece9e6</color>
+    <color name="splash_screen_title_texts">#222222</color>
+    <color name="splash_screen_btn">#00bfff</color>
+    <color name="splash_screen_btn_text">@color/white</color>
+    <color name="splash_screen_animation_color">@color/black</color>
+
+    <color name="forgot_password_btn">#aa000000</color>
+    <color name="loading_dialog_background">@color/white</color>
+    <color name="circular_progress_color">@color/purple_500</color>
+
+    <color name="user_info_name_text">@color/black</color>
+
+    <color name="custom_edit_text_background">#e5e5e5</color>
+    <color name="manage_user_frag_search_btn">#00bfff</color>
+
+    <color name="dialog_role_frag_strip">#36454f</color>
+
+    <color name="controller_title_background">#00bfff</color>
+    <color name="controller_background">#eeeeee</color>
+    <color name="pin_item_background">@color/white</color>
+    <color name="pin_item_switch_track">#dedede</color>
+    <color name="pin_item_shimmer_frame">#b3b3b3</color>
+    <color name="pin_item_switch_thumb">@color/white</color>
+    <color name="controller_title_status_offline_background">#ee0000</color>
+    <color name="controller_title_status_online_background">#00cc00</color>
+    <color name="controller_title_settings_background">#0f000000</color>
+
+</resources>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.settings.EditPinItemFragment">
+
+    <TextView
+        android:id="@+id/frag_edit_pin_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:fontFamily="@font/rubik_variable"
+        android:text="@string/add_pin_frag_item_title"
+        android:textColor="@color/user_info_name_text"
+        android:textSize="@dimen/_22sdp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/frag_edit_pin_item_pin_number_input_layout"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/frag_edit_pin_item_pin_number_input_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:errorEnabled="true"
+        android:layout_marginTop="@dimen/_25sdp"
+        app:startIconDrawable="@drawable/ic_baseline_memory_24"
+        android:hint="@string/add_pin_frag_item_hint_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.88"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        app:layout_constraintTop_toBottomOf="@+id/frag_edit_pin_item_title">
+
+        <AutoCompleteTextView
+            android:id="@+id/frag_edit_pin_item_pin_number_input_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/frag_edit_pin_item_pin_name_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/_15sdp"
+        app:startIconDrawable="@drawable/ic_baseline_edit_24"
+        android:hint="@string/add_pin_frag_item_pin_name"
+        app:errorEnabled="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.88"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:layout_constraintTop_toBottomOf="@+id/frag_edit_pin_item_pin_number_input_layout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/frag_edit_pin_item_pin_name_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/frag_edit_pin_item_negative_btn"
+        android:layout_width="0dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_marginTop="@dimen/_30sdp"
+        app:strokeWidth="0dp"
+        android:padding="@dimen/_5sdp"
+        android:layout_height="wrap_content"
+        android:text="@string/delete"
+        android:textColor="@color/error"
+        app:layout_constraintStart_toStartOf="@+id/frag_edit_pin_item_pin_name_layout"
+        app:layout_constraintTop_toBottomOf="@+id/frag_edit_pin_item_pin_name_layout" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/frag_edit_pin_item_positive_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:text="@string/add"
+        app:layout_constraintEnd_toEndOf="@+id/frag_edit_pin_item_pin_name_layout"
+        app:layout_constraintTop_toBottomOf="@+id/frag_edit_pin_item_pin_name_layout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

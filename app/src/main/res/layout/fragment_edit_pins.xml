@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/controller_background"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.settings.EditPinsFragment">
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/frag_edit_pin_shimmer_frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:animationCache="true"
+        android:visibility="visible"
+        app:shimmer_auto_start="true"
+        app:shimmer_repeat_mode="restart">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+            <include layout="@layout/add_pin_item_shimmer"/>
+            <include layout="@layout/add_pin_item_shimmer"/>
+            <include layout="@layout/add_pin_item_shimmer"/>
+            <include layout="@layout/add_pin_item_shimmer"/>
+            <include layout="@layout/add_pin_item_shimmer"/>
+            <include layout="@layout/add_pin_item_shimmer"/>
+            <include layout="@layout/add_pin_item_shimmer"/>
+            <include layout="@layout/add_pin_item_shimmer"/>
+            <include layout="@layout/add_pin_item_shimmer"/>
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/frag_edit_pin_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/_3sdp"
+        android:paddingEnd="@dimen/_3sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/_20sdp"
+        android:gravity="center_vertical"
+        android:layout_gravity="end|bottom">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_pins"
+            android:padding="@dimen/_2sdp"
+            android:textColor="@color/black"
+            android:paddingStart="@dimen/_5sdp"
+            android:paddingEnd="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_minus12sdp"
+            android:textSize="@dimen/_12sdp"
+            android:background="@drawable/rounded_add_pin_text_view"
+            android:gravity="center_horizontal"/>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/frag_edit_pin_fab_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:backgroundTint="@color/manage_user_frag_search_btn"
+            android:src="@drawable/ic_baseline_add_24" />
+    </LinearLayout>
+
+</FrameLayout>

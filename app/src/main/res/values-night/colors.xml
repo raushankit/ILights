@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="splash_screen_bg_start">#485563</color>
+    <color name="splash_screen_bg_end">#29323c</color>
+    <color name="splash_screen_title_texts">#dddddd</color>
+    <color name="splash_screen_btn">@color/teal_200</color>
+    <color name="splash_screen_btn_text">@color/black</color>
+    <color name="splash_screen_animation_color">@null</color>
+
+    <color name="forgot_password_btn">#bbffffff</color>
+    <color name="loading_dialog_background">#333333</color>
+    <color name="circular_progress_color">@color/purple_200</color>
+
+    <color name="user_info_name_text">@color/white</color>
+
+    <color name="custom_edit_text_background">#36454f</color>
+    <color name="manage_user_frag_search_btn">@color/teal_200</color>
+
+    <color name="dialog_role_frag_strip">#00bfff</color>
+
+    <color name="controller_title_background">#222222</color>
+    <color name="controller_background">#2f2f2f</color>
+    <color name="pin_item_background">#16161d</color>
+    <color name="pin_item_shimmer_frame">#838383</color>
+    <color name="pin_item_switch_track">#5c5c5c</color>
+    <color name="pin_item_switch_thumb">#444444</color>
+    <color name="controller_title_status_offline_background">#bb0000</color>
+    <color name="controller_title_status_online_background">#008800</color>
+    <color name="controller_title_settings_background">#0fffffff</color>
+</resources>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/_15sdp"
+    android:paddingBottom="@dimen/_15sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.raushankit.ILghts.utils.ProfilePic
+        android:id="@+id/user_info_profile_pic"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:textColor="@color/white"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:textSize="@dimen/_15sdp"
+        app:backgroundColor="@color/purple_700"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeWidth="0dp" />
+
+    <TextView
+        android:id="@+id/user_info_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/_13sdp"
+        android:textStyle="bold"
+        android:textColor="@color/user_info_name_text"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:text="@string/loading"
+        app:layout_constraintStart_toEndOf="@+id/user_info_profile_pic"
+        app:layout_constraintTop_toTopOf="@+id/user_info_profile_pic" />
+
+    <TextView
+        android:id="@+id/user_info_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/_11sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:text="@string/loading"
+        app:layout_constraintBottom_toBottomOf="@+id/user_info_profile_pic"
+        app:layout_constraintStart_toEndOf="@+id/user_info_profile_pic"
+        app:layout_constraintTop_toBottomOf="@+id/user_info_name" />
+
+    <TextView
+        android:id="@+id/user_info_access_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:fontFamily="sans-serif-condensed"
+        android:text="@string/loading"
+        android:textSize="@dimen/_12sdp"
+        app:layout_constraintStart_toStartOf="@id/user_info_profile_pic"
+        app:layout_constraintTop_toBottomOf="@+id/user_info_profile_pic" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

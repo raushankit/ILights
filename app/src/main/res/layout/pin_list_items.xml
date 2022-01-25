@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    app:cardPreventCornerOverlap="true"
+    android:layout_margin="@dimen/_5sdp"
+    android:elevation="@dimen/_10sdp"
+    app:cardCornerRadius="@dimen/_10sdp"
+    android:background="@color/pin_item_background"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/pin_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-thin"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:textColor="@color/user_info_name_text"
+            android:text="@string/splash_page_version_placeholder"
+            android:textSize="@dimen/_20sdp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/pin_item_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-thin"
+            android:padding="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:text="@string/controller_item_details"
+            android:textSize="@dimen/_10sdp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pin_item_title" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/pin_item_switch"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:checked="false"
+            app:switchTextAppearance="@style/SwitchTextAppearance"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:fontFamily="sans-serif-medium"
+            android:thumb="@drawable/pin_item_switch_thumb"
+            app:layout_constraintBottom_toBottomOf="@+id/pin_item_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/pin_item_title"
+            app:showText="true"
+            app:track="@drawable/pin_item_switch_track" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

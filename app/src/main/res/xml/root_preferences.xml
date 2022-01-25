@@ -1,0 +1,92 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/display_header">
+
+        <ListPreference
+            app:iconSpaceReserved="false"
+            app:entries="@array/theme_entries"
+            app:entryValues="@array/theme_values"
+            app:key="theme"
+            app:defaultValue="follow_system"
+            app:dialogTitle="Choose Theme"
+            app:title="@string/theme_header"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="profile_category"
+        app:iconSpaceReserved="false"
+        app:enabled="false"
+        app:title="@string/profile_header">
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="change_name"
+            app:title="@string/name_header"
+            app:fragment="com.raushankit.ILghts.fragments.settings.ChangeName"/>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:title="@string/verify_email"
+            app:summary="@string/email_not_verified"
+            app:key="verify_email" />
+
+        <Preference
+            app:title="@string/sign_out"
+            app:key="sign_out"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:enabled="true"
+        app:iconSpaceReserved="false"
+        app:key="admin_category"
+        app:title="@string/admin_header">
+
+        <ListPreference
+            app:iconSpaceReserved="false"
+            app:entries="@array/admin_search_entries"
+            app:entryValues="@array/admin_search_values"
+            app:key="admin_search"
+            app:defaultValue="by_email"
+            app:dialogTitle="Search Users"
+            app:title="@string/search_users"
+            app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:title="@string/manage_users"
+            app:fragment="com.raushankit.ILghts.fragments.settings.ManageUserFragment"
+            app:key="manage_users"/>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:title="@string/manage_pins"
+            app:fragment="com.raushankit.ILghts.fragments.settings.EditPinsFragment"
+            app:key="manage_pins"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/about_header">
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:isPreferenceVisible="false"
+            app:title="@string/update_available"
+            app:key="update_available"/>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:title="@string/version_name"
+            app:key="version_name"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

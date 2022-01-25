@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/_20sdp"
+    android:background="@drawable/loading_dialog_background"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loading_dialog_lottie"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_100sdp"
+        android:layout_centerHorizontal="true"
+        app:lottie_autoPlay="true"
+        app:lottie_repeatCount="987456321"
+        app:lottie_rawRes="@raw/loader_animation"
+        app:lottie_speed="1.6" />
+
+    <TextView
+        android:id="@+id/loading_dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/loading_dialog_lottie"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/_20sdp"
+        android:textStyle="bold"
+        android:fontFamily="@font/rubik_variable"
+        android:textColor="@color/forgot_password_btn"
+        android:text="@string/login" />
+
+</RelativeLayout>

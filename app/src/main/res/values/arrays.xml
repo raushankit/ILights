@@ -1,0 +1,33 @@
+<resources>
+    <!-- Settings -->
+    <string-array name="user_types">
+        <item>BLOCKED</item>
+        <item>USER</item>
+        <item>ADMIN</item>
+        <item>DEVELOPER</item>
+    </string-array>
+
+    <!-- Admin Search Preference -->
+    <string-array name="admin_search_entries">
+        <item>by Email</item>
+        <item>by Name</item>
+    </string-array>
+
+    <string-array name="admin_search_values">
+        <item>by_email</item>
+        <item>by_name</item>
+    </string-array>
+
+    <!-- Theme Preference -->
+    <string-array name="theme_entries">
+        <item>Follow System</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+
+    <string-array name="theme_values">
+        <item>follow_system</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+</resources>

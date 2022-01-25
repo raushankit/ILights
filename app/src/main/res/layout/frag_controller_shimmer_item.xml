@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/_10sdp">
+    <View
+        android:id="@+id/frag_controller_shimmer_title"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:background="@color/pin_item_shimmer_frame"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_15sdp" />
+
+    <View
+        android:id="@+id/frag_controller_shimmer_switch"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:background="@color/pin_item_shimmer_frame"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/_10sdp"/>
+
+    <View
+        android:id="@+id/frag_controller_shimmer_details"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_alignParentTop="true"
+        android:background="@color/pin_item_shimmer_frame"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_45sdp"
+        android:layout_height="@dimen/_50sdp"/>
+</RelativeLayout>

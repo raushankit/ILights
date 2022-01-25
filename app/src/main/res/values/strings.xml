@@ -1,0 +1,129 @@
+<resources>
+    <string name="app_name">ILights</string>
+    <string name="prefs_database_name">user_data</string>
+
+    <string name="email_hint">Enter Email</string>
+    <string name="password_hint">Enter Password</string>
+    <string name="name_hint">Enter Name</string>
+    <string name="confirm_password_hint">Re-Enter Password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="login">Log In</string>
+    <string name="or">or</string>
+    <string name="google_sign_in">Sign in with Google</string>
+    <string name="required">Required*</string>
+    <string name="error">Error</string>
+    <string name="retry">Retry</string>
+    <string name="single_space">\u0020</string>
+    <string name="exit">Exit</string>
+    <string name="loading">Loading…</string>
+    <string name="blocked">Blocked</string>
+    <string name="change_name_title">Change name</string>
+    <string name="change_name_hint">Enter new name</string>
+    <string name="update">Update</string>
+    <string name="email_verified">Email verified</string>
+    <string name="email_not_verified">Email not verified. Tap to verify</string>
+    <string name="sent_verification_email">Verification Email was sent. Check Your Email inbox and verify</string>
+    <string name="sent_no_verification_email">Verification Email was not sent. Try Again</string>
+    <string name="email_already_verified">Email is already verified</string>
+    <string name="block_message">Your Access is blocked.\n Ask Admin to unblock</string>
+
+    <string name="splash_page_register">REGISTER</string>
+    <string name="splash_page_sign_in">SIGN IN</string>
+    <string name="splash_page_sign_in_helper">Already registered?</string>
+    <string name="splash_page_version_placeholder">version: %1$s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Login pages -->
+    <string name="login_page_title">Sign In</string>
+    <string name="singing_in">Signing in....</string>
+    <string name="signing_up">Signing up....</string>
+    <string name="send">send</string>
+    <string name="internet_connection_error">Please check your internet connection and try again</string>
+    <string name="forgot_password_email_sent_success">Email sent successfully</string>
+    <string name="forgot_password_email_send_failure">Failed to send email</string>
+    <string name="forgot_password_info">An email with password reset link will be sent to the entered email address. Click the link to reset your password then come back again and login with your new password.\nThank You!</string>
+
+    <string name="signup_page_title">Register</string>
+    <string name="signup_page_register_btn">Sign Up</string>
+
+    <string name="alert_dialog_placeholder_btn_positive">OK</string>
+    <string name="alert_dialog_placeholder_btn_negative">Cancel</string>
+    <string name="alert_dialog_placeholder_title">Title</string>
+    <string name="password_not_match">Passwords don\'t match</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <string name="email_search_hint">Enter full email</string>
+    <string name="name_search_hint">Enter full name</string>
+
+    <string name="data_fetch_failure">Failed to fetch data</string>
+    <string name="no_user_with_this_email">No users exists with this %1$s </string>
+    <string name="modified_user_access">Successfully modified user access</string>
+    <string name="not_modified_user_access">Failed to modify user access</string>
+
+    <string name="role_dialog_role_level">Current Level: %1$s</string>
+    <string name="role_dialog_role_editor_title">Change Access</string>
+    <string name="role_dialog_radio_block">BLOCK</string>
+    <string name="role_dialog_radio_user">USER</string>
+    <string name="role_dialog_radio_admin">ADMIN</string>
+    <string name="role_dialog_radio_developer">DEVELOPER</string>
+
+    <string name="add_pins">Add Pin</string>
+    <string name="add_pin_item_title">Pin Configuration %1$d</string>
+    <string name="add_pin_frag_item_title">%1$s Pin</string>
+    <string name="add_pin_frag_item_hint_text">Pin</string>
+    <string name="add_pin_frag_item_pin_name">Pin name</string>
+    <string name="add_pin_frag_item_pin_number">Pin number %1$d</string>
+    <string name="all_pins_active">All pins are Occupied</string>
+    <string name="pin_name_update_successful">Successfully updated name of Pin %1$d</string>
+    <string name="pin_name_update_failure">Failed to update pin name</string>
+    <string name="pin_name_add_successful">Successfully added Pin %1$d</string>
+    <string name="pin_name_add_failure">Failed to add pin</string>
+    <string name="pin_name_delete_successful">Successfully deleted Pin %1$d</string>
+    <string name="pin_name_delete_failure">Failed to delete pin</string>
+    <string name="pin_delete_message">Deleting Pin %1$d will remove from board. Are you sure ?</string>
+    <string name="delete">Delete</string>
+    <string name="add">Add</string>
+    <string name="change">Change</string>
+
+    <!-- signOut event -->
+    <string name="confirm_action">Confirm Action</string>
+    <string name="sign_out_body_text">Are you sure to log out ?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <!-- controller page -->
+    <string name="controller_title">Controller</string>
+    <string name="controller_board_status">Board is ONLINE</string>
+    <string name="controller_update_failure">Failed to update data</string>
+    <string name="controller_item_details">Pin Configuration %1$d\n\nTurned %2$s by %3$s\nat %4$s</string>
+
+    <!-- Settings page -->
+    <string name="text_box_placeholder">Random Text</string>
+    <string name="access_level_place_holder">Access Level: %1$s</string>
+
+    <!-- Display Preference -->
+    <string name="display_header">Display</string>
+    <string name="theme_header">Theme</string>
+
+    <!-- Profile Preference -->
+    <string name="name_header">Change Name</string>
+    <string name="verify_email">Verify Email</string>
+    <string name="sign_out">Sign Out</string>
+
+    <!-- Preference Titles -->
+    <string name="about_header">About</string>
+    <string name="profile_header">Profile</string>
+    <string name="admin_header">Admin</string>
+
+    <!-- About Preferences -->
+    <string name="version_name">Version</string>
+    <string name="update_available">Update Available</string>
+    <string name="update_summary">%1$s -> %2$s</string>
+
+    <!-- Admin Preferences -->
+    <string name="search_users">Search Users</string>
+    <string name="manage_users">Manage Users</string>
+    <string name="manage_pins">Edit Board</string>
+
+</resources>

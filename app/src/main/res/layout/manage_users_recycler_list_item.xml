@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/manage_users_recyclerview_list_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/_8sdp"
+    android:focusable="true"
+    android:clickable="true"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/custom_edit_text_background"
+    android:background="?attr/selectableItemBackground"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/manage_users_recyclerview_list_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/name_header"
+        android:textSize="@dimen/_14sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:textColor="@color/user_info_name_text"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/manage_users_recyclerview_list_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/name_header"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:textSize="@dimen/_12sdp"
+        android:textColor="@color/user_info_name_text" />
+</LinearLayout>

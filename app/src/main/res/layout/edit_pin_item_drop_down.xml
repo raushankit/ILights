@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_pin_drop_down_menu_item_text"
+    android:layout_width="match_parent"
+    android:textColor="@color/user_info_name_text"
+    android:textStyle="bold"
+    android:padding="@dimen/_12sdp"
+    android:text="@string/add"
+    android:layout_height="wrap_content" />
