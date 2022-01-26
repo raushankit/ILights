@@ -3,7 +3,6 @@ package com.raushankit.ILghts.storage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.entity.SharedRefKeys;
 
 import java.util.Map;
@@ -13,7 +12,7 @@ public class SharedRepo {
     private final SharedPreferences prefs;
 
     private SharedRepo(Context context){
-        prefs = context.getSharedPreferences(context.getString(R.string.prefs_database_name), Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences("user_data", Context.MODE_PRIVATE);
     }
 
     public static SharedRepo newInstance(Context context){

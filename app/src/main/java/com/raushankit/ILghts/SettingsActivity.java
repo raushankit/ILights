@@ -1,7 +1,7 @@
 package com.raushankit.ILghts;
 
 import android.content.Intent;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -32,6 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.dialogs.AlertDialogFragment;
+import com.raushankit.ILghts.entity.SharedRefKeys;
 import com.raushankit.ILghts.fragments.settings.ChangeName;
 import com.raushankit.ILghts.fragments.settings.EditPinItemFragment;
 import com.raushankit.ILghts.fragments.settings.EditPinsFragment;
@@ -39,6 +39,7 @@ import com.raushankit.ILghts.fragments.settings.ManageUserFragment;
 import com.raushankit.ILghts.model.EditPinInfo;
 import com.raushankit.ILghts.model.PinData;
 import com.raushankit.ILghts.model.VersionInfo;
+import com.raushankit.ILghts.storage.SharedRepo;
 import com.raushankit.ILghts.utils.ColorGen;
 import com.raushankit.ILghts.utils.ProfilePic;
 import com.raushankit.ILghts.utils.callbacks.CallBack;
@@ -59,6 +60,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private DatabaseReference db;
     private String[] themeEntries;
     private String name;
+    private SharedRepo sharedRepo;
     private AlertDialogFragment alertDialogFragment;
     private ShimmerFrameLayout shimmerFrameLayout;
     private ConstraintLayout userLayout;
@@ -68,13 +70,13 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private FirebaseAuth.AuthStateListener authListener;
     private static CallBack<Object> fragCallback;
 
-    @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
         Window window = getWindow();
         mAuth = FirebaseAuth.getInstance();
+        sharedRepo = SharedRepo.newInstance(this);
         badAuthIntent = new Intent(this, MainActivity.class);
         db = FirebaseDatabase.getInstance().getReference();
         authListener = firebaseAuth -> {
@@ -140,11 +142,15 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     FirebaseUser user = mAuth.getCurrentUser();
                     assert user != null;
                     fragCallback.onClick(user.isEmailVerified() ? InfoType.EMAIL_VERIFIED : InfoType.EMAIL_NOT_VERIFIED);
-                    if (!user.isEmailVerified()) {
+                    boolean value = Boolean.parseBoolean(sharedRepo.getValue(SharedRefKeys.EMAIL_VERIFICATION));
+                    if (!user.isEmailVerified() && !value) {
                         user.sendEmailVerification()
-                                .addOnCompleteListener(task -> Snackbar.make(findViewById(android.R.id.content), (task.isSuccessful() ? getString(R.string.sent_verification_email) : getString(R.string.sent_no_verification_email)), BaseTransientBottomBar.LENGTH_SHORT).show());
+                                .addOnCompleteListener(task -> {
+                                    Snackbar.make(findViewById(android.R.id.content), (task.isSuccessful() ? getString(R.string.sent_verification_email) : getString(R.string.sent_no_verification_email)), BaseTransientBottomBar.LENGTH_SHORT).show();
+                                    sharedRepo.insert(SharedRefKeys.EMAIL_VERIFICATION, String.valueOf(task.isSuccessful()));
+                                });
                     } else {
-                        Snackbar.make(findViewById(android.R.id.content), getString(R.string.email_already_verified), BaseTransientBottomBar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), getString(user.isEmailVerified()?R.string.email_already_verified:R.string.email_verification_sign_out), BaseTransientBottomBar.LENGTH_SHORT).show();
                     }
                     break;
                 case "sign_out":
@@ -198,6 +204,14 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     mp.put("control/status/"+info1.getPinNumber(), Boolean.FALSE);
                     db.updateChildren(mp, ((error, ref) -> Snackbar.make(findViewById(android.R.id.content), (error == null?getString(R.string.pin_name_add_successful, info1.getPinNumber()):getString(R.string.pin_name_add_failure)), BaseTransientBottomBar.LENGTH_SHORT).show()));
                     getSupportFragmentManager().popBackStackImmediate();
+                    break;
+                case "play_update":
+                    final String appPackageName = getPackageName(); // package name of the app
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                    } catch (android.content.ActivityNotFoundException anfe) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                    }
                     break;
             }
         });
@@ -264,6 +278,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         if(fragCallback != null){
             fragCallback.onClick(InfoType.PROFILE_VISIBILITY);
             fragCallback.onClick(Objects.requireNonNull(mAuth.getCurrentUser()).isEmailVerified()?InfoType.EMAIL_VERIFIED:InfoType.EMAIL_NOT_VERIFIED);
+            sharedRepo.insert(SharedRefKeys.EMAIL_VERIFICATION, String.valueOf(false));
         }
     }
 
@@ -356,9 +371,11 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 }
             };
 
+
             if(themePreference != null) themePreference.setOnPreferenceChangeListener(this);
             if(verifyEmailPreference != null) verifyEmailPreference.setOnPreferenceClickListener(this);
             if(signOutPreference != null) signOutPreference.setOnPreferenceClickListener(this);
+            if(updatePreference != null) updatePreference.setOnPreferenceClickListener(this);
             if(versionNamePreference != null) versionNamePreference.setSummary(BuildConfig.VERSION_NAME);
         }
 
@@ -373,14 +390,19 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
         @Override
         public boolean onPreferenceClick(Preference preference) {
-            if(preference.getKey().equals("verify_email")){
-                settingCommViewModelFrag.selectItem(new Pair<>("verify_email",null));
-                return true;
-            }else if(preference.getKey().equals("sign_out")){
-                settingCommViewModelFrag.selectItem(new Pair<>("sign_out",null));
-                return true;
-            }else{
-                Log.d(TAG, "onPreferenceClick: unknown click event");
+            switch (preference.getKey()) {
+                case "verify_email":
+                    settingCommViewModelFrag.selectItem(new Pair<>("verify_email", null));
+                    return true;
+                case "sign_out":
+                    settingCommViewModelFrag.selectItem(new Pair<>("sign_out", null));
+                    return true;
+                case "update_available":
+                    settingCommViewModelFrag.selectItem(new Pair<>("play_update", null));
+                    return true;
+                default:
+                    Log.d(TAG, "onPreferenceClick: unknown click event");
+                    break;
             }
             return false;
         }

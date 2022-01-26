@@ -114,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
                         alertDialogFragment.show(getSupportFragmentManager(), AlertDialogFragment.TAG);
                         alertDialogFragment.setBodyString(getString(R.string.block_message));
                     }
+                }else{
+                    Log.e(TAG, "onCreate: role data is null");
                 }
             });
         }else{

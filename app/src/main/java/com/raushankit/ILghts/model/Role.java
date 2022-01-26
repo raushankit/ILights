@@ -1,6 +1,7 @@
 package com.raushankit.ILghts.model;
 
 import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.PropertyName;
@@ -29,6 +30,7 @@ public class Role {
         this.accessLevel = accessLevel;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Role{" +

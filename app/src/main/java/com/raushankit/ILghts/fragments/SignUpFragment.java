@@ -29,6 +29,7 @@ import com.raushankit.ILghts.utils.callbacks.CallBack;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -222,7 +223,7 @@ public class SignUpFragment extends Fragment {
                 sharedRepo.insert(SharedRefKeys.AUTH_SUCCESSFUL, Boolean.TRUE.toString());
                 changeFrags.onClick(PageKeys.CONTROLLER_PAGE);
             }else{
-                String errorStr = userUpdates.createUserMetaData(uid, new User(mp.get(SharedRefKeys.USER_NAME),mp.get(SharedRefKeys.USER_EMAIL)));
+                String errorStr = userUpdates.createUserMetaData(uid, new User(mp.get(SharedRefKeys.USER_NAME).toLowerCase(),mp.get(SharedRefKeys.USER_EMAIL).toLowerCase(Locale.ROOT)));
                 if(errorStr != null){
                     loadingDialogFragment.dismiss();
                     showAlert(new Exception(errorStr));

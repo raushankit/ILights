@@ -97,7 +97,7 @@ public class ProfilePic extends View {
     }
 
     private void drawText(Canvas canvas) {
-        String text = "";
+        String text;
         String [] words = name.split(" ",-1);
         text = words[0].toUpperCase().charAt(0) +
                 (words.length > 1?words[words.length-1].toUpperCase().substring(0,1):"");

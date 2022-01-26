@@ -42,6 +42,7 @@ import com.raushankit.ILghts.utils.callbacks.CallBack;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -211,8 +212,8 @@ public class LoginFragment extends Fragment {
                 sharedRepo.insert(SharedRefKeys.AUTH_SUCCESSFUL, Boolean.TRUE.toString());
                 changeFrag.onClick(PageKeys.CONTROLLER_PAGE);
             }else{
-                String name = sharedRepo.getValue(SharedRefKeys.USER_NAME);
-                String email = sharedRepo.getValue(SharedRefKeys.USER_EMAIL);
+                String name = sharedRepo.getValue(SharedRefKeys.USER_NAME).toLowerCase(Locale.ROOT);
+                String email = sharedRepo.getValue(SharedRefKeys.USER_EMAIL).toLowerCase(Locale.ROOT);
                 String errorStr = userUpdates.createUserMetaData(uid, new User(name,email));
                 if(errorStr != null){
                     loadingDialogFragment.dismiss();
@@ -274,7 +275,6 @@ public class LoginFragment extends Fragment {
     }
 
     /////////////////////////////////////////////
-
 
     @Override
     public void onResume() {

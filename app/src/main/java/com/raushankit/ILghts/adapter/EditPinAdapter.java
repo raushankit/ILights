@@ -45,9 +45,7 @@ public class EditPinAdapter extends ListAdapter<EditPinInfo, EditPinAdapter.Edit
             title = itemView.findViewById(R.id.add_pin_item_title);
             name = itemView.findViewById(R.id.add_pin_item_name);
 
-            itemView.setOnClickListener(v -> {
-                callBack.onClick(getCurrentList().get(getAdapterPosition()));
-            });
+            itemView.setOnClickListener(v -> callBack.onClick(getCurrentList().get(getAdapterPosition())));
         }
 
         void bind(EditPinInfo data){
