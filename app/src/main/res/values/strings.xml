@@ -8,7 +8,7 @@
     <string name="confirm_password_hint">Re-Enter Password</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="login">Log In</string>
-    <string name="or">or</string>
+    <string name="or">OR</string>
     <string name="google_sign_in">Sign in with Google</string>
     <string name="required">Required*</string>
     <string name="error">Error</string>

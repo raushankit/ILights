@@ -16,7 +16,11 @@
         <entry key="..\:/Users/raush/OneDrive/Desktop/Shivam_project/ILights/app/src/main/res/drawable/rounded_add_pin_text_view.xml" value="0.3546875" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Shivam_project/ILights/app/src/main/res/drawable/splash_background.xml" value="0.3546875" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Shivam_project/ILights/app/src/main/res/drawable/user_data_background.xml" value="0.3546875" />
-        <entry key="..\:/Users/raush/OneDrive/Desktop/Shivam_project/ILights/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Shivam_project/ILights/app/src/main/res/layout-land/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Shivam_project/ILights/app/src/main/res/layout-land/fragment_login.xml" value="0.33" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Shivam_project/ILights/app/src/main/res/layout-land/fragment_sign_up.xml" value="0.33" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Shivam_project/ILights/app/src/main/res/layout-sw600dp/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Shivam_project/ILights/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Shivam_project/ILights/app/src/main/res/layout/activity_work.xml" value="0.33958333333333335" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Shivam_project/ILights/app/src/main/res/layout/add_pin_item_shimmer.xml" value="0.33958333333333335" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Shivam_project/ILights/app/src/main/res/layout/add_pin_list_item.xml" value="0.33958333333333335" />

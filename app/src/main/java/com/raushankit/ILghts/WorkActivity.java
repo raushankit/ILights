@@ -60,14 +60,17 @@ public class WorkActivity extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         CallBack<Integer> statusBarColor = value -> window.setStatusBarColor(getColor(value));
         FragmentManager fm = getSupportFragmentManager();
+        Intent intent = getIntent();
         FragmentTransaction ft = fm.beginTransaction();
         if(id.equals(PageKeys.SIGN_UP_PAGE.name())){
+            if(intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
             ft.replace(R.id.work_main_frame, new SignUpFragment(
                     statusBarColor, changeFragment
             ));
             ft.commit();
         }
         else if(id.equals(PageKeys.LOGIN_PAGE.name()) || id.equals(PageKeys.GOOGLE_LOGIN_EVENT.name())){
+            if(intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
             ft.replace(R.id.work_main_frame, new LoginFragment(
                     statusBarColor,changeFragment,
                     id.equals(PageKeys.GOOGLE_LOGIN_EVENT.name())
@@ -75,14 +78,14 @@ public class WorkActivity extends AppCompatActivity {
             ft.commit();
         }
         else if(id.equals(PageKeys.FORGOT_PASSWORD_PAGE.name())){
+            if(intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
             ft.replace(R.id.work_main_frame, new ForgotPasswordFragment(
                     statusBarColor, changeFragment
             ));
             ft.commit();
         }
         else if(id.equals(PageKeys.CONTROLLER_PAGE.name())){
-            Intent intent = getIntent();
-            if(intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.CONTROLLER_PAGE.name());
+            if(intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
             window.setStatusBarColor(getColor(R.color.controller_title_background));
             ft.replace(R.id.work_main_frame, ControllerFragment.newInstance());
             ft.commit();
