@@ -92,8 +92,6 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         sharedRepo = SharedRepo.newInstance(requireContext());
         view = inflater.inflate(R.layout.fragment_login, container, false);
         initiate();
@@ -128,12 +126,7 @@ public class LoginFragment extends Fragment {
                         Objects.requireNonNull(passwordInput.getText()).toString());
             }
         });
-        forgotPassButton.setOnClickListener(v -> {
-            //changeFrag.onClick(PageKeys.FORGOT_PASSWORD_PAGE);
-            if(mAuth.getCurrentUser() != null ){
-                mAuth.signOut();
-            }
-        });
+        forgotPassButton.setOnClickListener(v -> changeFrag.onClick(PageKeys.FORGOT_PASSWORD_PAGE));
         return view;
     }
 

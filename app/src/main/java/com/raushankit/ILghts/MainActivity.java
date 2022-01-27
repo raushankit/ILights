@@ -20,6 +20,10 @@ import androidx.preference.PreferenceManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.raushankit.ILghts.dialogs.AlertDialogFragment;
@@ -56,6 +60,24 @@ public class MainActivity extends AppCompatActivity {
         AlertDialogFragment alertDialogFragment = AlertDialogFragment.newInstance(getString(R.string.error), true, false);
         alertDialogFragment.setPositiveButtonText(getString(R.string.exit));
         SharedRepo sharedRepo = SharedRepo.newInstance(this);
+        AppUpdateManager appUpdateManager = AppUpdateManagerFactory.create(this);
+        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            Log.e(TAG, "onCreate: " + appUpdateInfo.availableVersionCode());
+            Log.e(TAG, "onCreate: " + appUpdateInfo.clientVersionStalenessDays());
+            Log.e(TAG, "onCreate: " + appUpdateInfo.installStatus());
+        });
+
+        appUpdateInfoTask.addOnCompleteListener(task -> {
+            if(!task.isSuccessful()){
+                Log.e(TAG, "onCreate: " + task.getException().getMessage());
+            }else{
+                AppUpdateInfo appUpdateInfo = task.getResult();
+                Log.e(TAG, "onCreate: " + appUpdateInfo.availableVersionCode());
+                Log.e(TAG, "onCreate: " + appUpdateInfo.clientVersionStalenessDays());
+                Log.e(TAG, "onCreate: " + appUpdateInfo.installStatus());
+            }
+        });
 
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);

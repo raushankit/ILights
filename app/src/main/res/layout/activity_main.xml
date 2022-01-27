@@ -11,15 +11,18 @@
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/splash_screen_lottie"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_350sdp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.9"
         app:lottie_autoPlay="true"
-        app:lottie_speed="1.6"
+        app:layout_constraintVertical_bias="0.1"
+        app:layout_constraintHeight_percent="0.5"
         app:lottie_colorFilter="@color/splash_screen_animation_color"
         app:lottie_rawRes="@raw/neuralink"
-        app:layout_constraintWidth_percent="0.9"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:lottie_speed="1.6" />
 
     <TextView
         android:id="@+id/splash_main_text"
@@ -45,7 +48,7 @@
         android:backgroundTint="@color/splash_screen_btn"
         android:textColor="@color/splash_screen_btn_text"
         android:textSize="@dimen/_14sdp"
-        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintVertical_bias="0.2"
         app:cornerRadius="@dimen/_40sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -88,8 +91,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/splash_page_version_placeholder"
-        android:textSize="@dimen/_12sdp"
-        android:layout_marginBottom="@dimen/_15sdp"
+        android:textSize="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
