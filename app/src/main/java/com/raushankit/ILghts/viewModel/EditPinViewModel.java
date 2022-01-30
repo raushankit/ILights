@@ -3,7 +3,6 @@ package com.raushankit.ILghts.viewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.raushankit.ILghts.model.BoardPinData;
 import com.raushankit.ILghts.model.PinInfo;
 import com.raushankit.ILghts.observer.BoardMetaData;
 import com.raushankit.ILghts.observer.PinInfoLivedata;
@@ -23,7 +22,7 @@ public class EditPinViewModel extends ViewModel {
         return pinInfoLivedata;
     }
 
-    public LiveData<BoardPinData> getBoardData(){
+    public LiveData<Integer> getBoardData(){
         return boardMetaData;
     }
 

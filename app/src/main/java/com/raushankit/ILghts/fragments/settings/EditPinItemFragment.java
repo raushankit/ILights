@@ -1,5 +1,6 @@
 package com.raushankit.ILghts.fragments.settings;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -9,6 +10,8 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
@@ -95,6 +98,7 @@ public class EditPinItemFragment extends Fragment {
         TextInputLayout nameLayout = view.findViewById(R.id.frag_edit_pin_item_pin_name_layout);
         pinNumberText = view.findViewById(R.id.frag_edit_pin_item_pin_number_input_edit_text);
         pinNameEdittext = view.findViewById(R.id.frag_edit_pin_item_pin_name_edit_text);
+        InputMethodManager im = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         boolean isEdit = action.equals("edit");
         deleteButton.setVisibility(isEdit?View.VISIBLE:View.GONE);
         editButton.setText(getString(isEdit?R.string.change:R.string.add));
@@ -110,30 +114,51 @@ public class EditPinItemFragment extends Fragment {
         alertDialogFragment.addWhichButtonClickedListener(whichButton -> {
             if(whichButton.equals(AlertDialogFragment.WhichButton.POSITIVE)){
                 settingCommViewModel.selectItem(new Pair<>("delete_pin_item", pinNumber));
+                getParentFragmentManager().popBackStack();
+            }else{
+                Log.w(TAG, "onCreateView: canceled delete operation");
             }
             alertDialogFragment.dismiss();
-            getParentFragmentManager().popBackStack();
         });
         deleteButton.setOnClickListener(v -> {
             alertDialogFragment.setBodyString(getString(R.string.pin_delete_message, pinNumber));
             alertDialogFragment.show(getChildFragmentManager(), AlertDialogFragment.TAG);
         });
         editButton.setOnClickListener(v -> {
-            if(!TextUtils.isEmpty(pinNameEdittext.getText())){
-                if(isEdit){
-                    settingCommViewModel.selectItem(new Pair<>("edit_pin_item", new EditPinInfo(pinNumber, new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString()))));
-                }else{
-                    if(!TextUtils.isEmpty(pinNumberText.getText())){
-                        String[] str = pinNumberText.getText().toString().split(" ", -1);
-                        settingCommViewModel.selectItem(new Pair<>("add_pin_item", new EditPinInfo(Integer.parseInt(str[str.length-1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString()))));
-                    }else{
-                        pinNumberLayout.setError(getString(R.string.required));
-                    }
-                }
-            }else{
-                Log.d(TAG, "onCreateView: Empty field");
-                nameLayout.setError(getString(R.string.required));
+            im.hideSoftInputFromWindow(view.getWindowToken(),0);
+            boolean invalidPinName = TextUtils.isEmpty(pinNameEdittext.getText());
+            boolean invalidPinNumber = TextUtils.isEmpty(pinNumberText.getText());
+            if(invalidPinName || invalidPinNumber){
+                if(invalidPinName) nameLayout.setError(getString(R.string.required));
+                if(invalidPinNumber) pinNumberLayout.setError(getString(R.string.required));
+                return;
             }
+            if(TextUtils.equals(pinName, pinNameEdittext.getText())){
+                nameLayout.setError(getString(R.string.same_as_before));
+                return;
+            }
+            String[] str = pinNumberText.getText().toString().split(" ", -1);
+            settingCommViewModel.selectItem(new Pair<>((isEdit?"edit_pin_item":"add_pin_item"), new EditPinInfo(Integer.parseInt(str[str.length-1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString()))));
+        });
+        pinNameEdittext.setOnEditorActionListener((textView, i, keyEvent) -> {
+            if(i == EditorInfo.IME_ACTION_DONE){
+                im.hideSoftInputFromWindow(view.getWindowToken(),0);
+                boolean invalidPinName = TextUtils.isEmpty(pinNameEdittext.getText());
+                boolean invalidPinNumber = TextUtils.isEmpty(pinNumberText.getText());
+                if(invalidPinName || invalidPinNumber){
+                    if(invalidPinName) nameLayout.setError(getString(R.string.required));
+                    if(invalidPinNumber) pinNumberLayout.setError(getString(R.string.required));
+                    return false;
+                }
+                if(TextUtils.equals(pinName, pinNameEdittext.getText())){
+                    nameLayout.setError(getString(R.string.same_as_before));
+                    return false;
+                }
+                String[] str = pinNumberText.getText().toString().split(" ", -1);
+                settingCommViewModel.selectItem(new Pair<>((isEdit?"edit_pin_item":"add_pin_item"), new EditPinInfo(Integer.parseInt(str[str.length-1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString()))));
+                return true;
+            }
+            return false;
         });
 
         textWatcher = new TextWatcher() {

@@ -1,5 +1,6 @@
 package com.raushankit.ILghts.fragments.settings;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -7,6 +8,8 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 
 import androidx.fragment.app.Fragment;
@@ -17,8 +20,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.R;
-
-import java.util.Locale;
 
 public class ChangeName extends Fragment {
 
@@ -81,6 +82,7 @@ public class ChangeName extends Fragment {
         MaterialButton update = view.findViewById(R.id.change_name_frag_login_button);
         circularProgressBar = view.findViewById(R.id.change_name_circular_progress);
         circularProgressBar.setVisibility(View.GONE);
+        InputMethodManager im = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("users/"+userUid+"/name");
 
@@ -89,22 +91,46 @@ public class ChangeName extends Fragment {
         }
 
         update.setOnClickListener(v -> {
+            im.hideSoftInputFromWindow(view.getWindowToken(),0);
             if(nameText.getText()!= null && TextUtils.isEmpty(nameText.getText())){
                 nameLayout.setError(getString(R.string.required));
-                nameText.setText(prevUserName);
-            }else{
-                if(!TextUtils.equals(nameText.getText(), prevUserName)){
-                    circularProgressBar.setVisibility(View.VISIBLE);
-                    db.setValue(nameText.getText().toString().toLowerCase(Locale.ROOT))
-                            .addOnCompleteListener(task -> {
-                                Bundle result = new Bundle();
-                                result.putString("result",
-                                        task.isSuccessful()?"name updated successfully!":"failed to update name!");
-                                getParentFragmentManager().setFragmentResult("request", result);
-                                getParentFragmentManager().popBackStackImmediate();
-                            });
-                }
+                return;
             }
+            if(TextUtils.equals(prevUserName, nameText.getText())){
+                nameLayout.setError(getString(R.string.same_as_before));
+                return;
+            }
+            circularProgressBar.setVisibility(View.VISIBLE);
+            db.setValue(nameText.getText().toString().toLowerCase())
+                    .addOnCompleteListener(task -> {
+                        Bundle result = new Bundle();
+                        result.putString("result",getString(task.isSuccessful()?R.string.name_successfully_updated:R.string.failed_to_update_name));
+                        getParentFragmentManager().setFragmentResult("request", result);
+                        getParentFragmentManager().popBackStackImmediate();
+                    });
+        });
+        nameText.setOnEditorActionListener((textView, i, keyEvent) -> {
+            im.hideSoftInputFromWindow(view.getWindowToken(),0);
+            if(i == EditorInfo.IME_ACTION_DONE){
+                if(nameText.getText()!= null && TextUtils.isEmpty(nameText.getText())){
+                    nameLayout.setError(getString(R.string.required));
+                    return false;
+                }
+                if(TextUtils.equals(prevUserName, nameText.getText())){
+                    nameLayout.setError(getString(R.string.same_as_before));
+                    return false;
+                }
+                circularProgressBar.setVisibility(View.VISIBLE);
+                db.setValue(nameText.getText().toString().toLowerCase())
+                        .addOnCompleteListener(task -> {
+                            Bundle result = new Bundle();
+                            result.putString("result",getString(task.isSuccessful()?R.string.name_successfully_updated:R.string.failed_to_update_name));
+                            getParentFragmentManager().setFragmentResult("request", result);
+                            getParentFragmentManager().popBackStackImmediate();
+                        });
+                return true;
+            }
+            return false;
         });
         return view;
     }

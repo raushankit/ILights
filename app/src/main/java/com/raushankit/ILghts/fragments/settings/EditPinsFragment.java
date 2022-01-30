@@ -22,6 +22,7 @@ import com.raushankit.ILghts.viewModel.EditPinViewModel;
 import com.raushankit.ILghts.viewModel.SettingCommViewModel;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -64,10 +65,11 @@ public class EditPinsFragment extends Fragment {
                     list.add(new EditPinInfo(Integer.parseInt(k), v));
                     pinList.add(Integer.parseInt(k));
                 });
+                list.sort(Comparator.comparingInt(EditPinInfo::getPinNumber));
                 adapter.submitList(list);
             }
         });
-        editPinViewModel.getBoardData().observe(getViewLifecycleOwner(), boardPinData -> allPin.set(boardPinData.getUsablePins()));
+        editPinViewModel.getBoardData().observe(getViewLifecycleOwner(), allPin::set);
         fab.setOnClickListener(v -> {
             if(allPin.get() > 0 && !pinList.isEmpty()){
                 int temp = allPin.get();

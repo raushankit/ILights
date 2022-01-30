@@ -93,6 +93,8 @@ public class RoleDialogFragment extends DialogFragment implements View.OnClickLi
             dialog.setCancelable(false);
         }
         super.onStart();
+        radioGroup.clearCheck();
+        radioGroup.check(radioButtons[role.getAccessLevel()].getId());
     }
 
     public void addCallback(@NonNull CallBack<Pair<String, Integer>> callBack){
@@ -116,7 +118,7 @@ public class RoleDialogFragment extends DialogFragment implements View.OnClickLi
             radioButtons[i].setEnabled(false);
         }
         if(userLevel < yourLevel){
-            for(int i = 0;i < Math.max(3,yourLevel);++i){
+            for(int i = 0;i < yourLevel;++i){
                 radioButtons[i].setEnabled(true);
             }
         }
@@ -134,7 +136,6 @@ public class RoleDialogFragment extends DialogFragment implements View.OnClickLi
             else level = role.getAccessLevel();
             if(role.getAccessLevel() != level) callBack.onClick(new Pair<>(uid,level));
         }
-        radioGroup.clearCheck();
         dismiss();
     }
 }

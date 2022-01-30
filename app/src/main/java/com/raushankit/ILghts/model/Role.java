@@ -22,10 +22,12 @@ public class Role {
         this.accessLevel = accessLevel;
     }
 
+    @PropertyName("level")
     public int getAccessLevel() {
         return accessLevel;
     }
 
+    @PropertyName("level")
     public void setAccessLevel(int accessLevel) {
         this.accessLevel = accessLevel;
     }
@@ -34,7 +36,7 @@ public class Role {
     @Override
     public String toString() {
         return "Role{" +
-                "accessLevel=" + accessLevel +
+                "level=" + accessLevel +
                 '}';
     }
 }

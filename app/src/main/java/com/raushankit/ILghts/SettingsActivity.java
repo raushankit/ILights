@@ -47,7 +47,6 @@ import com.raushankit.ILghts.viewModel.SettingCommViewModel;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +77,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         mAuth = FirebaseAuth.getInstance();
         sharedRepo = SharedRepo.newInstance(this);
         badAuthIntent = new Intent(this, MainActivity.class);
+        badAuthIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         db = FirebaseDatabase.getInstance().getReference();
         authListener = firebaseAuth -> {
             if(firebaseAuth.getCurrentUser()==null){
@@ -200,7 +200,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     EditPinInfo info1 = (EditPinInfo) item.second;
                     Map<String, Object> mp = new LinkedHashMap<>();
                     mp.put("control/info/"+info1.getPinNumber(), info1.getPinInfo());
-                    mp.put("control/update/"+info1.getPinNumber(), new PinData(mAuth.getUid(), Calendar.getInstance().getTimeInMillis(),name));
+                    mp.put("control/update/"+info1.getPinNumber(), PinData.toMap(name, Objects.requireNonNull(mAuth.getUid())));
                     mp.put("control/status/"+info1.getPinNumber(), Boolean.FALSE);
                     db.updateChildren(mp, ((error, ref) -> Snackbar.make(findViewById(android.R.id.content), (error == null?getString(R.string.pin_name_add_successful, info1.getPinNumber()):getString(R.string.pin_name_add_failure)), BaseTransientBottomBar.LENGTH_SHORT).show()));
                     getSupportFragmentManager().popBackStackImmediate();

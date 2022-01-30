@@ -25,19 +25,18 @@
         android:textSize="@dimen/_13sdp"
         app:layout_constraintBottom_toBottomOf="@+id/manage_user_search_button"
         app:layout_constraintEnd_toStartOf="@+id/manage_user_search_button"
-        app:layout_constraintHeight_percent="0.8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/manage_user_search_button"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
-        app:fabSize="normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabCustomSize="@dimen/_40sdp"
         android:backgroundTint="@color/manage_user_frag_search_btn"
         android:src="@drawable/ic_baseline_search_24"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/manage_user_edit_text"
         android:contentDescription="@string/email_search_hint" />
 
     <com.facebook.shimmer.ShimmerFrameLayout

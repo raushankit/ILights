@@ -3,8 +3,13 @@ package com.raushankit.ILghts.model;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.PropertyName;
+import com.google.firebase.database.ServerValue;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Keep
 @IgnoreExtraProperties
@@ -58,6 +63,15 @@ public class PinData {
     @PropertyName("changer_id")
     public void setUserUid(String userUid) {
         this.userUid = userUid;
+    }
+
+    @Exclude
+    public static Map<String, Object> toMap(@NonNull String name, @NonNull String uid){
+        Map<String, Object> mp = new LinkedHashMap<>();
+        mp.put("changed_at", ServerValue.TIMESTAMP);
+        mp.put("changer_id", uid);
+        mp.put("changed_by", name);
+        return mp;
     }
 
     @NonNull

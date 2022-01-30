@@ -1,44 +1,45 @@
 package com.raushankit.ILghts.observer;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.raushankit.ILghts.model.User;
 
-public class BoardMetaData extends LiveData<Integer> {
-    private static final String TAG = "BoardMetaData";
-    private final DatabaseReference db;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class AdminUserLiveData extends LiveData<Map<String, User>> {
+    private final Map<String, User> mp = new LinkedHashMap<>();
+    private final Query mQuery;
 
     private final ValueEventListener listener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
-            postValue(snapshot.getValue(Integer.class));
+            snapshot.getChildren().forEach(dataSnapshot -> mp.put(dataSnapshot.getKey(), dataSnapshot.getValue(User.class)));
+            postValue(mp);
         }
 
         @Override
         public void onCancelled(@NonNull DatabaseError error) {
-            Log.e(TAG, "onCancelled: " + error.getMessage());
+            postValue(null);
         }
     };
 
-    public BoardMetaData(){
-        db = FirebaseDatabase.getInstance().getReference("/metadata/board_data/available_pins");
+    public AdminUserLiveData(@NonNull Query mQuery){
+        this.mQuery = mQuery;
     }
 
     @Override
     protected void onActive() {
-        db.addListenerForSingleValueEvent(listener);
+        mQuery.addListenerForSingleValueEvent(listener);
     }
 
     @Override
     protected void onInactive() {
-        db.removeEventListener(listener);
+        mp.clear();
     }
-
 }

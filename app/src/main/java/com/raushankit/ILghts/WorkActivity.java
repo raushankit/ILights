@@ -31,6 +31,7 @@ public class WorkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_work);
         Intent settingsIntent = new Intent(this, SettingsActivity.class);
         Intent signOutIntent = new Intent(this, MainActivity.class);
+        signOutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         FragViewModel fragViewModel = new ViewModelProvider(this).get(FragViewModel.class);
         fragViewModel.getSelectedItem().observe(this, item ->{
             if(item.equals(ControllerFragActions.OPEN_SETTINGS)) {

@@ -57,8 +57,9 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/frag_edit_pin_item_pin_name_edit_text"
             android:layout_width="match_parent"
+            android:imeOptions="actionDone"
             android:layout_height="wrap_content"
-            android:inputType="none" />
+            android:inputType="textCapWords" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton

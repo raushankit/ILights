@@ -44,7 +44,7 @@ public class UserRepository {
         }
         userLiveData = new UserLiveData("/users/" + userId);
         roleLiveData = new RoleLiveData("/role/" + userId);
-        versionLiveData = new VersionInfoObserver("/metadata");
+        versionLiveData = new VersionInfoObserver("/metadata/version");
         pinInfoLivedata = new PinInfoLivedata();
         pinStatusLiveData = new PinStatusLiveData();
         pinUpdateLiveData = new PinUpdateLiveData();

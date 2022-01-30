@@ -3,10 +3,13 @@ package com.raushankit.ILghts.model;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.raushankit.ILghts.utils.StringUtils;
 
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 @Keep
@@ -53,6 +56,14 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(name, email);
+    }
+
+    @Exclude
+    public Map<String, Object> toMap(){
+        Map<String, Object> mp = new LinkedHashMap<>();
+        mp.put("name", name.toLowerCase());
+        mp.put("email", email.toLowerCase());
+        return mp;
     }
 
     @NonNull

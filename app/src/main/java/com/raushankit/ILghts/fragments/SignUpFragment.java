@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,6 @@ import com.raushankit.ILghts.utils.callbacks.CallBack;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -73,6 +73,8 @@ public class SignUpFragment extends Fragment {
         alertDialogFragment.addWhichButtonClickedListener(whichButton -> {
             if(whichButton == AlertDialogFragment.WhichButton.POSITIVE){
                 alertDialogFragment.dismiss();
+            }else{
+                Log.w(TAG, "SignUpFragment: negative button clicked");
             }
         });
         mAuth = FirebaseAuth.getInstance();
@@ -223,7 +225,7 @@ public class SignUpFragment extends Fragment {
                 sharedRepo.insert(SharedRefKeys.AUTH_SUCCESSFUL, Boolean.TRUE.toString());
                 changeFrags.onClick(PageKeys.CONTROLLER_PAGE);
             }else{
-                String errorStr = userUpdates.createUserMetaData(uid, new User(mp.get(SharedRefKeys.USER_NAME).toLowerCase(),mp.get(SharedRefKeys.USER_EMAIL).toLowerCase(Locale.ROOT)));
+                String errorStr = userUpdates.createUserMetaData(uid, new User(mp.get(SharedRefKeys.USER_NAME),mp.get(SharedRefKeys.USER_EMAIL)));
                 if(errorStr != null){
                     loadingDialogFragment.dismiss();
                     showAlert(new Exception(errorStr));

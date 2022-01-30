@@ -20,10 +20,6 @@ import androidx.preference.PreferenceManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
-import com.google.android.play.core.appupdate.AppUpdateManager;
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.raushankit.ILghts.dialogs.AlertDialogFragment;
@@ -119,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                         alertDialogFragment.setBodyString(getString(R.string.block_message));
                     }
                 }else{
-                    Log.e(TAG, "onCreate: role data is null");
+                    Log.w(TAG, "onCreate: role data is null");
                 }
             });
         }else{

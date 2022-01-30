@@ -24,13 +24,15 @@ import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.PinListAdapter;
 import com.raushankit.ILghts.entity.ControllerFragActions;
 import com.raushankit.ILghts.model.PinData;
+import com.raushankit.ILghts.model.PinListData;
 import com.raushankit.ILghts.viewModel.FragViewModel;
 import com.raushankit.ILghts.viewModel.StatusViewModel;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
-import java.util.Calendar;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ControllerFragment extends Fragment {
@@ -74,10 +76,10 @@ public class ControllerFragment extends Fragment {
                         if(name.get() != null){
                             Map<String, Object> mp = new LinkedHashMap<>();
                             mp.put("control/status/"+ value.getPinNumber(), !value.isStatus());
-                            mp.put("control/update/"+ value.getPinNumber(), new PinData(mAuth.getUid(),Calendar.getInstance().getTimeInMillis(),name.get().toLowerCase()));
+                            mp.put("control/update/"+ value.getPinNumber(), PinData.toMap(name.get().toLowerCase(), Objects.requireNonNull(mAuth.getUid())));
                             db.updateChildren(mp, (error, ref) -> {
                                 if(error != null){
-                                    Snackbar.make(view, getString(R.string.controller_update_failure), BaseTransientBottomBar.LENGTH_SHORT).show();
+                                    Snackbar.make(view, error.getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();
                                 }
                             });
                         }else{
@@ -87,6 +89,7 @@ public class ControllerFragment extends Fragment {
         UserViewModel userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         userViewModel.getPinData().observe(getViewLifecycleOwner(), pinListData -> {
             if(!pinListData.isEmpty()){
+                pinListData.sort(Comparator.comparingInt(PinListData::getPinNumber));
                 adapter.submitList(pinListData);
                 if(shimmerFrameLayout.isShimmerStarted()){
                     shimmerFrameLayout.stopShimmer();

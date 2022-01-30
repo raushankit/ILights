@@ -67,7 +67,7 @@
             android:layout_gravity="end|bottom"
             android:backgroundTint="@color/manage_user_frag_search_btn"
             android:src="@drawable/ic_baseline_add_24"
-            android:contentDescription="TODO" />
+            android:contentDescription="@string/role_dialog_role_editor_title" />
     </LinearLayout>
 
 </FrameLayout>
