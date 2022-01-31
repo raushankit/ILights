@@ -28,6 +28,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.dialogs.AlertDialogFragment;
@@ -36,6 +37,7 @@ import com.raushankit.ILghts.fragments.settings.ChangeName;
 import com.raushankit.ILghts.fragments.settings.EditPinItemFragment;
 import com.raushankit.ILghts.fragments.settings.EditPinsFragment;
 import com.raushankit.ILghts.fragments.settings.ManageUserFragment;
+import com.raushankit.ILghts.fragments.settings.ReAuthFragment;
 import com.raushankit.ILghts.model.EditPinInfo;
 import com.raushankit.ILghts.model.PinData;
 import com.raushankit.ILghts.model.VersionInfo;
@@ -54,6 +56,7 @@ import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private static final String TAG = "SETTINGS_ACTIVITY";
+    private boolean isProviderGoogle;
     private UserViewModel userViewModel;
     private SettingCommViewModel settingCommViewModel;
     private DatabaseReference db;
@@ -81,20 +84,25 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         db = FirebaseDatabase.getInstance().getReference();
         authListener = firebaseAuth -> {
             if(firebaseAuth.getCurrentUser()==null){
+                Log.w(TAG, "onCreate: null user");
                 startActivity(badAuthIntent);
                 userViewModel.resetRepository();
                 finish();
             }
         };
+        getProviderData();
         settingCommViewModel = new ViewModelProvider(this).get(SettingCommViewModel.class);
         alertDialogFragment = AlertDialogFragment.newInstance(getString(R.string.confirm_action),
                 true,true);
-        alertDialogFragment.setBodyString(getString(R.string.sign_out_body_text));
         alertDialogFragment.setPositiveButtonText(getString(R.string.yes));
         alertDialogFragment.setNegativeButtonText(getString(R.string.no));
         alertDialogFragment.addWhichButtonClickedListener(whichButton -> {
             if(whichButton.equals(AlertDialogFragment.WhichButton.POSITIVE)){
-                mAuth.signOut();
+                if(alertDialogFragment.getActionType().equals("sign_out")){
+                    mAuth.signOut();
+                }else{
+                    Log.w(TAG, "onCreate: bad event");
+                }
             }
             alertDialogFragment.dismiss();
         });
@@ -120,8 +128,16 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         }
     }
 
-    private void implementListeners() {
+    private void getProviderData() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user == null) return;
+        for(UserInfo userInfo : user.getProviderData()){
+            isProviderGoogle = userInfo.getProviderId().equals("google.com");
+            if(isProviderGoogle) return;
+        }
+    }
 
+    private void implementListeners() {
         settingCommViewModel.getSelectedItem().observe(this, item -> {
             switch (item.first) {
                 case "theme":
@@ -154,6 +170,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     }
                     break;
                 case "sign_out":
+                    alertDialogFragment.setBodyString(getString(R.string.sign_out_body_text));
+                    alertDialogFragment.setActionType(item.first);
                     alertDialogFragment.show(getSupportFragmentManager(), AlertDialogFragment.TAG);
                     break;
                 case "edit_pin":
@@ -213,7 +231,37 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
                     }
                     break;
+                case "delete_user":
+                    Map<String, Object> mp2 = new LinkedHashMap<>();
+                    String uid = mAuth.getUid();
+                    mp2.put("users/"+uid, null);
+                    mp2.put("role/"+uid, null);
+                    db.updateChildren(mp2, ((error, ref) -> {
+                        if(error == null){
+                            Objects.requireNonNull(mAuth.getCurrentUser()).delete()
+                                    .addOnFailureListener(e -> Snackbar.make(findViewById(android.R.id.content), Objects.requireNonNull(e.getMessage()), BaseTransientBottomBar.LENGTH_SHORT).show());
+                        }else{
+                            Snackbar.make(findViewById(android.R.id.content),error.getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();
+                        }
+                    }));
+                    getSupportFragmentManager().popBackStackImmediate();
+                    break;
+                case "update_password":
+                    Objects.requireNonNull(mAuth.getCurrentUser()).updatePassword(String.valueOf(item.second))
+                            .addOnCompleteListener(task -> {
+                                if(task.isSuccessful()){
+                                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.password_updated), BaseTransientBottomBar.LENGTH_SHORT).show();
+                                }else{
+                                    Snackbar.make(findViewById(android.R.id.content), (task.getException() != null && task.getException().getMessage() != null? task.getException().getMessage() :getString(R.string.password_update_failure)), BaseTransientBottomBar.LENGTH_SHORT).show();
+                                }
+                            });
+                    getSupportFragmentManager().popBackStackImmediate();
+                    break;
+                default:
+                    Log.w(TAG, "implementListeners: clear events");
+                    return;
             }
+            settingCommViewModel.selectItem(new Pair<>("default_clearing_value", null));
         });
     }
 
@@ -240,9 +288,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 nameView.setText(user.getName());
                 pic.setName(user.getName());
                 emailView.setText(user.getEmail());
-            }else{
-                startActivity(badAuthIntent);
-                finish();
             }
         });
         userViewModel.getRoleData().observe(this, role -> {
@@ -260,9 +305,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 }
                 fragCallback.onClick(accessLevel >= 2?InfoType.ADMIN_VISIBILITY:InfoType.ADMIN_INVISIBILITY);
                 roleView.setText(getString(R.string.access_level_place_holder, roleType[accessLevel]));
-            }else{
-                startActivity(badAuthIntent);
-                finish();
             }
         });
 
@@ -277,6 +319,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         shimmerFrameLayout.setVisibility(View.GONE);
         if(fragCallback != null){
             fragCallback.onClick(InfoType.PROFILE_VISIBILITY);
+            fragCallback.onClick(isProviderGoogle? InfoType.LOGIN_METHOD_GOOGLE:InfoType.LOGIN_METHOD_EMAIL);
             fragCallback.onClick(Objects.requireNonNull(mAuth.getCurrentUser()).isEmailVerified()?InfoType.EMAIL_VERIFIED:InfoType.EMAIL_NOT_VERIFIED);
             sharedRepo.insert(SharedRefKeys.EMAIL_VERIFICATION, String.valueOf(false));
         }
@@ -285,19 +328,31 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     @Override
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
         final Bundle args = pref.getExtras();
-        if(pref.getKey().equals("change_name")){
-            args.putString("prev_name", name);
-            args.putString("user_uid", mAuth.getUid());
-            pref.setFragment(ChangeName.class.getName());
-        }
-        if(pref.getKey().equals("manage_users")){
-            args.putInt("role", accessLevel);
-            pref.setFragment(ManageUserFragment.class.getName());
-        }
-        if(pref.getKey().equals("manage_pins")){
-            args.putString("user_name", name);
-            args.putString("user_uid", mAuth.getUid());
-            pref.setFragment(EditPinsFragment.class.getName());
+        switch (pref.getKey()) {
+            case "change_name":
+                args.putString("prev_name", name);
+                args.putString("user_uid", mAuth.getUid());
+                pref.setFragment(ChangeName.class.getName());
+                break;
+            case "manage_users":
+                args.putInt("role", accessLevel);
+                pref.setFragment(ManageUserFragment.class.getName());
+                break;
+            case "manage_pins":
+                args.putString("user_name", name);
+                args.putString("user_uid", mAuth.getUid());
+                pref.setFragment(EditPinsFragment.class.getName());
+                break;
+            case "change_password":
+                args.putString("action", "change_password");
+                pref.setFragment(ReAuthFragment.class.getName());
+                break;
+            case "delete_account":
+                args.putString("action", "delete_account");
+                pref.setFragment(ReAuthFragment.class.getName());
+                break;
+            default:
+                Log.w(TAG, "onPreferenceStartFragment: no fragment as such: ");
         }
         final Fragment fragment = getSupportFragmentManager()
                 .getFragmentFactory().instantiate(getClassLoader(), pref.getFragment());
@@ -348,6 +403,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             Preference versionNamePreference = findPreference("version_name");
             Preference updatePreference = findPreference("update_available");
             Preference signOutPreference = findPreference("sign_out");
+            Preference changePWPreference = findPreference("change_password");
 
             fragCallback = value -> {
                 if(value instanceof InfoType){
@@ -362,6 +418,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     }
                     else if(value.equals(InfoType.ADMIN_VISIBILITY) || value.equals(InfoType.ADMIN_INVISIBILITY)){
                         if(adminCategory != null) adminCategory.setVisible(value.equals(InfoType.ADMIN_VISIBILITY));
+                    }else if(value.equals(InfoType.LOGIN_METHOD_GOOGLE) || value.equals(InfoType.LOGIN_METHOD_EMAIL)){
+                        if(changePWPreference != null) changePWPreference.setVisible(value.equals(InfoType.LOGIN_METHOD_EMAIL));
                     }
                 }else if(value instanceof VersionInfo){
                     if(updatePreference != null){
@@ -413,6 +471,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         EMAIL_VERIFIED,
         EMAIL_NOT_VERIFIED,
         ADMIN_VISIBILITY,
-        ADMIN_INVISIBILITY
+        ADMIN_INVISIBILITY,
+        LOGIN_METHOD_GOOGLE,
+        LOGIN_METHOD_EMAIL
     }
 }

@@ -22,6 +22,12 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.raushankit.ILghts.dialogs.AlertDialogFragment;
@@ -35,12 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private Handler mHandler;
     private Runnable runnable;
     private Snackbar snackbar;
-    private long time = System.currentTimeMillis();
 
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
-        Log.w(TAG, "attachBaseContext: " + time);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String[] themeEntries = getResources().getStringArray(R.array.theme_values);
         String themeType = sharedPreferences.getString("theme", themeEntries[0]);
@@ -58,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.w(TAG, "onCreate: " + time);
         setContentView(R.layout.activity_main);
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -136,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         }else{
             if(user != null){
                 FirebaseAuth.getInstance().signOut();
-                Log.e(TAG, "onCreate: app in bad state");
+                Log.w(TAG, "onCreate: app in bad state");
             }
         }
     }

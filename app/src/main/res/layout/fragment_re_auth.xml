@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.settings.ReAuthFragment">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/frag_re_auth_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:fontFamily="@font/rubik_variable"
+            android:text="@string/change_password"
+            android:textColor="@color/user_info_name_text"
+            android:textSize="@dimen/_20sdp"
+            app:layout_constraintWidth_percent="0.9"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/frag_re_auth_circular_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/circular_progress_color"
+            android:indeterminateTintMode="src_atop"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/frag_re_auth_title"
+            app:layout_constraintEnd_toEndOf="@+id/frag_re_auth_title"
+            app:layout_constraintTop_toTopOf="@+id/frag_re_auth_title" />
+
+        <TextView
+            android:id="@+id/frag_re_auth_email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/email_hint"
+            android:textSize="@dimen/_15sdp"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/_20sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frag_re_auth_title"
+            app:layout_constraintWidth_percent="0.9" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/frag_re_auth_password_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/password_hint"
+            app:boxCornerRadiusBottomEnd="@dimen/_5sdp"
+            app:boxCornerRadiusBottomStart="@dimen/_5sdp"
+            app:boxCornerRadiusTopEnd="@dimen/_5sdp"
+            app:boxCornerRadiusTopStart="@dimen/_5sdp"
+            app:endIconMode="password_toggle"
+            app:errorEnabled="true"
+            android:visibility="visible"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frag_re_auth_email"
+            app:layout_constraintWidth_percent="0.9"
+            app:startIconDrawable="@drawable/ic_baseline_password_24">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/frag_re_auth_password_input_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:maxLength="40" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/frag_re_auth_details"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/re_details_message"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="@dimen/_12sdp"
+            android:visibility="visible"
+            android:layout_marginTop="@dimen/_5sdp"
+            app:layout_constraintTop_toBottomOf="@id/frag_re_auth_password_input_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.9" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/frag_re_auth_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="@string/re_auth_btn_text"
+            android:textColor="@color/splash_screen_btn_text"
+            android:textSize="@dimen/_10sdp"
+            app:icon="@drawable/ic_google_colored"
+            app:iconTint="@null"
+            app:layout_constraintEnd_toEndOf="@+id/frag_re_auth_title"
+            app:layout_constraintTop_toBottomOf="@+id/frag_re_auth_details"
+            app:strokeColor="@color/black" />
+
+        <TextView
+            android:id="@+id/frag_re_auth_confirmation_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:drawableTint="@color/shamrock_green"
+            android:text="@string/re_authenticated"
+            android:textSize="@dimen/_12sdp"
+            android:visibility="gone"
+            app:drawableStartCompat="@drawable/ic_baseline_check_circle_24"
+            app:layout_constraintBottom_toBottomOf="@+id/frag_re_auth_button"
+            app:layout_constraintEnd_toStartOf="@id/frag_re_auth_button"
+            app:layout_constraintStart_toStartOf="@+id/frag_re_auth_title"
+            app:layout_constraintTop_toTopOf="@+id/frag_re_auth_button" />
+
+        <LinearLayout
+            android:id="@+id/frag_re_auth_change_password_parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/frag_re_auth_button"
+            app:layout_constraintWidth_percent="0.9">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/frag_re_auth_change_password_input_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password_hint"
+                app:boxCornerRadiusBottomEnd="@dimen/_5sdp"
+                app:boxCornerRadiusBottomStart="@dimen/_5sdp"
+                app:boxCornerRadiusTopStart="@dimen/_5sdp"
+                app:endIconMode="password_toggle"
+                app:errorEnabled="true"
+                app:startIconDrawable="@drawable/ic_baseline_password_24">
+
+                <!--this is the actual edit text which takes the input-->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/frag_re_auth_change_password_input_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:maxLength="40" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/frag_re_auth_change_confirm_password_input_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/confirm_password_hint"
+                app:boxCornerRadiusBottomEnd="@dimen/_5sdp"
+                app:boxCornerRadiusBottomStart="@dimen/_5sdp"
+                app:boxCornerRadiusTopEnd="@dimen/_5sdp"
+                app:boxCornerRadiusTopStart="@dimen/_5sdp"
+                app:endIconMode="password_toggle"
+                app:errorEnabled="true"
+                app:startIconDrawable="@drawable/ic_baseline_password_24">
+
+                <!--this is the actual edit text which takes the input-->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/frag_re_auth_change_confirm_password_input_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:maxLength="40" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/frag_re_auth_delete_user_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/delete_user_message"
+                android:textSize="@dimen/_12sdp"/>
+            <LinearLayout
+                android:id="@+id/frag_re_auth_buttons_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/frag_re_auth_negative_btn"
+                    android:layout_width="wrap_content"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    app:strokeWidth="0dp"
+                    android:padding="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/frag_re_auth_positive_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:text="@string/change" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

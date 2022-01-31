@@ -27,6 +27,7 @@ public class AlertDialogFragment extends DialogFragment implements View.OnClickL
     private MaterialButton negativeButton;
     private WhichButtonClicked whichButtonClicked;
 
+    private String actionType;
     private String titleString;
     private String bodyString;
     private boolean enablePosButton;
@@ -113,6 +114,14 @@ public class AlertDialogFragment extends DialogFragment implements View.OnClickL
         this.enableNegButton = enableNegButton;
         if(negativeButton != null) negativeButton.setVisibility(enableNegButton?View.VISIBLE:View.GONE);
 
+    }
+
+    public String getActionType() {
+        return actionType;
+    }
+
+    public void setActionType(String actionType) {
+        this.actionType = actionType;
     }
 
     public void setEnablePosButton(boolean enablePosButton) {

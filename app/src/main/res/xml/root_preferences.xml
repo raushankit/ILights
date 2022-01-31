@@ -30,6 +30,13 @@
 
         <Preference
             app:iconSpaceReserved="false"
+            app:key="change_password"
+            app:isPreferenceVisible="false"
+            app:title="@string/change_password"
+            app:fragment="com.raushankit.ILghts.fragments.settings.ReAuthFragment"/>
+
+        <Preference
+            app:iconSpaceReserved="false"
             app:title="@string/verify_email"
             app:summary="@string/email_not_verified"
             app:key="verify_email" />
@@ -38,6 +45,12 @@
             app:title="@string/sign_out"
             app:key="sign_out"
             app:iconSpaceReserved="false"/>
+
+        <Preference
+            app:title="@string/delete_account"
+            app:key="delete_account"
+            app:iconSpaceReserved="false"
+            app:fragment="com.raushankit.ILghts.fragments.settings.ReAuthFragment"/>
 
     </PreferenceCategory>
 

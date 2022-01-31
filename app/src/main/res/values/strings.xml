@@ -88,8 +88,22 @@
     <string name="pin_delete_message">Deleting Pin %1$d will remove from board. Are you sure ?</string>
     <string name="delete">Delete</string>
     <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
     <string name="change">Change</string>
     <string name="no_network_detected">Network error\nYour network might be very slow or you are not connected to internet</string>
+    <string name="delete_account_body_text">This will delete your account and data associated with it.\nClick Yes to proceed </string>
+
+    <!-- re auth fragment -->
+    <string name="change_password">Change Password</string>
+    <string name="re_auth">Re-Authentication %1$s</string>
+    <string name="successful">Success </string>
+    <string name="failed">Failed</string>
+    <string name="re_authenticated">Re-Authenticated</string>
+    <string name="re_auth_btn_text">Re-Authenticate</string>
+    <string name="password_updated">Password Updated Successfully</string>
+    <string name="password_update_failure">Failed to update Password</string>
+    <string name="re_details_message">This operation is very sensitive.\nYou must re-authenticate yourself to continue</string>
+    <string name="delete_user_message">Deleting your Account will remove all user data from database.\This is a destructive action so in order to use the app you must sign in again</string>
 
     <!-- signOut event -->
     <string name="confirm_action">Confirm Action</string>
@@ -121,6 +135,7 @@
     <string name="name_header">Change Name</string>
     <string name="verify_email">Verify Email</string>
     <string name="sign_out">Sign Out</string>
+    <string name="delete_account">Delete Account</string>
 
     <!-- Preference Titles -->
     <string name="about_header">About</string>
