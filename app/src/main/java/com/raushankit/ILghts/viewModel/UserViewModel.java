@@ -22,6 +22,10 @@ public class UserViewModel extends ViewModel {
         uRepo.signOutEvent();
     }
 
+    public boolean isNew(){
+        return uRepo.isNewInstance();
+    }
+
     public LiveData<User> getUserData(){
         return uRepo.getUserLiveData();
     }

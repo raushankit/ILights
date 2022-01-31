@@ -26,6 +26,7 @@ import java.util.Map;
 
 public class UserRepository {
     private static final String TAG = "USER_REPOSITORY";
+    private static int instances = 0;
     private static UserRepository INSTANCE;
     private String userId = "ebuebeubyeydeyhdtvhdgevcrfdh";
     private final LiveData<User> userLiveData;
@@ -54,11 +55,18 @@ public class UserRepository {
         if(INSTANCE == null){
             INSTANCE = new UserRepository();
         }
+        instances++;
+        Log.w(TAG, "newInstance: number = " + instances);
         return INSTANCE;
+    }
+
+    public boolean isNewInstance(){
+        return instances == 1;
     }
 
     public void signOutEvent(){
         INSTANCE = null;
+        instances = 0;
     }
 
     public LiveData<User> getUserLiveData() {

@@ -24,13 +24,14 @@ public class WorkActivity extends AppCompatActivity {
 
     private static final String TAG = "WorkActivity";
     private CallBack<PageKeys> changeFragment;
+    private Intent signOutIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work);
         Intent settingsIntent = new Intent(this, SettingsActivity.class);
-        Intent signOutIntent = new Intent(this, MainActivity.class);
+        signOutIntent = new Intent(this, MainActivity.class);
         signOutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         FragViewModel fragViewModel = new ViewModelProvider(this).get(FragViewModel.class);
         fragViewModel.getSelectedItem().observe(this, item ->{
@@ -82,16 +83,36 @@ public class WorkActivity extends AppCompatActivity {
             if(intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
             ft.replace(R.id.work_main_frame, new ForgotPasswordFragment(
                     statusBarColor, changeFragment
-            ));
-            ft.commit();
+            )).addToBackStack(null)
+                    .commit();
         }
         else if(id.equals(PageKeys.CONTROLLER_PAGE.name())){
             if(intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
             window.setStatusBarColor(getColor(R.color.controller_title_background));
-            ft.replace(R.id.work_main_frame, ControllerFragment.newInstance());
-            ft.commit();
+            ft.replace(R.id.work_main_frame, ControllerFragment.newInstance())
+                    .commit();
         }else{
             Log.d(TAG, "replaceFragment: invalid Fragment action");
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = getIntent();
+        if(intent != null){
+            String page = intent.getStringExtra(PageKeys.WHICH_PAGE.name());
+            if(page != null){
+                if(page.equals(PageKeys.LOGIN_PAGE.name()) || page.equals(PageKeys.SIGN_UP_PAGE.name())){
+                    startActivity(signOutIntent);
+                    finish();
+                    return;
+                }
+                if(page.equals(PageKeys.CONTROLLER_PAGE.name())){
+                    finishAffinity();
+                    return;
+                }
+            }
+        }
+        super.onBackPressed();
     }
 }

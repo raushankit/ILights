@@ -38,6 +38,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/splash_screen_lottie" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/splash_screen_network_lottie"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/splash_screen_version_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/splash_main_text"
+        app:layout_constraintWidth_percent="0.9"
+        app:lottie_autoPlay="true"
+        app:lottie_repeatMode="restart"
+        app:lottie_repeatCount="123654789"
+        android:visibility="visible"
+        app:lottie_colorFilter="@color/splash_screen_btn"
+        app:lottie_rawRes="@raw/network_loader"
+        app:lottie_speed="1.6" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/splash_screen_register_btn"
         android:layout_width="0dp"

@@ -38,6 +38,24 @@
         app:layout_constraintStart_toStartOf="@+id/splash_screen_lottie"
         app:layout_constraintTop_toBottomOf="@+id/splash_screen_lottie" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/splash_screen_network_lottie"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/splash_screen_lottie"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintVertical_bias="0.25"
+        app:lottie_autoPlay="true"
+        app:lottie_repeatMode="restart"
+        app:lottie_repeatCount="123654789"
+        android:visibility="visible"
+        app:lottie_colorFilter="@color/splash_screen_btn"
+        app:lottie_rawRes="@raw/network_loader"
+        app:lottie_speed="1.6" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/splash_screen_register_btn"
         android:layout_width="0dp"
@@ -47,7 +65,7 @@
         android:text="@string/splash_page_register"
         android:textColor="@color/splash_screen_btn_text"
         android:textSize="@dimen/_14sdp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintVertical_bias="0.2"
         app:cornerRadius="@dimen/_40sdp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -73,7 +91,7 @@
             android:layout_height="wrap_content"
             android:text="@string/splash_page_sign_in_helper"
             android:textSize="@dimen/_12sdp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/splash_screen_sign_in_btn"
@@ -84,7 +102,7 @@
             android:text="@string/splash_page_sign_in"
             android:textColor="@color/splash_screen_btn"
             android:textSize="@dimen/_12sdp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:strokeWidth="0dp" />
     </LinearLayout>
 
