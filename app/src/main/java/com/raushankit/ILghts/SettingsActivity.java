@@ -8,10 +8,12 @@ import android.util.Pair;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -24,6 +26,7 @@ import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,6 +35,7 @@ import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.dialogs.AlertDialogFragment;
+import com.raushankit.ILghts.entity.InfoType;
 import com.raushankit.ILghts.entity.SharedRefKeys;
 import com.raushankit.ILghts.fragments.settings.ChangeName;
 import com.raushankit.ILghts.fragments.settings.EditPinItemFragment;
@@ -44,7 +48,6 @@ import com.raushankit.ILghts.model.VersionInfo;
 import com.raushankit.ILghts.storage.SharedRepo;
 import com.raushankit.ILghts.utils.ColorGen;
 import com.raushankit.ILghts.utils.ProfilePic;
-import com.raushankit.ILghts.utils.callbacks.CallBack;
 import com.raushankit.ILghts.viewModel.SettingCommViewModel;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
@@ -54,14 +57,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, AppBarLayout.OnOffsetChangedListener {
     private static final String TAG = "SETTINGS_ACTIVITY";
-    private boolean isProviderGoogle;
+    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.8f;
+    private static final long ALPHA_ANIMATIONS_DURATION = 200;
+
+    private Pair<Boolean,Boolean> providerData;
     private UserViewModel userViewModel;
     private SettingCommViewModel settingCommViewModel;
     private DatabaseReference db;
     private String[] themeEntries;
-    private String name;
+    private String name = "";
     private SharedRepo sharedRepo;
     private AlertDialogFragment alertDialogFragment;
     private ShimmerFrameLayout shimmerFrameLayout;
@@ -69,16 +75,34 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private FirebaseAuth mAuth;
     private Intent badAuthIntent;
     private int accessLevel;
+    private Snackbar snackbar;
+    private TextView toolBarTextView;
+    private boolean mIsTheTitleVisible = false;
     private FirebaseAuth.AuthStateListener authListener;
-    private static CallBack<Object> fragCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.settings_fragment, new SettingsFragment())
+                    .commit();
+        }
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getColor(R.color.transparent));
         mAuth = FirebaseAuth.getInstance();
         sharedRepo = SharedRepo.newInstance(this);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        settingCommViewModel = new ViewModelProvider(this).get(SettingCommViewModel.class);
+        snackbar = Snackbar.make(findViewById(android.R.id.content), "", BaseTransientBottomBar.LENGTH_SHORT);
         badAuthIntent = new Intent(this, MainActivity.class);
         badAuthIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         db = FirebaseDatabase.getInstance().getReference();
@@ -90,8 +114,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 finish();
             }
         };
-        getProviderData();
-        settingCommViewModel = new ViewModelProvider(this).get(SettingCommViewModel.class);
+        providerData = getProviderData();
         alertDialogFragment = AlertDialogFragment.newInstance(getString(R.string.confirm_action),
                 true,true);
         alertDialogFragment.setPositiveButtonText(getString(R.string.yes));
@@ -107,38 +130,29 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             alertDialogFragment.dismiss();
         });
 
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(getColor(R.color.splash_screen_bg_end));
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         themeEntries = getResources().getStringArray(R.array.theme_values);
         shimmerFrameLayout = findViewById(R.id.settings_user_data_shimmer);
         userLayout = findViewById(R.id.settings_user_data);
         implementListeners();
         fillUserdata();
-        if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.settings_fragment, new SettingsFragment())
-                    .commit();
-        }
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        toolBarTextView = findViewById(R.id.settings_activity_toolbar_textview);
+        AppBarLayout appBarLayout = findViewById(R.id.settings_activity_appbar_layout);
+        appBarLayout.addOnOffsetChangedListener(this);
     }
 
-    private void getProviderData() {
+    private Pair<Boolean, Boolean> getProviderData() {
         FirebaseUser user = mAuth.getCurrentUser();
-        if(user == null) return;
+        if(user == null) return new Pair<>(false, false);
         for(UserInfo userInfo : user.getProviderData()){
-            isProviderGoogle = userInfo.getProviderId().equals("google.com");
-            if(isProviderGoogle) return;
+            boolean isProviderGoogle = userInfo.getProviderId().equals("google.com");
+            if(isProviderGoogle) return new Pair<>(true, user.isEmailVerified());
         }
+        return new Pair<>(false, user.isEmailVerified());
     }
 
     private void implementListeners() {
         settingCommViewModel.getSelectedItem().observe(this, item -> {
+            if(item.first.equals("preference_setter")) return;
             switch (item.first) {
                 case "theme":
                     if (themeEntries[1].equals(item.second)) {
@@ -157,7 +171,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 case "verify_email":
                     FirebaseUser user = mAuth.getCurrentUser();
                     assert user != null;
-                    fragCallback.onClick(user.isEmailVerified() ? InfoType.EMAIL_VERIFIED : InfoType.EMAIL_NOT_VERIFIED);
+                    settingCommViewModel.selectItem(new Pair<>("preference_setter", user.isEmailVerified() ? InfoType.EMAIL_VERIFIED : InfoType.EMAIL_NOT_VERIFIED));
                     boolean value = Boolean.parseBoolean(sharedRepo.getValue(SharedRefKeys.EMAIL_VERIFICATION));
                     if (!user.isEmailVerified() && !value) {
                         user.sendEmailVerification()
@@ -248,13 +262,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     break;
                 case "update_password":
                     Objects.requireNonNull(mAuth.getCurrentUser()).updatePassword(String.valueOf(item.second))
-                            .addOnCompleteListener(task -> {
-                                if(task.isSuccessful()){
-                                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.password_updated), BaseTransientBottomBar.LENGTH_SHORT).show();
-                                }else{
-                                    Snackbar.make(findViewById(android.R.id.content), (task.getException() != null && task.getException().getMessage() != null? task.getException().getMessage() :getString(R.string.password_update_failure)), BaseTransientBottomBar.LENGTH_SHORT).show();
-                                }
-                            });
+                            .addOnCompleteListener(task -> showSnack(task.isSuccessful(), R.string.password_updated, R.string.password_update_failure, task.getException()));
                     getSupportFragmentManager().popBackStackImmediate();
                     break;
                 default:
@@ -263,6 +271,15 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             }
             settingCommViewModel.selectItem(new Pair<>("default_clearing_value", null));
         });
+    }
+
+    private void showSnack(boolean isSuccessful, @StringRes int successMessage, @StringRes int failureMessage,@Nullable Exception exception){
+        if(isSuccessful) snackbar.setText(successMessage);
+        else{
+            if(exception == null || exception.getMessage() == null) snackbar.setText(failureMessage);
+            else snackbar.setText(exception.getMessage());
+        }
+        snackbar.show();
     }
 
     private void fillUserdata() {
@@ -279,6 +296,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         userViewModel.getUserData().observe(this, user -> {
             if(user != null){
                 name = user.getName();
+                toolBarTextView.setText(name);
                 if(!flag[0]){
                     flag[0] = true;
                     if(flag[1]){
@@ -303,13 +321,13 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     startActivity(badAuthIntent);
                     finish();
                 }
-                fragCallback.onClick(accessLevel >= 2?InfoType.ADMIN_VISIBILITY:InfoType.ADMIN_INVISIBILITY);
+                settingCommViewModel.selectItem(new Pair<>("preference_setter", accessLevel >= 2?InfoType.ADMIN_VISIBILITY:InfoType.ADMIN_INVISIBILITY));
                 roleView.setText(getString(R.string.access_level_place_holder, roleType[accessLevel]));
             }
         });
 
         userViewModel.getVersionData().observe(this, versionInfo -> {
-            if(versionInfo != null) fragCallback.onClick(versionInfo);
+            if(versionInfo != null) settingCommViewModel.selectItem(new Pair<>("preference_setter", versionInfo));
         });
     }
 
@@ -317,12 +335,10 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         userLayout.setVisibility(View.VISIBLE);
         shimmerFrameLayout.stopShimmer();
         shimmerFrameLayout.setVisibility(View.GONE);
-        if(fragCallback != null){
-            fragCallback.onClick(InfoType.PROFILE_VISIBILITY);
-            fragCallback.onClick(isProviderGoogle? InfoType.LOGIN_METHOD_GOOGLE:InfoType.LOGIN_METHOD_EMAIL);
-            fragCallback.onClick(Objects.requireNonNull(mAuth.getCurrentUser()).isEmailVerified()?InfoType.EMAIL_VERIFIED:InfoType.EMAIL_NOT_VERIFIED);
-            sharedRepo.insert(SharedRefKeys.EMAIL_VERIFICATION, String.valueOf(false));
-        }
+        settingCommViewModel.selectItem(new Pair<>("preference_setter",providerData.first?InfoType.LOGIN_METHOD_GOOGLE:InfoType.LOGIN_METHOD_EMAIL));
+        settingCommViewModel.selectItem(new Pair<>("preference_setter",providerData.second?InfoType.EMAIL_VERIFIED:InfoType.EMAIL_NOT_VERIFIED));
+        settingCommViewModel.selectItem(new Pair<>("preference_setter", InfoType.PROFILE_VISIBILITY));
+        sharedRepo.insert(SharedRefKeys.EMAIL_VERIFICATION, String.valueOf(false));
     }
 
     @Override
@@ -381,15 +397,81 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         super.onDestroy();
     }
 
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        int maxScroll = appBarLayout.getTotalScrollRange();
+        float factor = Math.abs(verticalOffset)/(maxScroll*1f);
+        handleToolbarTitleVisibility(factor);
+    }
+
+    private void handleToolbarTitleVisibility(float percentage) {
+        if(percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
+            if(!mIsTheTitleVisible) {
+                startAlphaAnimation(toolBarTextView, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+                mIsTheTitleVisible = true;
+            }
+        }
+        else{
+            if (mIsTheTitleVisible) {
+                startAlphaAnimation(toolBarTextView, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+                mIsTheTitleVisible = false;
+            }
+        }
+    }
+
+    public static void startAlphaAnimation (View v, long duration, int visibility) {
+        AlphaAnimation alphaAnimation = (visibility == View.VISIBLE)
+                ? new AlphaAnimation(0f, 1f)
+                : new AlphaAnimation(1f, 0f);
+
+        alphaAnimation.setDuration(duration);
+        alphaAnimation.setFillAfter(true);
+        v.startAnimation(alphaAnimation);
+    }
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
 
         private SettingCommViewModel settingCommViewModelFrag;
 
+        private PreferenceCategory profileCategory;
+        private PreferenceCategory adminCategory;
+        private Preference verifyEmailPreference;
+        private Preference updatePreference;
+        private Preference changePWPreference;
+
         @Override
         public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
             settingCommViewModelFrag = new ViewModelProvider(requireActivity()).get(SettingCommViewModel.class);
+            settingCommViewModelFrag.getSelectedItem().observe(getViewLifecycleOwner(), item -> {
+                Log.w(TAG, "onViewCreated: item = " + item);
+                if(item == null || !item.first.equals("preference_setter")) return;
+                if(item.second instanceof InfoType){
+                    if(item.second.equals(InfoType.PROFILE_VISIBILITY)){
+                        if(profileCategory != null) profileCategory.setEnabled(true);
+                    }
+                    else if(item.second.equals(InfoType.EMAIL_NOT_VERIFIED)){
+                        if(verifyEmailPreference != null) verifyEmailPreference.setSummary(R.string.email_not_verified);
+                    }
+                    else if(item.second.equals(InfoType.EMAIL_VERIFIED)){
+                        Log.w(TAG, "onViewCreated: verifyEmailPreference: " + (verifyEmailPreference==null));
+                        if(verifyEmailPreference != null) verifyEmailPreference.setSummary(R.string.email_verified);
+                    }
+                    else if(item.second.equals(InfoType.ADMIN_VISIBILITY) || item.second.equals(InfoType.ADMIN_INVISIBILITY)){
+                        if(adminCategory != null) adminCategory.setVisible(item.second.equals(InfoType.ADMIN_VISIBILITY));
+                    }else if(item.second.equals(InfoType.LOGIN_METHOD_GOOGLE) || item.second.equals(InfoType.LOGIN_METHOD_EMAIL)){
+                        if(changePWPreference != null) changePWPreference.setVisible(item.second.equals(InfoType.LOGIN_METHOD_EMAIL));
+                    }
+                }
+                else if(item.second instanceof VersionInfo){
+                    if(updatePreference != null){
+                        updatePreference.setVisible(BuildConfig.VERSION_CODE < ((VersionInfo) item.second).getVersionCode());
+                        updatePreference.setSummary(getString(R.string.update_summary, BuildConfig.VERSION_NAME, ((VersionInfo) item.second).getVersionName()));
+                    }
+                }else{
+                    Log.w(TAG, "onViewCreated: unknown even in preference frag:: " + item.second);
+                }
+            });
         }
 
         @Override
@@ -397,38 +479,13 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
             ListPreference themePreference = findPreference("theme");
-            PreferenceCategory profileCategory = findPreference("profile_category");
-            PreferenceCategory adminCategory = findPreference("admin_category");
-            Preference verifyEmailPreference = findPreference("verify_email");
+            profileCategory = findPreference("profile_category");
+            adminCategory = findPreference("admin_category");
+            verifyEmailPreference = findPreference("verify_email");
             Preference versionNamePreference = findPreference("version_name");
-            Preference updatePreference = findPreference("update_available");
+            updatePreference = findPreference("update_available");
             Preference signOutPreference = findPreference("sign_out");
-            Preference changePWPreference = findPreference("change_password");
-
-            fragCallback = value -> {
-                if(value instanceof InfoType){
-                    if(value.equals(InfoType.PROFILE_VISIBILITY)){
-                        if(profileCategory != null) profileCategory.setEnabled(true);
-                    }
-                    else if(value.equals(InfoType.EMAIL_NOT_VERIFIED)){
-                        if(verifyEmailPreference != null) verifyEmailPreference.setSummary(R.string.email_not_verified);
-                    }
-                    else if(value.equals(InfoType.EMAIL_VERIFIED)){
-                        if(verifyEmailPreference != null) verifyEmailPreference.setSummary(R.string.email_verified);
-                    }
-                    else if(value.equals(InfoType.ADMIN_VISIBILITY) || value.equals(InfoType.ADMIN_INVISIBILITY)){
-                        if(adminCategory != null) adminCategory.setVisible(value.equals(InfoType.ADMIN_VISIBILITY));
-                    }else if(value.equals(InfoType.LOGIN_METHOD_GOOGLE) || value.equals(InfoType.LOGIN_METHOD_EMAIL)){
-                        if(changePWPreference != null) changePWPreference.setVisible(value.equals(InfoType.LOGIN_METHOD_EMAIL));
-                    }
-                }else if(value instanceof VersionInfo){
-                    if(updatePreference != null){
-                        updatePreference.setVisible(BuildConfig.VERSION_CODE < ((VersionInfo) value).getVersionCode());
-                        updatePreference.setSummary(getString(R.string.update_summary, BuildConfig.VERSION_NAME, ((VersionInfo) value).getVersionName()));
-                    }
-                }
-            };
-
+            changePWPreference = findPreference("change_password");
 
             if(themePreference != null) themePreference.setOnPreferenceChangeListener(this);
             if(verifyEmailPreference != null) verifyEmailPreference.setOnPreferenceClickListener(this);
@@ -464,15 +521,5 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             }
             return false;
         }
-    }
-
-    public enum InfoType{
-        PROFILE_VISIBILITY,
-        EMAIL_VERIFIED,
-        EMAIL_NOT_VERIFIED,
-        ADMIN_VISIBILITY,
-        ADMIN_INVISIBILITY,
-        LOGIN_METHOD_GOOGLE,
-        LOGIN_METHOD_EMAIL
     }
 }

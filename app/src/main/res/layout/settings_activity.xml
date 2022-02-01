@@ -1,30 +1,66 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="@drawable/splash_background">
+    android:background="@drawable/splash_background"
+    android:fitsSystemWindows="true">
 
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/settings_user_data_shimmer"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/settings_activity_appbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:animationCache="true"
-        android:visibility="visible"
-        app:shimmer_auto_start="true"
-        app:shimmer_repeat_mode="restart">
-        <include layout="@layout/user_data_shimmer"/>
-    </com.facebook.shimmer.ShimmerFrameLayout>
+        android:fitsSystemWindows="true"
+        android:backgroundTint="@color/transparent">
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@color/controller_title_background"
+            app:statusBarScrim="@color/controller_title_background"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/settings_user_data_shimmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:animationCache="true"
+                android:visibility="visible"
+                app:shimmer_auto_start="true"
+                app:shimmer_repeat_mode="restart">
+                <include layout="@layout/user_data_shimmer"/>
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
-    <include
-        android:id="@+id/settings_user_data"
-        android:visibility="gone"
-        layout="@layout/user_data"/>
+            <include
+                android:id="@+id/settings_user_data"
+                android:visibility="gone"
+                layout="@layout/user_data"/>
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/settings_activity_toolbar"
+                android:layout_width="match_parent"
+                app:layout_collapseMode="pin"
+                android:layout_height="?attr/actionBarSize">
+                <TextView
+                    android:id="@+id/settings_activity_toolbar_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="22sp"
+                    android:textColor="@color/user_info_name_text"
+                    android:visibility="invisible"
+                    android:fontFamily="sans-serif-light"
+                    android:textStyle="bold"
+                    android:paddingStart="@dimen/_15sdp"
+                    android:paddingEnd="@dimen/_1sdp"
+                    android:gravity="center_vertical"/>
+            </com.google.android.material.appbar.MaterialToolbar>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
         android:id="@+id/settings_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:nestedScrollingEnabled="true"/>
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -26,7 +26,7 @@
     <string name="sent_no_verification_email">Verification Email was not sent. Try Again</string>
     <string name="email_already_verified">Email is already verified</string>
     <string name="email_verification_sign_out">Verification Email was sent. Login Again</string>
-    <string name="block_message">Your Access is blocked.\n Ask Admin to unblock</string>
+    <string name="block_message">Your Access is blocked.\n Ask any Admin to unblock</string>
     <string name="google_play_update">Update Available</string>
     <string name="empty_serach_string">Empty search text</string>
     <string name="same_as_before">Same as Previous</string>

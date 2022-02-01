@@ -22,12 +22,6 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
-import com.google.android.play.core.appupdate.AppUpdateManager;
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.UpdateAvailability;
-import com.google.android.play.core.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.raushankit.ILghts.dialogs.AlertDialogFragment;
@@ -83,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
         TextView helperText = findViewById(R.id.splash_screen_sign_in_btn_helper_text);
         MaterialButton registerBtn = findViewById(R.id.splash_screen_register_btn);
         MaterialButton signInBtn = findViewById(R.id.splash_screen_sign_in_btn);
+        registerBtn.setVisibility(View.GONE);
+        signInBtn.setVisibility(View.GONE);
+        helperText.setVisibility(View.GONE);
         TextView snackText = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
         snackText.setMaxLines(5);
 
