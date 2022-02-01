@@ -317,10 +317,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             }
             if(role != null){
                 accessLevel = Math.max(0,Math.min(roleType.length, role.getAccessLevel()));
-                if(accessLevel < 1){
-                    startActivity(badAuthIntent);
-                    finish();
-                }
                 settingCommViewModel.selectItem(new Pair<>("preference_setter", accessLevel >= 2?InfoType.ADMIN_VISIBILITY:InfoType.ADMIN_INVISIBILITY));
                 roleView.setText(getString(R.string.access_level_place_holder, roleType[accessLevel]));
             }

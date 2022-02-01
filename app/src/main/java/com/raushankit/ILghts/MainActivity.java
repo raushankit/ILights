@@ -62,8 +62,7 @@ public class MainActivity extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getColor(R.color.splash_screen_bg_end));
         Intent intent = new Intent(this, WorkActivity.class);
-        AlertDialogFragment alertDialogFragment = AlertDialogFragment.newInstance(getString(R.string.error), true, false);
-        alertDialogFragment.setPositiveButtonText(getString(R.string.exit));
+        Intent blockedIntent = new Intent(this, SettingsActivity.class);
         SharedRepo sharedRepo = SharedRepo.newInstance(this);
         snackbar = Snackbar.make(findViewById(android.R.id.content),getString(R.string.no_network_detected), BaseTransientBottomBar.LENGTH_LONG);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -107,11 +106,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-        alertDialogFragment.addWhichButtonClickedListener(whichButton -> {
-            if(whichButton == AlertDialogFragment.WhichButton.POSITIVE){
-                finish();
-            }
-        });
 
         String isAuthSuccess = sharedRepo.getValue(SharedRefKeys.AUTH_SUCCESSFUL);
         networkLoader.setVisibility(user==null?View.GONE:View.VISIBLE);
@@ -126,8 +120,8 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     }else{
-                        alertDialogFragment.show(getSupportFragmentManager(), AlertDialogFragment.TAG);
-                        alertDialogFragment.setBodyString(getString(R.string.block_message));
+                        startActivity(blockedIntent);
+                        finish();
                     }
                 }else{
                     Log.w(TAG, "onCreate: role data is null");
