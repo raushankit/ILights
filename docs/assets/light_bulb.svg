@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="303.257" height="485.212" viewBox="0 0 303.257 485.212">
+  <defs>
+    <radialGradient id="radial-gradient" cx="0.5" cy="0.358" r="0.453" gradientTransform="matrix(1, -0.016, 0.011, 0.693, -0.004, 0.118)" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#ff6f00"/>
+      <stop offset="1" stop-color="#ffdf00"/>
+    </radialGradient>
+  </defs>
+  <g id="light_bulb" transform="translate(-90.978)">
+    <path id="Path_1" data-name="Path 1" d="M394.235,151.628c0,82.449-49.7,92.044-59.021,181.956a15.157,15.157,0,0,1-15.168,15.163H165.161A15.153,15.153,0,0,1,150,333.584h-.028c-9.3-89.912-58.994-99.507-58.994-181.956a151.628,151.628,0,0,1,303.257,0ZM318.423,363.906H166.794a15.165,15.165,0,1,0,0,30.331H318.422a15.165,15.165,0,0,0,0-30.331Zm0,45.49H166.794a15.165,15.165,0,1,0,0,30.331H318.422a15.165,15.165,0,0,0,0-30.331ZM212.282,485.212h60.65a30.305,30.305,0,0,0,30.322-30.326h-121.3A30.309,30.309,0,0,0,212.282,485.212Z" fill="url(#radial-gradient)"/>
+  </g>
+</svg>
