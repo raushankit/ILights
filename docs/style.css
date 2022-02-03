@@ -135,24 +135,55 @@ div ul li{
     flex-grow: 1;
 }
 #app-info {
+    position: relative;
     display: flex;
+    bottom: 0;
 }
 #app-info p {
     margin: auto;
     font-size: x-small;
 }
 .playbutton-child {
-    position: absolute;
-    top: 50%;
-    left: 100%;
-    background: rgba(0,0,0,.15);
-    transform: translate(-100%, -50%);
-    -webkit-transform: translate(-100%, -50%);
-    -ms-transform: translate(-100%, -50%);
+    background-color: rgba(0,0,0,.125);
     padding: 15px;
+    float: right;
     border-radius: 8px;
     width: fit-content;
     text-align: center;
+}
+
+@media (max-width: 700px) {
+    .bottom-bar-child{
+        display: block;
+        padding: 4%;
+        height: 0 auto;
+    }
+    .contact-info {
+        max-width: 100%;
+        text-align: left;
+        float: none;
+    }
+    .playbutton {
+        max-width: 100%;
+        display: flex;
+        text-align: left;
+    }
+    .playbutton-child {
+        padding: 15px;
+        border-radius: 8px;
+        justify-content: center;
+        text-align: left;
+        margin-top: 1em;
+    }
+    .playbutton-child h4 {
+        width: 100%;
+        text-align: center;
+    }
+    #app-info {
+        position: relative;
+        display: flex;
+        bottom: 0;
+    }
 }
 
 
