@@ -174,6 +174,11 @@ public class LoginFragment extends Fragment {
         };
     }
 
+    public void showAlert(Exception exception){
+        alertDialogFragment.setBodyString(exception==null || exception.getMessage()==null?getString(R.string.internet_connection_error):exception.getMessage());
+        alertDialogFragment.show(getChildFragmentManager(),AlertDialogFragment.TAG);
+    }
+
     private void signInWithEmailPassword(String email, String password){
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
@@ -192,7 +197,7 @@ public class LoginFragment extends Fragment {
                         }
                     }catch (Exception e){
                         loadingDialogFragment.dismiss();
-                        showAlert(null);
+                        showAlert(e);
                     }
                 });
     }
@@ -216,11 +221,6 @@ public class LoginFragment extends Fragment {
         });
     }
 
-    public void showAlert(Exception exception){
-        alertDialogFragment.setBodyString(exception==null || exception.getMessage()==null?getString(R.string.internet_connection_error):exception.getMessage());
-        alertDialogFragment.show(getChildFragmentManager(),AlertDialogFragment.TAG);
-    }
-
     final ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
@@ -233,12 +233,10 @@ public class LoginFragment extends Fragment {
                         assert account != null;
                         firebaseAuthWithGoogle(account.getIdToken());
                     } catch (ApiException e) {
-                        alertDialogFragment.setBodyString("Google Login Failed\n" + e.getMessage());
-                        alertDialogFragment.show(getChildFragmentManager(), AlertDialogFragment.TAG);
+                        showAlert(e);
                     }
                 }else{
-                    alertDialogFragment.setBodyString("Google Login Failed\n" + getString(R.string.internet_connection_error));
-                    alertDialogFragment.show(getChildFragmentManager(), AlertDialogFragment.TAG);
+                    showAlert(null);
                 }
             });
 

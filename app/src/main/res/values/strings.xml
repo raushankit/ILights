@@ -50,7 +50,7 @@
 
     <string name="signup_page_title">Register</string>
     <string name="signup_page_register_btn">Sign Up</string>
-    <string name="splash_page_policy"><![CDATA[By clicking <b>SIGN IN/SIGN UP</b>, you agree to the <a href = "%1$s"> User agreement and Privacy Policy.</a>]]></string>
+    <string name="splash_page_policy"><![CDATA[By clicking <b>SIGN IN/REGISTER</b>, you agree to the <a href = "%1$s"> User agreement and Privacy Policy.</a>]]></string>
 
     <string name="alert_dialog_placeholder_btn_positive">OK</string>
     <string name="alert_dialog_placeholder_btn_negative">Cancel</string>
