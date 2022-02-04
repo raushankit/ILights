@@ -35,6 +35,7 @@ import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.dialogs.AlertDialogFragment;
+import com.raushankit.ILghts.dialogs.WebViewDialogFragment;
 import com.raushankit.ILghts.entity.InfoType;
 import com.raushankit.ILghts.entity.SharedRefKeys;
 import com.raushankit.ILghts.fragments.settings.ChangeName;
@@ -61,10 +62,12 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private static final String TAG = "SETTINGS_ACTIVITY";
     private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.8f;
     private static final long ALPHA_ANIMATIONS_DURATION = 200;
+    private static final String link = "https://raushankit.github.io/ILights/";
 
     private Pair<Boolean,Boolean> providerData;
     private UserViewModel userViewModel;
     private SettingCommViewModel settingCommViewModel;
+    private WebViewDialogFragment webViewDialogFragment;
     private DatabaseReference db;
     private String[] themeEntries;
     private String name = "";
@@ -94,6 +97,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        webViewDialogFragment = WebViewDialogFragment.newInstance();
+        webViewDialogFragment.setUrl(link);
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -264,6 +269,9 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     Objects.requireNonNull(mAuth.getCurrentUser()).updatePassword(String.valueOf(item.second))
                             .addOnCompleteListener(task -> showSnack(task.isSuccessful(), R.string.password_updated, R.string.password_update_failure, task.getException()));
                     getSupportFragmentManager().popBackStackImmediate();
+                    break;
+                case "privacy_policy":
+                    webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
                     break;
                 default:
                     Log.w(TAG, "implementListeners: clear events");
@@ -479,11 +487,13 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             adminCategory = findPreference("admin_category");
             verifyEmailPreference = findPreference("verify_email");
             Preference versionNamePreference = findPreference("version_name");
+            Preference privacyPolicyPreference = findPreference("privacy_policy");
             updatePreference = findPreference("update_available");
             Preference signOutPreference = findPreference("sign_out");
             changePWPreference = findPreference("change_password");
 
             if(themePreference != null) themePreference.setOnPreferenceChangeListener(this);
+            if(privacyPolicyPreference != null) privacyPolicyPreference.setOnPreferenceClickListener(this);
             if(verifyEmailPreference != null) verifyEmailPreference.setOnPreferenceClickListener(this);
             if(signOutPreference != null) signOutPreference.setOnPreferenceClickListener(this);
             if(updatePreference != null) updatePreference.setOnPreferenceClickListener(this);
@@ -510,6 +520,9 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     return true;
                 case "update_available":
                     settingCommViewModelFrag.selectItem(new Pair<>("play_update", null));
+                    return true;
+                case "privacy_policy":
+                    settingCommViewModelFrag.selectItem(new Pair<>("privacy_policy", null));
                     return true;
                 default:
                     Log.d(TAG, "onPreferenceClick: unknown click event");

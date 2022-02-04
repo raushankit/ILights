@@ -5,6 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -24,7 +29,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.raushankit.ILghts.dialogs.AlertDialogFragment;
+import com.raushankit.ILghts.dialogs.WebViewDialogFragment;
 import com.raushankit.ILghts.entity.PageKeys;
 import com.raushankit.ILghts.entity.SharedRefKeys;
 import com.raushankit.ILghts.storage.SharedRepo;
@@ -32,9 +37,11 @@ import com.raushankit.ILghts.viewModel.UserViewModel;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MAIN_ACTIVITY";
+    private static final String link = "https://raushankit.github.io/ILights/";
     private Handler mHandler;
     private Runnable runnable;
     private Snackbar snackbar;
+    private WebViewDialogFragment webViewDialogFragment;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -64,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, WorkActivity.class);
         Intent blockedIntent = new Intent(this, SettingsActivity.class);
         SharedRepo sharedRepo = SharedRepo.newInstance(this);
+        webViewDialogFragment = WebViewDialogFragment.newInstance();
+        webViewDialogFragment.setUrl(link);
         snackbar = Snackbar.make(findViewById(android.R.id.content),getString(R.string.no_network_detected), BaseTransientBottomBar.LENGTH_LONG);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         mHandler = new Handler();
@@ -71,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
         LottieAnimationView spv = findViewById(R.id.splash_screen_lottie);
         LottieAnimationView networkLoader = findViewById(R.id.splash_screen_network_lottie);
         TextView spText = findViewById(R.id.splash_main_text);
+        TextView privacyText = findViewById(R.id.splash_screen_privacy_policy);
+        setTextViewHTML(privacyText, getString(R.string.splash_page_policy, link));
         TextView versionText = findViewById(R.id.splash_screen_version_info);
         versionText.setText(getString(R.string.splash_page_version_placeholder, BuildConfig.VERSION_NAME));
         TextView helperText = findViewById(R.id.splash_screen_sign_in_btn_helper_text);
@@ -79,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         registerBtn.setVisibility(View.GONE);
         signInBtn.setVisibility(View.GONE);
         helperText.setVisibility(View.GONE);
+        privacyText.setVisibility(View.GONE);
         TextView snackText = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
         snackText.setMaxLines(5);
 
@@ -91,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 registerBtn.setVisibility(View.VISIBLE);
                 signInBtn.setVisibility(View.VISIBLE);
                 helperText.setVisibility(View.VISIBLE);
+                privacyText.setVisibility(View.VISIBLE);
             }else{
                 snackbar.show();
             }
@@ -118,11 +131,10 @@ public class MainActivity extends AppCompatActivity {
                     if(role.getAccessLevel() > 0){
                         intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.CONTROLLER_PAGE.name());
                         startActivity(intent);
-                        finish();
                     }else{
                         startActivity(blockedIntent);
-                        finish();
                     }
+                    finish();
                 }else{
                     Log.w(TAG, "onCreate: role data is null");
                 }
@@ -133,6 +145,32 @@ public class MainActivity extends AppCompatActivity {
                 Log.w(TAG, "onCreate: app in bad state");
             }
         }
+    }
+
+    protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span)
+    {
+        int start = strBuilder.getSpanStart(span);
+        int end = strBuilder.getSpanEnd(span);
+        int flags = strBuilder.getSpanFlags(span);
+        ClickableSpan clickable = new ClickableSpan() {
+            public void onClick(View view) {
+                webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
+            }
+        };
+        strBuilder.setSpan(clickable, start, end, flags);
+        strBuilder.removeSpan(span);
+    }
+
+    protected void setTextViewHTML(TextView text, String html)
+    {
+        CharSequence sequence = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
+        SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
+        URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
+        for(URLSpan span : urls) {
+            makeLinkClickable(strBuilder, span);
+        }
+        text.setText(strBuilder);
+        text.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     @Override

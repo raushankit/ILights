@@ -17,7 +17,7 @@
     <string name="exit">Exit</string>
     <string name="loading">Loading…</string>
     <string name="blocked">Blocked</string>
-    <string name="change_name_title">Change name</string>
+    <string name="change_name_title">Change nabme</string>
     <string name="change_name_hint">Enter new name</string>
     <string name="update">Update</string>
     <string name="email_verified">Email verified</string>
@@ -50,6 +50,7 @@
 
     <string name="signup_page_title">Register</string>
     <string name="signup_page_register_btn">Sign Up</string>
+    <string name="splash_page_policy"><![CDATA[By clicking <b>SIGN IN/SIGN UP</b>, you agree to the <a href = "%1$s"> User agreement and Privacy Policy.</a>]]></string>
 
     <string name="alert_dialog_placeholder_btn_positive">OK</string>
     <string name="alert_dialog_placeholder_btn_negative">Cancel</string>
@@ -74,7 +75,7 @@
 
     <string name="add_pins">Add Pin</string>
     <string name="add_pin_item_title">Pin Configuration %1$d</string>
-    <string name="add_pin_frag_item_title">%1$s Pin</string>
+    <string name="add_pin_frag_item_title">%1$s Pin</string>s
     <string name="add_pin_frag_item_hint_text">Pin</string>
     <string name="add_pin_frag_item_pin_name">Pin name</string>
     <string name="add_pin_frag_item_pin_number">Pin number %1$d</string>
@@ -145,6 +146,7 @@
     <!-- About Preferences -->
     <string name="version_name">Version</string>
     <string name="update_available">Update Available</string>
+    <string name="privacy_policy">Privacy Policy</string>
     <string name="update_summary">%1$s -> %2$s</string>
 
     <!-- Admin Preferences -->
