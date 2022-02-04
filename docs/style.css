@@ -109,6 +109,7 @@ div ul li{
 
 .bottom-bar {
     display: block;
+    margin-top: 1em;
     background: rgb(50,50,50);
 }
 
@@ -153,6 +154,21 @@ div ul li{
 }
 
 @media (max-width: 700px) {
+    #mainTitle {
+        display: inline-block;
+        padding-left: 4%;
+        padding-right: 4%;
+        padding-bottom: 8%;
+        justify-content: left;
+        height: fit-content;
+    }
+    .bottom-bar {
+        display: block;
+        border-top-left-radius: 1em;
+        border-top-right-radius: 1em;
+        margin-top: 2em;
+        background: rgb(50,50,50);
+    }
     .bottom-bar-child{
         display: block;
         padding: 4%;
