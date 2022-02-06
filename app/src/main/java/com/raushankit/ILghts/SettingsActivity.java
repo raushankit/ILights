@@ -448,7 +448,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             super.onViewCreated(view, savedInstanceState);
             settingCommViewModelFrag = new ViewModelProvider(requireActivity()).get(SettingCommViewModel.class);
             settingCommViewModelFrag.getSelectedItem().observe(getViewLifecycleOwner(), item -> {
-                Log.w(TAG, "onViewCreated: item = " + item);
                 if(item == null || !item.first.equals("preference_setter")) return;
                 if(item.second instanceof InfoType){
                     if(item.second.equals(InfoType.PROFILE_VISIBILITY)){

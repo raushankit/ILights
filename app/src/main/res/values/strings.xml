@@ -30,6 +30,7 @@
     <string name="google_play_update">Update Available</string>
     <string name="empty_serach_string">Empty search text</string>
     <string name="same_as_before">Same as Previous</string>
+    <string name="unknown_error">Unknown Error Occurred</string>
 
     <string name="splash_page_register">REGISTER</string>
     <string name="splash_page_sign_in">SIGN IN</string>

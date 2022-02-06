@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class StatusViewModel extends ViewModel {
     private static final String TAG = "StatusViewModel";
     private final PulseLiveData pulseLiveData;
-    private static final int DELAY = 8;
+    private static final int DELAY = 8000;
 
     private final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> future;
@@ -35,7 +35,7 @@ public class StatusViewModel extends ViewModel {
                 if(future != null && !future.isDone()) {
                     future.cancel(true);
                 }
-                future = service.schedule(() -> data.postValue(false),DELAY, TimeUnit.SECONDS);
+                future = service.schedule(() -> data.postValue(false),DELAY, TimeUnit.MILLISECONDS);
             }
         });
         return data;
@@ -45,6 +45,6 @@ public class StatusViewModel extends ViewModel {
     protected void onCleared() {
         super.onCleared();
         service.shutdown();
-        Log.d(TAG, "onCleared: shutting down service");
+        Log.w(TAG, "onCleared: shutting down service");
     }
 }

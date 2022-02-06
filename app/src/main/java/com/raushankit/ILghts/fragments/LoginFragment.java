@@ -114,7 +114,6 @@ public class LoginFragment extends Fragment {
                 if(isEmailCheck){
                     emailLayout.setError(getString(R.string.required));
                 }
-
                 if(isPassCheck){
                     passwordLayout.setError(getString(R.string.required));
                 }
@@ -236,7 +235,7 @@ public class LoginFragment extends Fragment {
                         showAlert(e);
                     }
                 }else{
-                    showAlert(null);
+                    showAlert(new Exception(getString(R.string.unknown_error)));
                 }
             });
 
@@ -260,7 +259,7 @@ public class LoginFragment extends Fragment {
                         }
                     }catch (Exception e){
                         loadingDialogFragment.dismiss();
-                        showAlert(null);
+                        showAlert(e);
                     }
                 });
     }
