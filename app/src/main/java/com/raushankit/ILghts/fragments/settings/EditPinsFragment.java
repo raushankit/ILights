@@ -76,7 +76,7 @@ public class EditPinsFragment extends Fragment {
                 List<Boolean> pins = new ArrayList<>();
                 pins.add(Boolean.FALSE);
                 while(temp > 0){
-                    pins.add(Boolean.TRUE);
+                    pins.add((temp&1)==1?Boolean.TRUE:Boolean.FALSE);
                     temp /= 2;
                 }
                 pinList.forEach(pin -> pins.set(pin,Boolean.FALSE));
