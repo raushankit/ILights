@@ -27,21 +27,24 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.raushankit.ILghts.dialogs.WebViewDialogFragment;
 import com.raushankit.ILghts.entity.PageKeys;
 import com.raushankit.ILghts.entity.SharedRefKeys;
 import com.raushankit.ILghts.storage.SharedRepo;
+import com.raushankit.ILghts.utils.AnalyticsParam;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MAIN_ACTIVITY";
+    private static final String TAG = "main_activity";
     private static final String link = "https://raushankit.github.io/ILights/";
     private Handler mHandler;
     private Runnable runnable;
     private Snackbar snackbar;
     private WebViewDialogFragment webViewDialogFragment;
+    private FirebaseAnalytics mAnalytics;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAnalytics = FirebaseAnalytics.getInstance(this);
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -110,11 +114,17 @@ public class MainActivity extends AppCompatActivity {
         };
 
         registerBtn.setOnClickListener(v-> {
+            Bundle bundle = new Bundle();
+            bundle.putString(AnalyticsParam.BUTTON_CLICKED, "register button clicked");
+            mAnalytics.logEvent(TAG, bundle);
             intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.SIGN_UP_PAGE.name());
             startActivity(intent);
             finish();
         });
         signInBtn.setOnClickListener(v-> {
+            Bundle bundle = new Bundle();
+            bundle.putString(AnalyticsParam.BUTTON_CLICKED, "sign in button clicked");
+            mAnalytics.logEvent(TAG, bundle);
             intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.LOGIN_PAGE.name());
             startActivity(intent);
             finish();
@@ -132,15 +142,25 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.CONTROLLER_PAGE.name());
                         startActivity(intent);
                     }else{
+                        Bundle bundle = new Bundle();
+                        bundle.putString(AnalyticsParam.BLOCKED_USER, "user is blocked");
+                        mAnalytics.logEvent(TAG, bundle);
                         startActivity(blockedIntent);
                     }
-                    finish();
                 }else{
                     Log.w(TAG, "onCreate: role data is null");
+                    Bundle bundle = new Bundle();
+                    bundle.putString(AnalyticsParam.BAD_USER, "user is created without role data in database");
+                    mAnalytics.logEvent(TAG, bundle);
+                    FirebaseAuth.getInstance().signOut();
                 }
+                finish();
             });
         }else{
             if(user != null){
+                Bundle bundle = new Bundle();
+                bundle.putString(AnalyticsParam.BAD_USER, "user is created without database event");
+                mAnalytics.logEvent(TAG, bundle);
                 FirebaseAuth.getInstance().signOut();
                 Log.w(TAG, "onCreate: app in bad state");
             }
@@ -154,6 +174,9 @@ public class MainActivity extends AppCompatActivity {
         int flags = strBuilder.getSpanFlags(span);
         ClickableSpan clickable = new ClickableSpan() {
             public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString(AnalyticsParam.BUTTON_CLICKED, "viewing privacy policy");
+                mAnalytics.logEvent(TAG, bundle);
                 webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
             }
         };

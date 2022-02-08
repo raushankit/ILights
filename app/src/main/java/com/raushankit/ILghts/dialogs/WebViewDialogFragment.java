@@ -85,9 +85,10 @@ public class WebViewDialogFragment extends DialogFragment {
     @Override
     public void onStart() {
         int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.95);
+        int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.9);
         Dialog dialog = getDialog();
         if (dialog != null) {
-            dialog.getWindow().setLayout(width, ViewGroup.LayoutParams.MATCH_PARENT);
+            dialog.getWindow().setLayout(width, height);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.setCancelable(false);
             dialog.setCanceledOnTouchOutside(false);

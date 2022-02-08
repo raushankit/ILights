@@ -15,6 +15,7 @@
             android:name=".SettingsActivity"
             android:exported="false"
             android:launchMode="singleTop"
+            android:theme="@style/PreferenceScreen"
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".WorkActivity"

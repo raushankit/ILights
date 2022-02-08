@@ -14,4 +14,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="PreferenceScreen" parent="Theme.ILights">
+        <item name="colorAccent">@color/scarlet_red</item>
+    </style>
 </resources>

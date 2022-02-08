@@ -143,16 +143,21 @@
     <string name="about_header">About</string>
     <string name="profile_header">Profile</string>
     <string name="admin_header">Admin</string>
+    <string name="privacy_header">Privacy</string>
 
     <!-- About Preferences -->
     <string name="version_name">Version</string>
     <string name="update_available">Update Available</string>
-    <string name="privacy_policy">Privacy Policy</string>
     <string name="update_summary">%1$d -> %2$d</string>
 
     <!-- Admin Preferences -->
     <string name="search_users">Search Users</string>
     <string name="manage_users">Manage Users</string>
     <string name="manage_pins">Edit Board</string>
+
+    <!-- Privacy Preferences -->
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="send_statistics">Send Statistics</string>
+    <string name="send_statistics_summary">Automatically send usage statistics to help us improve the user experience and application.</string>
 
 </resources>

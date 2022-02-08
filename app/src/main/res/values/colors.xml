@@ -15,6 +15,7 @@
     <color name="pink">#fe019a</color>
     <color name="transparent">#00000000</color>
     <color name="dark_pink">#920058</color>
+    <color name="scarlet_red">#ff0800</color>
 
     <color name="splash_screen_bg_start">@color/white</color>
     <color name="splash_screen_bg_end">#ece9e6</color>
