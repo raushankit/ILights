@@ -148,7 +148,7 @@
     <string name="version_name">Version</string>
     <string name="update_available">Update Available</string>
     <string name="privacy_policy">Privacy Policy</string>
-    <string name="update_summary">%1$s -> %2$s</string>
+    <string name="update_summary">%1$d -> %2$d</string>
 
     <!-- Admin Preferences -->
     <string name="search_users">Search Users</string>

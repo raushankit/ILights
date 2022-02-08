@@ -29,6 +29,11 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
@@ -67,6 +72,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private Pair<Boolean,Boolean> providerData;
     private UserViewModel userViewModel;
     private SettingCommViewModel settingCommViewModel;
+    private AppUpdateManager appUpdateManager;
     private WebViewDialogFragment webViewDialogFragment;
     private DatabaseReference db;
     private String[] themeEntries;
@@ -97,6 +103,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        appUpdateManager = AppUpdateManagerFactory.create(this);
         webViewDialogFragment = WebViewDialogFragment.newInstance();
         webViewDialogFragment.setUrl(link);
         Window window = getWindow();
@@ -330,8 +337,13 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             }
         });
 
-        userViewModel.getVersionData().observe(this, versionInfo -> {
-            if(versionInfo != null) settingCommViewModel.selectItem(new Pair<>("preference_setter", versionInfo));
+        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                settingCommViewModel.selectItem(new Pair<>("preference_setter", new VersionInfo("", appUpdateInfo.availableVersionCode())));
+            }else{
+                Log.w(TAG, "fillUserdata: no update available");
+            }
         });
     }
 
@@ -469,7 +481,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 else if(item.second instanceof VersionInfo){
                     if(updatePreference != null){
                         updatePreference.setVisible(BuildConfig.VERSION_CODE < ((VersionInfo) item.second).getVersionCode());
-                        updatePreference.setSummary(getString(R.string.update_summary, BuildConfig.VERSION_NAME, ((VersionInfo) item.second).getVersionName()));
+                        updatePreference.setSummary(getString(R.string.update_summary, BuildConfig.VERSION_CODE, ((VersionInfo) item.second).getVersionCode()));
                     }
                 }else{
                     Log.w(TAG, "onViewCreated: unknown even in preference frag:: " + item.second);
