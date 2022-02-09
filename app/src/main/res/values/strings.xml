@@ -15,6 +15,10 @@
     <string name="retry">Retry</string>
     <string name="single_space">\u0020</string>
     <string name="exit">Exit</string>
+    <string name="agree">Agree</string>
+    <string name="disagree">Disagree</string>
+    <string name="consent_dialog_title">Analytics Consent</string>
+    <string name="consent_dialog_body">We\'ll use Firebase Analytics to record events when you interact with the app to improve user experience.\nWe don\'t use your personal data and only in-app events are captured for analytics.\n\nYou can change your choice later in the app settings.</string>
     <string name="loading">Loading…</string>
     <string name="blocked">Blocked</string>
     <string name="change_name_title">Change nabme</string>
@@ -52,6 +56,7 @@
     <string name="signup_page_title">Register</string>
     <string name="signup_page_register_btn">Sign Up</string>
     <string name="splash_page_policy"><![CDATA[By clicking <b>SIGN IN/REGISTER</b>, you agree to the <a href = "%1$s"> User agreement and Privacy Policy.</a>]]></string>
+    <string name="consent_dialog_policy_link">Link to Privacy Policy</string>
 
     <string name="alert_dialog_placeholder_btn_positive">OK</string>
     <string name="alert_dialog_placeholder_btn_negative">Cancel</string>
@@ -102,6 +107,7 @@
     <string name="failed">Failed</string>
     <string name="re_authenticated">Re-Authenticated</string>
     <string name="re_auth_btn_text">Re-Authenticate</string>
+    <string name="settings_snack_message">This setting will take effect from next app launch.</string>
     <string name="password_updated">Password Updated Successfully</string>
     <string name="password_update_failure">Failed to update Password</string>
     <string name="re_details_message">This operation is very sensitive.\nYou must re-authenticate yourself to continue</string>

@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.R;
@@ -54,6 +55,11 @@ public class ChangeName extends Fragment {
             prevUserName = getArguments().getString(ARG_PARAM1);
             userUid = getArguments().getString(ARG_PARAM2);
         }
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireContext());
+        Bundle bundle1 = new Bundle();
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_NAME, getClass().getSimpleName());
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_CLASS, "Settings Activity");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle1);
         nameWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

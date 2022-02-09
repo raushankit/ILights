@@ -10,12 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.raushankit.ILghts.R;
@@ -38,6 +40,7 @@ public class SignUpFragment extends Fragment {
     private static final String TAG = "SIGNUP_FRAGMENT";
     private View view;
     private FirebaseAuth mAuth;
+    private FirebaseAnalytics mFirebaseAnalytics;
     private final UserUpdates userUpdates = new UserUpdates();
     private AlertDialogFragment alertDialogFragment;
     private LoadingDialogFragment loadingDialogFragment;
@@ -80,6 +83,15 @@ public class SignUpFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireContext());
+        Bundle bundle1 = new Bundle();
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_NAME, getClass().getSimpleName());
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_CLASS, "Work Activity");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle1);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -116,6 +128,7 @@ public class SignUpFragment extends Fragment {
     }
 
     private void createUser(@NonNull String email, @NonNull String name, @NonNull String password) {
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, null);
         mAuth.createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener(task -> {
                     try{

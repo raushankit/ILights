@@ -34,6 +34,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -89,6 +90,11 @@ public class ReAuthFragment extends Fragment {
         }
         user = FirebaseAuth.getInstance().getCurrentUser();
         isProviderGoogle = getProviderData();
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireContext());
+        Bundle bundle1 = new Bundle();
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_NAME, getClass().getSimpleName());
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_CLASS, "Settings Activity");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle1);
     }
 
     private boolean getProviderData() {

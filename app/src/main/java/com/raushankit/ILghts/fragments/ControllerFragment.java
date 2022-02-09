@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -25,6 +26,7 @@ import com.raushankit.ILghts.adapter.PinListAdapter;
 import com.raushankit.ILghts.entity.ControllerFragActions;
 import com.raushankit.ILghts.model.PinData;
 import com.raushankit.ILghts.model.PinListData;
+import com.raushankit.ILghts.utils.AnalyticsParam;
 import com.raushankit.ILghts.viewModel.FragViewModel;
 import com.raushankit.ILghts.viewModel.StatusViewModel;
 import com.raushankit.ILghts.viewModel.UserViewModel;
@@ -43,6 +45,7 @@ public class ControllerFragment extends Fragment {
     private ShimmerFrameLayout shimmerFrameLayout;
     private DatabaseReference db;
     private FirebaseAuth mAuth;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public ControllerFragment() {
         // Required empty public constructor
@@ -56,6 +59,11 @@ public class ControllerFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireContext());
+        Bundle bundle1 = new Bundle();
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_NAME, getClass().getSimpleName());
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_CLASS, "Work Activity");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle1);
     }
 
     @Override
@@ -82,6 +90,10 @@ public class ControllerFragment extends Fragment {
                                     Snackbar.make(view, error.getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();
                                 }
                             });
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(AnalyticsParam.PIN_NUMBER, value.getPinNumber());
+                            bundle.putString(AnalyticsParam.PIN_NAME, value.getPinName());
+                            mFirebaseAnalytics.logEvent(AnalyticsParam.Event.CONTROLLER_EVENT, bundle);
                         }else{
                             Log.e(TAG, "onCreateView: name: " + name);
                         }

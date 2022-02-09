@@ -35,7 +35,7 @@ public class AlertDialogFragment extends DialogFragment implements View.OnClickL
     private String positiveButtonText;
     private String negativeButtonText;
 
-    AlertDialogFragment() {
+    public AlertDialogFragment() {
 
     }
 

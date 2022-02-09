@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -26,6 +27,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,6 +39,7 @@ import com.raushankit.ILghts.entity.PageKeys;
 import com.raushankit.ILghts.entity.SharedRefKeys;
 import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.storage.SharedRepo;
+import com.raushankit.ILghts.utils.AnalyticsParam;
 import com.raushankit.ILghts.utils.UserUpdates;
 import com.raushankit.ILghts.utils.callbacks.CallBack;
 import com.raushankit.ILghts.viewModel.UserViewModel;
@@ -48,9 +51,10 @@ import java.util.Objects;
 
 public class LoginFragment extends Fragment {
 
-    private static final String TAG = "LOGIN";
+    private static final String TAG = "LoginFragment";
     private View view;
     private FirebaseAuth mAuth;
+    private FirebaseAnalytics mFirebaseAnalytics;
     private boolean isGoogleLogin;
     private CallBack<PageKeys> changeFrag;
     private SharedRepo sharedRepo;
@@ -90,6 +94,16 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireContext());
+        Bundle bundle1 = new Bundle();
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_NAME, getClass().getSimpleName());
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_CLASS, "Work Activity");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle1);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         sharedRepo = SharedRepo.newInstance(requireContext());
@@ -105,7 +119,12 @@ public class LoginFragment extends Fragment {
             resultLauncher.launch(mGoogleSignInClient.getSignInIntent());
             isGoogleLogin = false;
         }
-        googleLoginButton.setOnClickListener(v -> resultLauncher.launch(mGoogleSignInClient.getSignInIntent()));
+        googleLoginButton.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.METHOD, "google login");
+            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
+            resultLauncher.launch(mGoogleSignInClient.getSignInIntent());
+        });
 
         loginButton.setOnClickListener(v -> {
             boolean isEmailCheck = TextUtils.isEmpty(emailInput.getText());
@@ -179,6 +198,9 @@ public class LoginFragment extends Fragment {
     }
 
     private void signInWithEmailPassword(String email, String password){
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.METHOD, "username password login");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     try{

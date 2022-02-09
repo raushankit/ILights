@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.dialogs.AlertDialogFragment;
 import com.raushankit.ILghts.model.EditPinInfo;
@@ -85,6 +86,11 @@ public class EditPinItemFragment extends Fragment {
         alertDialogFragment.setPositiveButtonText(getString(R.string.yes));
         alertDialogFragment.setNegativeButtonText(getString(R.string.alert_dialog_placeholder_btn_negative));
         alertDialogFragment.setCancelable(true);
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireContext());
+        Bundle bundle1 = new Bundle();
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_NAME, getClass().getSimpleName());
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_CLASS, "Settings Activity");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle1);
     }
 
     @Override

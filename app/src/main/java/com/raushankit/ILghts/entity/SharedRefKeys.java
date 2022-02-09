@@ -6,6 +6,7 @@ public enum SharedRefKeys {
     AUTH_TYPE("auth-type"),
     USER_NAME("user-name"),
     USER_EMAIL("user-email"),
+    FIRST_OPEN("first-open"),
     EMAIL_VERIFICATION("email-verification");
 
     SharedRefKeys(String key){

@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
@@ -34,6 +35,7 @@ import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.android.play.core.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
@@ -52,6 +54,7 @@ import com.raushankit.ILghts.model.EditPinInfo;
 import com.raushankit.ILghts.model.PinData;
 import com.raushankit.ILghts.model.VersionInfo;
 import com.raushankit.ILghts.storage.SharedRepo;
+import com.raushankit.ILghts.utils.AnalyticsParam;
 import com.raushankit.ILghts.utils.ColorGen;
 import com.raushankit.ILghts.utils.ProfilePic;
 import com.raushankit.ILghts.viewModel.SettingCommViewModel;
@@ -69,19 +72,20 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private static final long ALPHA_ANIMATIONS_DURATION = 200;
     private static final String link = "https://raushankit.github.io/ILights/";
 
+    private FirebaseAuth mAuth;
+    private DatabaseReference db;
+    private FirebaseAnalytics mFirebaseAnalytics;
     private Pair<Boolean,Boolean> providerData;
     private UserViewModel userViewModel;
     private SettingCommViewModel settingCommViewModel;
     private AppUpdateManager appUpdateManager;
     private WebViewDialogFragment webViewDialogFragment;
-    private DatabaseReference db;
     private String[] themeEntries;
     private String name = "";
     private SharedRepo sharedRepo;
     private AlertDialogFragment alertDialogFragment;
     private ShimmerFrameLayout shimmerFrameLayout;
     private ConstraintLayout userLayout;
-    private FirebaseAuth mAuth;
     private Intent badAuthIntent;
     private int accessLevel;
     private Snackbar snackbar;
@@ -103,6 +107,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         appUpdateManager = AppUpdateManagerFactory.create(this);
         webViewDialogFragment = WebViewDialogFragment.newInstance();
         webViewDialogFragment.setUrl(link);
@@ -111,6 +116,10 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getColor(R.color.transparent));
         mAuth = FirebaseAuth.getInstance();
+        Bundle bundle1 = new Bundle();
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_NAME, getClass().getSimpleName());
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_CLASS, "Settings Activity");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle1);
         sharedRepo = SharedRepo.newInstance(this);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         settingCommViewModel = new ViewModelProvider(this).get(SettingCommViewModel.class);
@@ -165,8 +174,11 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private void implementListeners() {
         settingCommViewModel.getSelectedItem().observe(this, item -> {
             if(item.first.equals("preference_setter")) return;
+            Bundle bundle = new Bundle();
             switch (item.first) {
                 case "theme":
+                    bundle.putString(AnalyticsParam.THEME_TYPE, (String) item.second);
+                    mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                     if (themeEntries[1].equals(item.second)) {
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                         getDelegate().applyDayNight();
@@ -226,6 +238,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     }
                     break;
                 case "delete_pin_item":
+                    bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.DELETE_PIN);
+                    mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                     int deletePinNum = (int) item.second;
                     Map<String, Object> mp1 = new LinkedHashMap<>();
                     mp1.put("control/info/"+deletePinNum,null);
@@ -235,12 +249,16 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     db.updateChildren(mp1, ((error, ref) -> Snackbar.make(findViewById(android.R.id.content), (error == null?getString(R.string.pin_name_delete_successful, deletePinNum):getString(R.string.pin_name_delete_failure)), BaseTransientBottomBar.LENGTH_SHORT).show()));
                     break;
                 case "edit_pin_item":
+                    bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.EDIT_PIN);
+                    mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                     EditPinInfo info = (EditPinInfo) item.second;
                     db.child("control/info/"+info.getPinNumber()).setValue(info.getPinInfo())
                             .addOnCompleteListener(task -> Snackbar.make(findViewById(android.R.id.content), (task.isSuccessful()?getString(R.string.pin_name_update_successful, info.getPinNumber()):getString(R.string.pin_name_update_failure)), BaseTransientBottomBar.LENGTH_SHORT).show());
                     getSupportFragmentManager().popBackStackImmediate();
                     break;
                 case "add_pin_item":
+                    bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.ADD_PIN);
+                    mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                     EditPinInfo info1 = (EditPinInfo) item.second;
                     Map<String, Object> mp = new LinkedHashMap<>();
                     mp.put("control/info/"+info1.getPinNumber(), info1.getPinInfo());
@@ -258,6 +276,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     }
                     break;
                 case "delete_user":
+                    bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.DELETE_USER);
+                    mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                     Map<String, Object> mp2 = new LinkedHashMap<>();
                     String uid = mAuth.getUid();
                     mp2.put("users/"+uid, null);
@@ -273,12 +293,20 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     getSupportFragmentManager().popBackStackImmediate();
                     break;
                 case "update_password":
+                    bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.UPDATE_PASSWORD);
+                    mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                     Objects.requireNonNull(mAuth.getCurrentUser()).updatePassword(String.valueOf(item.second))
                             .addOnCompleteListener(task -> showSnack(task.isSuccessful(), R.string.password_updated, R.string.password_update_failure, task.getException()));
                     getSupportFragmentManager().popBackStackImmediate();
                     break;
                 case "privacy_policy":
+                    bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.PRIVACY_POLICY);
+                    mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                     webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
+                    break;
+                case "edit_analytics_state":
+                    mFirebaseAnalytics.setAnalyticsCollectionEnabled((Boolean) item.second);
+                    Snackbar.make(findViewById(android.R.id.content),getString(R.string.settings_snack_message), BaseTransientBottomBar.LENGTH_SHORT).show();
                     break;
                 default:
                     Log.w(TAG, "implementListeners: clear events");
@@ -358,7 +386,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     }
 
     @Override
-    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
+    public boolean onPreferenceStartFragment(@NonNull PreferenceFragmentCompat caller, Preference pref) {
         final Bundle args = pref.getExtras();
         switch (pref.getKey()) {
             case "change_name":
@@ -502,10 +530,12 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             updatePreference = findPreference("update_available");
             Preference signOutPreference = findPreference("sign_out");
             changePWPreference = findPreference("change_password");
+            CheckBoxPreference checkBoxPreference = findPreference("send_statistics");
 
             if(themePreference != null) themePreference.setOnPreferenceChangeListener(this);
             if(privacyPolicyPreference != null) privacyPolicyPreference.setOnPreferenceClickListener(this);
             if(verifyEmailPreference != null) verifyEmailPreference.setOnPreferenceClickListener(this);
+            if(checkBoxPreference != null) checkBoxPreference.setOnPreferenceChangeListener(this);
             if(signOutPreference != null) signOutPreference.setOnPreferenceClickListener(this);
             if(updatePreference != null) updatePreference.setOnPreferenceClickListener(this);
             if(versionNamePreference != null) versionNamePreference.setSummary(BuildConfig.VERSION_NAME);
@@ -515,6 +545,9 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             if(preference.getKey().equals("theme")){
                 settingCommViewModelFrag.selectItem(new Pair<>("theme",newValue));
+                return true;
+            }else if(preference.getKey().equals("send_statistics")){
+                settingCommViewModelFrag.selectItem(new Pair<>("edit_analytics_state",newValue));
                 return true;
             }
             return false;

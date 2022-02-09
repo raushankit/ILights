@@ -1,6 +1,7 @@
 package com.raushankit.ILghts.dialogs;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.raushankit.ILghts.R;
 
 public class WebViewDialogFragment extends DialogFragment {
@@ -29,6 +31,7 @@ public class WebViewDialogFragment extends DialogFragment {
     private ProgressBar progressBar;
     private TextView textView;
     private MaterialButton okButton;
+    private DialogInterface.OnClickListener listener;
 
     public WebViewDialogFragment() {
 
@@ -96,9 +99,16 @@ public class WebViewDialogFragment extends DialogFragment {
         super.onStart();
     }
 
+    public void addDialogButtonClickListener(@NonNull DialogInterface.OnClickListener listener){
+        this.listener = listener;
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        okButton.setOnClickListener(v -> dismiss());
+        okButton.setOnClickListener(v -> {
+            if(listener != null) listener.onClick(null, DialogInterface.BUTTON_POSITIVE);
+            dismiss();
+        });
     }
 }

@@ -24,6 +24,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.R;
@@ -70,6 +71,11 @@ public class ManageUserFragment extends Fragment {
         if(getArguments() != null){
             accessLevel = getArguments().getInt("role");
         }
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireContext());
+        Bundle bundle1 = new Bundle();
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_NAME, getClass().getSimpleName());
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_CLASS, "Settings Activity");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle1);
         db = FirebaseDatabase.getInstance().getReference();
         im = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         roleDialogFragment = RoleDialogFragment.newInstance(accessLevel);

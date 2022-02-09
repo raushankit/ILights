@@ -30,6 +30,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.raushankit.ILghts.dialogs.ConsentDialogFragment;
 import com.raushankit.ILghts.dialogs.WebViewDialogFragment;
 import com.raushankit.ILghts.entity.PageKeys;
 import com.raushankit.ILghts.entity.SharedRefKeys;
@@ -38,18 +39,20 @@ import com.raushankit.ILghts.utils.AnalyticsParam;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "main_activity";
+    private static final String TAG = "MainActivity";
     private static final String link = "https://raushankit.github.io/ILights/";
     private Handler mHandler;
     private Runnable runnable;
     private Snackbar snackbar;
     private WebViewDialogFragment webViewDialogFragment;
     private FirebaseAnalytics mAnalytics;
+    private SharedPreferences sharedPreferences;
+    private ConsentDialogFragment consentDialogFragment;
 
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String[] themeEntries = getResources().getStringArray(R.array.theme_values);
         String themeType = sharedPreferences.getString("theme", themeEntries[0]);
         if(themeType.equals(themeEntries[1])){
@@ -77,9 +80,34 @@ public class MainActivity extends AppCompatActivity {
         SharedRepo sharedRepo = SharedRepo.newInstance(this);
         webViewDialogFragment = WebViewDialogFragment.newInstance();
         webViewDialogFragment.setUrl(link);
+        consentDialogFragment = ConsentDialogFragment.newInstance();
         snackbar = Snackbar.make(findViewById(android.R.id.content),getString(R.string.no_network_detected), BaseTransientBottomBar.LENGTH_LONG);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         mHandler = new Handler();
+        Bundle bundle1 = new Bundle();
+        bundle1.putString(FirebaseAnalytics.Param.SCREEN_NAME, getClass().getSimpleName());
+        mAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle1);
+        consentDialogFragment.addOnActionClickListener(action -> {
+            switch (action){
+                case AGREE:
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("send_statistics", true);
+                    editor.apply();
+                    mAnalytics.setAnalyticsCollectionEnabled(true);
+                    consentDialogFragment.dismiss();
+                    break;
+                case DISAGREE:
+                    mAnalytics.setAnalyticsCollectionEnabled(false);
+                    consentDialogFragment.dismiss();
+                    break;
+                case POLICY:
+                    webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
+                    break;
+                default:
+                    Log.w(TAG, "onCreate: bad click event");
+            }
+
+        });
 
         LottieAnimationView spv = findViewById(R.id.splash_screen_lottie);
         LottieAnimationView networkLoader = findViewById(R.id.splash_screen_network_lottie);
@@ -103,6 +131,10 @@ public class MainActivity extends AppCompatActivity {
         spv.setMinAndMaxProgress(0.0f,0.6f);
 
         runnable = () -> {
+            if(sharedRepo.getValue(SharedRefKeys.FIRST_OPEN).equals(SharedRefKeys.DEFAULT_VALUE.name())){
+                consentDialogFragment.show(getSupportFragmentManager(), ConsentDialogFragment.TAG);
+                sharedRepo.insert(SharedRefKeys.FIRST_OPEN, Boolean.TRUE.toString());
+            }
             if(user == null){
                 registerBtn.setVisibility(View.VISIBLE);
                 signInBtn.setVisibility(View.VISIBLE);
@@ -114,17 +146,11 @@ public class MainActivity extends AppCompatActivity {
         };
 
         registerBtn.setOnClickListener(v-> {
-            Bundle bundle = new Bundle();
-            bundle.putString(AnalyticsParam.BUTTON_CLICKED, "register button clicked");
-            mAnalytics.logEvent(TAG, bundle);
             intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.SIGN_UP_PAGE.name());
             startActivity(intent);
             finish();
         });
         signInBtn.setOnClickListener(v-> {
-            Bundle bundle = new Bundle();
-            bundle.putString(AnalyticsParam.BUTTON_CLICKED, "sign in button clicked");
-            mAnalytics.logEvent(TAG, bundle);
             intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.LOGIN_PAGE.name());
             startActivity(intent);
             finish();
@@ -144,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                     }else{
                         Bundle bundle = new Bundle();
                         bundle.putString(AnalyticsParam.BLOCKED_USER, "user is blocked");
-                        mAnalytics.logEvent(TAG, bundle);
+                        mAnalytics.logEvent(AnalyticsParam.Event.UNEXPECTED_EVENT, bundle);
                         startActivity(blockedIntent);
                     }
                 }else{
@@ -160,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             if(user != null){
                 Bundle bundle = new Bundle();
                 bundle.putString(AnalyticsParam.BAD_USER, "user is created without database event");
-                mAnalytics.logEvent(TAG, bundle);
+                mAnalytics.logEvent(AnalyticsParam.Event.UNEXPECTED_EVENT, bundle);
                 FirebaseAuth.getInstance().signOut();
                 Log.w(TAG, "onCreate: app in bad state");
             }
@@ -176,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString(AnalyticsParam.BUTTON_CLICKED, "viewing privacy policy");
-                mAnalytics.logEvent(TAG, bundle);
+                mAnalytics.logEvent(AnalyticsParam.Event.VIEW_POLICY, bundle);
                 webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
             }
         };
