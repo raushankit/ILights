@@ -94,11 +94,17 @@ public class MainActivity extends AppCompatActivity {
                     editor.putBoolean("send_statistics", true);
                     editor.apply();
                     mAnalytics.setAnalyticsCollectionEnabled(true);
+                    sharedRepo.insert(SharedRefKeys.FIRST_OPEN, Boolean.TRUE.toString());
                     consentDialogFragment.dismiss();
+                    startActivity(intent);
+                    finish();
                     break;
                 case DISAGREE:
                     mAnalytics.setAnalyticsCollectionEnabled(false);
                     consentDialogFragment.dismiss();
+                    sharedRepo.insert(SharedRefKeys.FIRST_OPEN, Boolean.TRUE.toString());
+                    startActivity(intent);
+                    finish();
                     break;
                 case POLICY:
                     webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
@@ -131,10 +137,6 @@ public class MainActivity extends AppCompatActivity {
         spv.setMinAndMaxProgress(0.0f,0.6f);
 
         runnable = () -> {
-            if(sharedRepo.getValue(SharedRefKeys.FIRST_OPEN).equals(SharedRefKeys.DEFAULT_VALUE.name())){
-                consentDialogFragment.show(getSupportFragmentManager(), ConsentDialogFragment.TAG);
-                sharedRepo.insert(SharedRefKeys.FIRST_OPEN, Boolean.TRUE.toString());
-            }
             if(user == null){
                 registerBtn.setVisibility(View.VISIBLE);
                 signInBtn.setVisibility(View.VISIBLE);
@@ -147,13 +149,21 @@ public class MainActivity extends AppCompatActivity {
 
         registerBtn.setOnClickListener(v-> {
             intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.SIGN_UP_PAGE.name());
-            startActivity(intent);
-            finish();
+            if(sharedRepo.getValue(SharedRefKeys.FIRST_OPEN).equals(SharedRefKeys.DEFAULT_VALUE.name())){
+                consentDialogFragment.show(getSupportFragmentManager(), ConsentDialogFragment.TAG);
+            }else{
+                startActivity(intent);
+                finish();
+            }
         });
         signInBtn.setOnClickListener(v-> {
             intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.LOGIN_PAGE.name());
-            startActivity(intent);
-            finish();
+            if(sharedRepo.getValue(SharedRefKeys.FIRST_OPEN).equals(SharedRefKeys.DEFAULT_VALUE.name())){
+                consentDialogFragment.show(getSupportFragmentManager(), ConsentDialogFragment.TAG);
+            }else{
+                startActivity(intent);
+                finish();
+            }
         });
 
         String isAuthSuccess = sharedRepo.getValue(SharedRefKeys.AUTH_SUCCESSFUL);

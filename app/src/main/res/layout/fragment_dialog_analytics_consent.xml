@@ -63,16 +63,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/consent_dialog_body"
-        app:layout_constraintWidth_percent="0.85"
+        app:layout_constraintWidth_percent="0.95"
         app:strokeWidth="@dimen/_1sdp" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/consent_dialog_positive_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_8sdp"
+        android:padding="@dimen/_9sdp"
         app:cornerRadius="@dimen/_5sdp"
-        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintWidth_percent="0.45"
         app:backgroundTint="@color/splash_screen_btn"
         android:layout_marginTop="@dimen/_10sdp"
         android:text="@string/agree"
@@ -96,6 +96,6 @@
         app:layout_constraintEnd_toStartOf="@+id/consent_dialog_positive_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/consent_dialog_privacy_policy_button"
-        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintWidth_percent="0.45"
         app:strokeWidth="@dimen/_1sdp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

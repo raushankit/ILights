@@ -25,5 +25,6 @@
 -keepnames class com.fasterxml.jackson.** { *; }
 -keepnames class javax.servlet.** { *; }
 -keepnames class org.ietf.jgss.** { *; }
+-keepnames class com.raushankit.ILghts.fragments.** { *; }
 -dontwarn org.apache.**
 -dontwarn org.w3c.dom.**
