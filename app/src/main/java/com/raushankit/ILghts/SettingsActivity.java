@@ -42,6 +42,7 @@ import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.dialogs.AlertDialogFragment;
+import com.raushankit.ILghts.dialogs.LoadingDialogFragment;
 import com.raushankit.ILghts.dialogs.WebViewDialogFragment;
 import com.raushankit.ILghts.entity.InfoType;
 import com.raushankit.ILghts.entity.SharedRefKeys;
@@ -80,6 +81,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private SettingCommViewModel settingCommViewModel;
     private AppUpdateManager appUpdateManager;
     private WebViewDialogFragment webViewDialogFragment;
+    private LoadingDialogFragment loadingDialogFragment;
     private String[] themeEntries;
     private String name = "";
     private SharedRepo sharedRepo;
@@ -110,6 +112,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         appUpdateManager = AppUpdateManagerFactory.create(this);
         webViewDialogFragment = WebViewDialogFragment.newInstance();
+        loadingDialogFragment = LoadingDialogFragment.newInstance();
         webViewDialogFragment.setUrl(link);
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -276,6 +279,9 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     }
                     break;
                 case "delete_user":
+                    loadingDialogFragment.setTitle(R.string.deleting_user);
+                    loadingDialogFragment.setMessage(R.string.delete_user_message);
+                    loadingDialogFragment.show(getSupportFragmentManager(), LoadingDialogFragment.TAG);
                     bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.DELETE_USER);
                     mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                     Map<String, Object> mp2 = new LinkedHashMap<>();
@@ -284,6 +290,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     mp2.put("role/"+uid, null);
                     db.updateChildren(mp2, ((error, ref) -> {
                         if(error == null){
+                            loadingDialogFragment.setMessage(R.string.please_wait);
                             Objects.requireNonNull(mAuth.getCurrentUser()).delete()
                                     .addOnFailureListener(e -> Snackbar.make(findViewById(android.R.id.content), Objects.requireNonNull(e.getMessage()), BaseTransientBottomBar.LENGTH_SHORT).show());
                         }else{

@@ -114,7 +114,8 @@ public class SignUpFragment extends Fragment {
                 String pw = Objects.requireNonNull(passwordInput.getText()).toString();
                 String cpw = Objects.requireNonNull(confPasswordInput.getText()).toString();
                 if(pw.equals(cpw)){
-                    loadingDialogFragment.setTitle(getString(R.string.signing_up));
+                    loadingDialogFragment.setTitle(R.string.signing_up);
+                    loadingDialogFragment.setMessage(R.string.please_wait);
                     loadingDialogFragment.show(getChildFragmentManager(),LoadingDialogFragment.TAG);
                     createUser(Objects.requireNonNull(emailInput.getText()).toString(),
                             Objects.requireNonNull(nameInput.getText()).toString(), pw);
@@ -231,6 +232,7 @@ public class SignUpFragment extends Fragment {
     }
 
     private void updateMetadata(@NonNull Map<SharedRefKeys, String> mp, @NonNull String uid) {
+        loadingDialogFragment.setMessage(R.string.verifying_user);
         UserViewModel userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         userViewModel.getUserData().observe(getViewLifecycleOwner(), user1->{
             if(user1 != null){
@@ -238,7 +240,7 @@ public class SignUpFragment extends Fragment {
                 sharedRepo.insert(SharedRefKeys.AUTH_SUCCESSFUL, Boolean.TRUE.toString());
                 changeFrags.onClick(PageKeys.CONTROLLER_PAGE);
             }else{
-                String errorStr = userUpdates.createUserMetaData(uid, new User(mp.get(SharedRefKeys.USER_NAME),mp.get(SharedRefKeys.USER_EMAIL)));
+                String errorStr = userUpdates.createUserMetaData(uid, new User(Objects.requireNonNull(mp.get(SharedRefKeys.USER_NAME)), Objects.requireNonNull(mp.get(SharedRefKeys.USER_EMAIL))));
                 if(errorStr != null){
                     loadingDialogFragment.dismiss();
                     showAlert(new Exception(errorStr));

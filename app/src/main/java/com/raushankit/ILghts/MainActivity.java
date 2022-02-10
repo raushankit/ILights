@@ -10,6 +10,7 @@ import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
+import android.text.style.UpdateAppearance;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -27,6 +28,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,6 +43,8 @@ import com.raushankit.ILghts.viewModel.UserViewModel;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String link = "https://raushankit.github.io/ILights/";
+    public static final long SPLASH_DELAY = 1500;
+    public static final long SLOW_INTERNET_TIMEOUT = 8000;
     private Handler mHandler;
     private Runnable runnable;
     private Snackbar snackbar;
@@ -168,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
         String isAuthSuccess = sharedRepo.getValue(SharedRefKeys.AUTH_SUCCESSFUL);
         networkLoader.setVisibility(user==null?View.GONE:View.VISIBLE);
-        mHandler.postDelayed(runnable, user==null?1500:8000);
+        mHandler.postDelayed(runnable, user==null?SPLASH_DELAY:SLOW_INTERNET_TIMEOUT);
 
         if(user != null && Boolean.parseBoolean(isAuthSuccess)){
             UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);

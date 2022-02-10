@@ -17,6 +17,7 @@
     <color name="manage_user_frag_search_btn">@color/teal_200</color>
 
     <color name="dialog_role_frag_strip">#00bfff</color>
+    <color name="lottie_loading_color_filter">@color/teal_200</color>
 
     <color name="controller_title_background">#222222</color>
     <color name="controller_background">#2f2f2f</color>

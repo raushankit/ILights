@@ -15,6 +15,10 @@
     <string name="retry">Retry</string>
     <string name="single_space">\u0020</string>
     <string name="exit">Exit</string>
+    <string name="please_wait">Please Wait……</string>
+    <string name="verifying_user">Verifying User Data……</string>
+    <string name="deleting_user">Deleting User</string>
+    <string name="deleting_user_data">Erasing user data from database</string>
     <string name="agree">Agree</string>
     <string name="disagree">Disagree</string>
     <string name="consent_dialog_title">Analytics Consent</string>

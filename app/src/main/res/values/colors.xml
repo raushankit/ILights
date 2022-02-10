@@ -34,6 +34,7 @@
     <color name="manage_user_frag_search_btn">#00bfff</color>
 
     <color name="dialog_role_frag_strip">#36454f</color>
+    <color name="lottie_loading_color_filter">@color/pink</color>
 
     <color name="controller_title_background">#00bfff</color>
     <color name="controller_background">#eeeeee</color>

@@ -2,30 +2,50 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/_20sdp"
+    android:padding="@dimen/_8sdp"
+    android:paddingStart="@dimen/_15sdp"
+    android:paddingEnd="0dp"
     android:background="@drawable/loading_dialog_background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/loading_dialog_lottie"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_100sdp"
-        android:layout_centerHorizontal="true"
-        app:lottie_autoPlay="true"
-        app:lottie_repeatCount="987456321"
-        app:lottie_rawRes="@raw/loader_animation"
-        app:lottie_speed="1.6" />
 
     <TextView
         android:id="@+id/loading_dialog_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/loading_dialog_lottie"
-        android:layout_centerHorizontal="true"
-        android:textSize="@dimen/_20sdp"
+        android:textSize="@dimen/_18sdp"
         android:textStyle="bold"
         android:fontFamily="@font/rubik_variable"
+        android:textColor="@color/user_info_name_text"
+        android:text="@string/loading" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loading_dialog_lottie"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
+        android:layout_below="@id/loading_dialog_title"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:adjustViewBounds="true"
+        android:scaleX="2.2"
+        android:scaleY="2.2"
+        app:lottie_colorFilter="@color/lottie_loading_color_filter"
+        android:layout_marginBottom="@dimen/_8sdp"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/loading_circle"
+        app:lottie_repeatCount="987456321" />
+
+    <TextView
+        android:id="@+id/loading_dialog_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/_12sdp"
+        android:layout_below="@id/loading_dialog_title"
+        android:layout_toEndOf="@id/loading_dialog_lottie"
+        android:fontFamily="@font/rubik_variable"
+        android:layout_alignParentEnd="true"
+        android:gravity="center_vertical"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_alignBottom="@id/loading_dialog_lottie"
         android:textColor="@color/forgot_password_btn"
-        android:text="@string/login" />
+        android:text="@string/please_wait" />
 
 </RelativeLayout>

@@ -138,7 +138,8 @@ public class LoginFragment extends Fragment {
                 }
             }
             else{
-                loadingDialogFragment.setTitle(getString(R.string.singing_in));
+                loadingDialogFragment.setTitle(R.string.singing_in);
+                loadingDialogFragment.setMessage(R.string.please_wait);
                 loadingDialogFragment.show(getChildFragmentManager(),LoadingDialogFragment.TAG);
                 signInWithEmailPassword(Objects.requireNonNull(emailInput.getText()).toString(),
                         Objects.requireNonNull(passwordInput.getText()).toString());
@@ -224,6 +225,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void updateMetadata(@NonNull String uid) {
+        loadingDialogFragment.setMessage(R.string.verifying_user);
         UserViewModel userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         userViewModel.getUserData().observe(getViewLifecycleOwner(), user1->{
             if(user1 != null){
@@ -248,7 +250,8 @@ public class LoginFragment extends Fragment {
                     Intent intent = result.getData();
                     Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(intent);
                     try {
-                        loadingDialogFragment.setTitle(getString(R.string.singing_in));
+                        loadingDialogFragment.setTitle(R.string.singing_in);
+                        loadingDialogFragment.setMessage(R.string.please_wait);
                         loadingDialogFragment.show(getChildFragmentManager(),LoadingDialogFragment.TAG);
                         GoogleSignInAccount account = task.getResult(ApiException.class);
                         assert account != null;
