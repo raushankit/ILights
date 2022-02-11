@@ -39,7 +39,6 @@ import com.raushankit.ILghts.entity.PageKeys;
 import com.raushankit.ILghts.entity.SharedRefKeys;
 import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.storage.SharedRepo;
-import com.raushankit.ILghts.utils.AnalyticsParam;
 import com.raushankit.ILghts.utils.UserUpdates;
 import com.raushankit.ILghts.utils.callbacks.CallBack;
 import com.raushankit.ILghts.viewModel.UserViewModel;
@@ -82,8 +81,7 @@ public class LoginFragment extends Fragment {
         this.changeFrag = changeFrag;
         this.isGoogleLogin = isGoogleLogin;
         loadingDialogFragment = LoadingDialogFragment.newInstance();
-        alertDialogFragment = AlertDialogFragment.newInstance("Login Failed",
-                 true, false);
+        alertDialogFragment = AlertDialogFragment.newInstance(R.string.login_failed,true, false);
         alertDialogFragment.addWhichButtonClickedListener(whichButton -> {
             if(whichButton == AlertDialogFragment.WhichButton.POSITIVE){
                 alertDialogFragment.dismiss();

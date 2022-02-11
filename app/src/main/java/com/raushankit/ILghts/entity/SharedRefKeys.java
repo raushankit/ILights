@@ -7,6 +7,7 @@ public enum SharedRefKeys {
     USER_NAME("user-name"),
     USER_EMAIL("user-email"),
     FIRST_OPEN("first-open"),
+    NOTIFY_UPDATE("notify-update"),
     EMAIL_VERIFICATION("email-verification");
 
     SharedRefKeys(String key){

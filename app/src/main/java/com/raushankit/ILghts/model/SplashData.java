@@ -8,13 +8,13 @@ import androidx.annotation.NonNull;
 public class SplashData {
 
     private Role role;
-    private int priority;
+    private UpdatePriority updatePriority;
 
     public SplashData() {}
 
-    public SplashData(Role role, int priority) {
+    public SplashData(Role role, UpdatePriority updatePriority) {
         this.role = role;
-        this.priority = priority;
+        this.updatePriority = updatePriority;
     }
 
     public Role getRole() {
@@ -25,20 +25,20 @@ public class SplashData {
         this.role = role;
     }
 
-    public int getPriority() {
-        return priority;
+    public UpdatePriority getUpdatePriority() {
+        return updatePriority;
     }
 
-    public void setPriority(int priority) {
-        this.priority = priority;
+    public void setUpdatePriority(UpdatePriority updatePriority) {
+        this.updatePriority = updatePriority;
     }
 
-    @Override
     @NonNull
+    @Override
     public String toString() {
         return "SplashData{" +
                 "role=" + role +
-                ", priority=" + priority +
+                ", updatePriority=" + updatePriority +
                 '}';
     }
 }

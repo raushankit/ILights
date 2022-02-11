@@ -1,6 +1,7 @@
 package com.raushankit.ILghts;
 
 import android.content.Intent;
+import android.content.IntentSender;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,11 +32,12 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
-import com.google.android.play.core.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -62,6 +65,7 @@ import com.raushankit.ILghts.viewModel.SettingCommViewModel;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +75,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private static final String TAG = "SETTINGS_ACTIVITY";
     private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.8f;
     private static final long ALPHA_ANIMATIONS_DURATION = 200;
+    private static final int DAYS_FOR_FLEXIBLE_UPDATE = 30;
+    private static final int RC_PLAY_UPDATE = 9858922;
     private static final String link = "https://raushankit.github.io/ILights/";
 
     private FirebaseAuth mAuth;
@@ -82,6 +88,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private AppUpdateManager appUpdateManager;
     private WebViewDialogFragment webViewDialogFragment;
     private LoadingDialogFragment loadingDialogFragment;
+    private InstallStateUpdatedListener installStateUpdatedListener;
     private String[] themeEntries;
     private String name = "";
     private SharedRepo sharedRepo;
@@ -139,10 +146,9 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             }
         };
         providerData = getProviderData();
-        alertDialogFragment = AlertDialogFragment.newInstance(getString(R.string.confirm_action),
-                true,true);
-        alertDialogFragment.setPositiveButtonText(getString(R.string.yes));
-        alertDialogFragment.setNegativeButtonText(getString(R.string.no));
+        alertDialogFragment = AlertDialogFragment.newInstance(R.string.confirm_action,true,true);
+        alertDialogFragment.setPositiveButtonText(R.string.yes);
+        alertDialogFragment.setNegativeButtonText(R.string.no);
         alertDialogFragment.addWhichButtonClickedListener(whichButton -> {
             if(whichButton.equals(AlertDialogFragment.WhichButton.POSITIVE)){
                 if(alertDialogFragment.getActionType().equals("sign_out")){
@@ -175,6 +181,11 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     }
 
     private void implementListeners() {
+        installStateUpdatedListener = installState -> {
+            if(installState.installStatus() == InstallStatus.DOWNLOADED){
+                popupSnackbarForCompleteUpdate();
+            }
+        };
         settingCommViewModel.getSelectedItem().observe(this, item -> {
             if(item.first.equals("preference_setter")) return;
             Bundle bundle = new Bundle();
@@ -372,10 +383,19 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             }
         });
 
-        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
-        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(appUpdateInfo -> {
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
                 settingCommViewModel.selectItem(new Pair<>("preference_setter", new VersionInfo("", appUpdateInfo.availableVersionCode())));
+                if(/*appUpdateInfo.clientVersionStalenessDays() != null
+                        && appUpdateInfo.clientVersionStalenessDays() >= DAYS_FOR_FLEXIBLE_UPDATE
+                        && */appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
+                        && isUpdateNotificationAllowed()){
+                    try {
+                        appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, this, RC_PLAY_UPDATE);
+                    } catch (IntentSender.SendIntentException e) {
+                        e.printStackTrace();
+                    }
+                }
             }else{
                 Log.w(TAG, "fillUserdata: no update available");
             }
@@ -438,8 +458,21 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
     @Override
     protected void onResume() {
-        mAuth.addAuthStateListener(authListener);
         super.onResume();
+        mAuth.addAuthStateListener(authListener);
+        appUpdateManager
+                .getAppUpdateInfo()
+                .addOnSuccessListener(appUpdateInfo -> {
+                    if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                        popupSnackbarForCompleteUpdate();
+                    }
+                });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        appUpdateManager.unregisterListener(installStateUpdatedListener);
     }
 
     @Override
@@ -478,6 +511,33 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         alphaAnimation.setDuration(duration);
         alphaAnimation.setFillAfter(true);
         v.startAnimation(alphaAnimation);
+    }
+
+    private void popupSnackbarForCompleteUpdate() {
+        Snackbar snackbar1 =
+                Snackbar.make(
+                        findViewById(android.R.id.content),
+                        "An update has just been downloaded.",
+                        Snackbar.LENGTH_INDEFINITE);
+        snackbar1.setAction("RESTART", view -> appUpdateManager.completeUpdate());
+        snackbar1.setActionTextColor(
+                getResources().getColor(R.color.custom_edit_text_background, getTheme()));
+        snackbar1.show();
+    }
+
+    private boolean isUpdateNotificationAllowed(){
+        long lastTime = sharedRepo.getLongValue(SharedRefKeys.NOTIFY_UPDATE, -1);
+        if(lastTime == -1) return true;
+        return Calendar.getInstance().getTimeInMillis() - lastTime >= DAYS_FOR_FLEXIBLE_UPDATE*24*3600000L;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RC_PLAY_UPDATE && resultCode == RESULT_CANCELED){
+            Toast.makeText(this, "muted for 1 month", Toast.LENGTH_SHORT).show();
+            //sharedRepo.insertLong(SharedRefKeys.NOTIFY_UPDATE, Calendar.getInstance().getTimeInMillis());
+        }
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener {

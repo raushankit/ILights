@@ -1,6 +1,7 @@
 package com.raushankit.ILghts.dialogs;
 
 import android.app.Dialog;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.button.MaterialButton;
@@ -28,21 +30,21 @@ public class AlertDialogFragment extends DialogFragment implements View.OnClickL
     private WhichButtonClicked whichButtonClicked;
 
     private String actionType;
-    private String titleString;
+    @StringRes private int titleString;
     private String bodyString;
     private boolean enablePosButton;
     private boolean enableNegButton;
-    private String positiveButtonText;
-    private String negativeButtonText;
+    @StringRes private int positiveButtonText;
+    @StringRes private int negativeButtonText;
 
     public AlertDialogFragment() {
 
     }
 
-    public static AlertDialogFragment newInstance(@NonNull String titleString, @NonNull Boolean enablePosButton, @NonNull Boolean enableNegButton) {
+    public static AlertDialogFragment newInstance(@StringRes int titleString, @NonNull Boolean enablePosButton, @NonNull Boolean enableNegButton) {
         AlertDialogFragment fragment = new AlertDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("title_text", titleString);
+        bundle.putInt("title_text", titleString);
         bundle.putBoolean("enable_positive_button", enablePosButton);
         bundle.putBoolean("enable_negative_button", enableNegButton);
         fragment.setArguments(bundle);
@@ -59,16 +61,16 @@ public class AlertDialogFragment extends DialogFragment implements View.OnClickL
         negativeButton = view.findViewById(R.id.alert_dialog_negative_button);
         Bundle args = getArguments();
         if(args != null){
-            titleString = args.getString("title_text");
+            titleString = args.getInt("title_text");
             enablePosButton = args.getBoolean("enable_positive_button");
             enableNegButton = args.getBoolean("enable_negative_button");
             positiveButton.setVisibility(enablePosButton?View.VISIBLE:View.GONE);
             negativeButton.setVisibility(enableNegButton?View.VISIBLE:View.GONE);
         }
-        if(!TextUtils.isEmpty(titleString)){ titleText.setText(titleString); }
-        if(!TextUtils.isEmpty(bodyString)){ bodyText.setText(bodyString); }
-        if(!TextUtils.isEmpty(positiveButtonText)){ positiveButton.setText(positiveButtonText); }
-        if(!TextUtils.isEmpty(negativeButtonText)){ negativeButton.setText(negativeButtonText); }
+        setText(titleText, titleString);
+        if(!TextUtils.isEmpty(bodyString)) bodyText.setText(bodyString);
+        setText(positiveButton, positiveButtonText);
+        setText(negativeButton, negativeButtonText);
         positiveButton.setOnClickListener(this);
         negativeButton.setOnClickListener(this);
         return view;
@@ -76,12 +78,12 @@ public class AlertDialogFragment extends DialogFragment implements View.OnClickL
 
     @Override
     public void onStart() {
-        int width = (int)(getResources().getDisplayMetrics().widthPixels*0.85);
+        int width = (int)(getResources().getDisplayMetrics().widthPixels*0.9);
         Dialog dialog = getDialog();
         if(dialog != null){
             dialog.getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.setCancelable(false);
+            dialog.setCancelable(true);
         }
         super.onStart();
     }
@@ -92,22 +94,26 @@ public class AlertDialogFragment extends DialogFragment implements View.OnClickL
 
     public void setBodyString(@NonNull String bodyString) {
         this.bodyString = bodyString;
-        if(bodyText != null) bodyText.setText(bodyString);
+        if(bodyText == null) return;
+        bodyText.setText(bodyString);
     }
 
-    public void setTitleString(@NonNull String titleString) {
+    public void setTitleString(@StringRes int titleString) {
         this.titleString = titleString;
-        if(titleText != null) titleText.setText(titleString);
+        if(titleText == null) return;
+        setText(titleText, titleString);
     }
 
-    public void setNegativeButtonText(@NonNull String negativeButtonText) {
+    public void setNegativeButtonText(@StringRes int negativeButtonText) {
         this.negativeButtonText = negativeButtonText;
-        if(negativeButton != null) negativeButton.setText(negativeButtonText);
+        if(negativeButton == null) return;
+        setText(negativeButton, negativeButtonText);
     }
 
-    public void setPositiveButtonText(@NonNull String positiveButtonText) {
+    public void setPositiveButtonText(@StringRes int positiveButtonText) {
         this.positiveButtonText = positiveButtonText;
-        if(positiveButton != null) positiveButton.setText(positiveButtonText);
+        if(positiveButton == null) return;
+        setText(positiveButton, positiveButtonText);
     }
 
     public void setEnableNegButton(boolean enableNegButton) {
@@ -127,6 +133,14 @@ public class AlertDialogFragment extends DialogFragment implements View.OnClickL
     public void setEnablePosButton(boolean enablePosButton) {
         this.enablePosButton = enablePosButton;
         if(positiveButton != null) positiveButton.setVisibility(enablePosButton?View.VISIBLE:View.GONE);
+    }
+
+    private void setText(@NonNull TextView textView, @StringRes int stringRes){
+        try{
+            textView.setText(stringRes);
+        }catch (Resources.NotFoundException e){
+            e.printStackTrace();
+        }
     }
 
     @Override

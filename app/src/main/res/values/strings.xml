@@ -19,6 +19,8 @@
     <string name="verifying_user">Verifying User Data……</string>
     <string name="deleting_user">Deleting User</string>
     <string name="deleting_user_data">Erasing user data from database</string>
+    <string name="login_failed">Login Failed</string>
+    <string name="signup_failed">Signup Failed</string>
     <string name="agree">Agree</string>
     <string name="disagree">Disagree</string>
     <string name="consent_dialog_title">Analytics Consent</string>
@@ -39,6 +41,10 @@
     <string name="empty_serach_string">Empty search text</string>
     <string name="same_as_before">Same as Previous</string>
     <string name="unknown_error">Unknown Error Occurred</string>
+
+    <string name="forced_update">Mandatory Update</string>
+    <string name="forced_update_message">This update is necessary for the functionality of the application.\nUpdate to continue using the app.</string>
+
 
     <string name="splash_page_register">REGISTER</string>
     <string name="splash_page_sign_in">SIGN IN</string>

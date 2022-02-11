@@ -50,6 +50,7 @@ public class LoadingDialogFragment extends DialogFragment {
 
     public void setTitle(@StringRes int title) {
         this.title = title;
+        if(titleView == null) return;
         try{
             titleView.setText(title);
         }catch (Resources.NotFoundException e){
@@ -59,12 +60,11 @@ public class LoadingDialogFragment extends DialogFragment {
 
     public void setMessage(@StringRes int message) {
         this.message = message;
-        if(messageView != null) {
-            try{
-                messageView.setText(message);
-            }catch (Resources.NotFoundException e){
-                e.printStackTrace();
-            }
+        if(messageView == null) return;
+        try{
+            messageView.setText(message);
+        }catch (Resources.NotFoundException e){
+            e.printStackTrace();
         }
     }
 

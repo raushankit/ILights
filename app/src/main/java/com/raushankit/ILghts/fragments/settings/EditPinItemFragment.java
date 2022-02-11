@@ -81,10 +81,10 @@ public class EditPinItemFragment extends Fragment {
             pinNumber = args.getInt("pin_number");
             pins = args.getStringArray("available_pins");
         }
-        alertDialogFragment = AlertDialogFragment.newInstance(getString(R.string.confirm_action),true,true);
+        alertDialogFragment = AlertDialogFragment.newInstance(R.string.confirm_action,true,true);
         alertDialogFragment.setBodyString(getString(R.string.sign_out_body_text));
-        alertDialogFragment.setPositiveButtonText(getString(R.string.yes));
-        alertDialogFragment.setNegativeButtonText(getString(R.string.alert_dialog_placeholder_btn_negative));
+        alertDialogFragment.setPositiveButtonText(R.string.yes);
+        alertDialogFragment.setNegativeButtonText(R.string.alert_dialog_placeholder_btn_negative);
         alertDialogFragment.setCancelable(true);
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireContext());
         Bundle bundle1 = new Bundle();

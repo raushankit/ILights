@@ -71,8 +71,7 @@ public class SignUpFragment extends Fragment {
         statusBarColor.onClick(R.color.splash_screen_bg_end);
         this.changeFrags = changeFrags;
         loadingDialogFragment = LoadingDialogFragment.newInstance();
-        alertDialogFragment = AlertDialogFragment.newInstance("SignUp Failed",
-                true, false);
+        alertDialogFragment = AlertDialogFragment.newInstance(R.string.signup_failed,true, false);
         alertDialogFragment.addWhichButtonClickedListener(whichButton -> {
             if(whichButton == AlertDialogFragment.WhichButton.POSITIVE){
                 alertDialogFragment.dismiss();
