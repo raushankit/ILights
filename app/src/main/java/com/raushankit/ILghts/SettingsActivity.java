@@ -1,8 +1,10 @@
 package com.raushankit.ILghts;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -34,7 +36,9 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallState;
 import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.ActivityResult;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
@@ -56,6 +60,7 @@ import com.raushankit.ILghts.fragments.settings.ManageUserFragment;
 import com.raushankit.ILghts.fragments.settings.ReAuthFragment;
 import com.raushankit.ILghts.model.EditPinInfo;
 import com.raushankit.ILghts.model.PinData;
+import com.raushankit.ILghts.model.ThemeData;
 import com.raushankit.ILghts.model.VersionInfo;
 import com.raushankit.ILghts.storage.SharedRepo;
 import com.raushankit.ILghts.utils.AnalyticsParam;
@@ -71,7 +76,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, AppBarLayout.OnOffsetChangedListener {
+public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, AppBarLayout.OnOffsetChangedListener, InstallStateUpdatedListener {
     private static final String TAG = "SETTINGS_ACTIVITY";
     private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.8f;
     private static final long ALPHA_ANIMATIONS_DURATION = 200;
@@ -88,8 +93,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private AppUpdateManager appUpdateManager;
     private WebViewDialogFragment webViewDialogFragment;
     private LoadingDialogFragment loadingDialogFragment;
-    private InstallStateUpdatedListener installStateUpdatedListener;
-    private String[] themeEntries;
     private String name = "";
     private SharedRepo sharedRepo;
     private AlertDialogFragment alertDialogFragment;
@@ -160,7 +163,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             alertDialogFragment.dismiss();
         });
 
-        themeEntries = getResources().getStringArray(R.array.theme_values);
         shimmerFrameLayout = findViewById(R.id.settings_user_data_shimmer);
         userLayout = findViewById(R.id.settings_user_data);
         implementListeners();
@@ -181,28 +183,24 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     }
 
     private void implementListeners() {
-        installStateUpdatedListener = installState -> {
-            if(installState.installStatus() == InstallStatus.DOWNLOADED){
-                popupSnackbarForCompleteUpdate();
-            }
-        };
         settingCommViewModel.getSelectedItem().observe(this, item -> {
             if(item.first.equals("preference_setter")) return;
             Bundle bundle = new Bundle();
             switch (item.first) {
                 case "theme":
-                    bundle.putString(AnalyticsParam.THEME_TYPE, (String) item.second);
+                    ThemeData themeData = (ThemeData) item.second;
+                    bundle.putString(AnalyticsParam.THEME_TYPE, themeData.getThemeType());
                     mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
-                    if (themeEntries[1].equals(item.second)) {
+                    if (themeData.getThemeType().equals("light")) {
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                         getDelegate().applyDayNight();
                     }
-                    if (themeEntries[2].equals(item.second)) {
+                    if (themeData.getThemeType().equals("dark")) {
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                         getDelegate().applyDayNight();
                     }
-                    if (themeEntries[0].equals(item.second)) {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && themeData.getThemeType().equals("follow_system")) {
+                        AppCompatDelegate.setDefaultNightMode(themeData.isBatterySaverOn()?AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY:AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                         getDelegate().applyDayNight();
                     }
                     break;
@@ -218,7 +216,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                                     sharedRepo.insert(SharedRefKeys.EMAIL_VERIFICATION, String.valueOf(task.isSuccessful()));
                                 });
                     } else {
-                        Snackbar.make(findViewById(android.R.id.content), getString(user.isEmailVerified()?R.string.email_already_verified:R.string.email_verification_sign_out), BaseTransientBottomBar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), user.isEmailVerified()?R.string.email_already_verified:R.string.email_verification_sign_out, BaseTransientBottomBar.LENGTH_SHORT).show();
                     }
                     break;
                 case "sign_out":
@@ -242,7 +240,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                         if(val) list.add(getString(R.string.add_pin_frag_item_pin_number,i));
                     }
                     if(list.isEmpty()){
-                        Snackbar.make(findViewById(android.R.id.content), getString(R.string.all_pins_active),BaseTransientBottomBar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), R.string.all_pins_active,BaseTransientBottomBar.LENGTH_SHORT).show();
                     }else{
                         final Fragment fragment = EditPinItemFragment.newInstance("add", list.toArray(new String[0]));
                         getSupportFragmentManager().beginTransaction()
@@ -282,12 +280,20 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     getSupportFragmentManager().popBackStackImmediate();
                     break;
                 case "play_update":
-                    final String appPackageName = getPackageName(); // package name of the app
-                    try {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                    } catch (android.content.ActivityNotFoundException anfe) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                    }
+                    appUpdateManager.getAppUpdateInfo().addOnSuccessListener(it1 -> {
+                        if(it1.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && it1.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)){
+                            try {
+                                appUpdateManager.startUpdateFlowForResult(it1, AppUpdateType.FLEXIBLE, this, RC_PLAY_UPDATE);
+                            } catch (IntentSender.SendIntentException e) {
+                                final String appPackageName = getPackageName(); // package name of the app
+                                try {
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                                } catch (android.content.ActivityNotFoundException anfe) {
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                                }
+                            }
+                        }
+                    });
                     break;
                 case "delete_user":
                     loadingDialogFragment.setTitle(R.string.deleting_user);
@@ -318,9 +324,11 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     getSupportFragmentManager().popBackStackImmediate();
                     break;
                 case "privacy_policy":
-                    bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.PRIVACY_POLICY);
-                    mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
-                    webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
+                    if(!webViewDialogFragment.isAdded()){
+                        bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.PRIVACY_POLICY);
+                        mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
+                        webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
+                    }
                     break;
                 case "edit_analytics_state":
                     mFirebaseAnalytics.setAnalyticsCollectionEnabled((Boolean) item.second);
@@ -441,6 +449,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             default:
                 Log.w(TAG, "onPreferenceStartFragment: no fragment as such: ");
         }
+        if(pref.getFragment()==null)return false;
         final Fragment fragment = getSupportFragmentManager()
                 .getFragmentFactory().instantiate(getClassLoader(), pref.getFragment());
         fragment.setArguments(args);
@@ -460,23 +469,23 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     protected void onResume() {
         super.onResume();
         mAuth.addAuthStateListener(authListener);
-        appUpdateManager
-                .getAppUpdateInfo()
-                .addOnSuccessListener(appUpdateInfo -> {
-                    if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
-                        popupSnackbarForCompleteUpdate();
-                    }
-                });
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        appUpdateManager.unregisterListener(installStateUpdatedListener);
+        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(it -> {
+            if(it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS){
+                try {
+                    appUpdateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, RC_PLAY_UPDATE);
+                } catch (IntentSender.SendIntentException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(it.installStatus() == InstallStatus.DOWNLOADED){
+                popupSnackbarForCompleteUpdate();
+            }
+        });
     }
 
     @Override
     protected void onDestroy() {
+        appUpdateManager.unregisterListener(this);
         mAuth.removeAuthStateListener(authListener);
         super.onDestroy();
     }
@@ -514,14 +523,9 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     }
 
     private void popupSnackbarForCompleteUpdate() {
-        Snackbar snackbar1 =
-                Snackbar.make(
-                        findViewById(android.R.id.content),
-                        "An update has just been downloaded.",
-                        Snackbar.LENGTH_INDEFINITE);
-        snackbar1.setAction("RESTART", view -> appUpdateManager.completeUpdate());
-        snackbar1.setActionTextColor(
-                getResources().getColor(R.color.custom_edit_text_background, getTheme()));
+        Snackbar snackbar1 = Snackbar.make(findViewById(android.R.id.content),R.string.update_downloaded, Snackbar.LENGTH_INDEFINITE);
+        snackbar1.setAction(R.string.restart, view -> appUpdateManager.completeUpdate());
+        snackbar1.setActionTextColor(getResources().getColor(R.color.scarlet_red, getTheme()));
         snackbar1.show();
     }
 
@@ -534,9 +538,43 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RC_PLAY_UPDATE && resultCode == RESULT_CANCELED){
-            Toast.makeText(this, "muted for 1 month", Toast.LENGTH_SHORT).show();
-            //sharedRepo.insertLong(SharedRefKeys.NOTIFY_UPDATE, Calendar.getInstance().getTimeInMillis());
+        if(requestCode == RC_PLAY_UPDATE){
+            switch (resultCode){
+                case RESULT_OK:
+                    appUpdateManager.registerListener(this);
+                    break;
+                case RESULT_CANCELED:
+                    Toast.makeText(this, "muted for 1 month", Toast.LENGTH_SHORT).show();
+                    //sharedRepo.insertLong(SharedRefKeys.NOTIFY_UPDATE, Calendar.getInstance().getTimeInMillis());
+                    break;
+                case ActivityResult.RESULT_IN_APP_UPDATE_FAILED:
+                    snackbar.setText(R.string.failed_to_update);
+                    snackbar.show();
+                    break;
+                default:
+                    Log.w(TAG, "onActivityResult: uncaptured result code: " + resultCode);
+            }
+        }
+    }
+
+    @SuppressLint("SwitchIntDef")
+    @Override
+    public void onStateUpdate(@NonNull InstallState installState) {
+        Snackbar snackbarUpdate = Snackbar.make(findViewById(android.R.id.content),"", BaseTransientBottomBar.LENGTH_SHORT);
+        switch (installState.installStatus()) {
+            case InstallStatus.DOWNLOADED:
+                popupSnackbarForCompleteUpdate();
+                break;
+            case InstallStatus.FAILED:
+                snackbarUpdate.setText(R.string.failed_to_update);
+                snackbarUpdate.show();
+                break;
+            case InstallStatus.INSTALLED:
+                snackbarUpdate.setText(R.string.successfully_updated);
+                snackbarUpdate.show();
+                break;
+            default:
+                Log.w(TAG, "onStateUpdate: event type = " + installState.installStatus());
         }
     }
 
@@ -544,6 +582,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
         private SettingCommViewModel settingCommViewModelFrag;
 
+        private ListPreference themePreference;
+        private CheckBoxPreference batterySaverPreference;
         private PreferenceCategory profileCategory;
         private PreferenceCategory adminCategory;
         private Preference verifyEmailPreference;
@@ -576,7 +616,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 else if(item.second instanceof VersionInfo){
                     if(updatePreference != null){
                         updatePreference.setVisible(BuildConfig.VERSION_CODE < ((VersionInfo) item.second).getVersionCode());
-                        updatePreference.setSummary(getString(R.string.update_summary, BuildConfig.VERSION_CODE, ((VersionInfo) item.second).getVersionCode()));
+                        updatePreference.setSummary(getString(R.string.update_summary, ((VersionInfo) item.second).getVersionCode()));
                     }
                 }else{
                     Log.w(TAG, "onViewCreated: unknown even in preference frag:: " + item.second);
@@ -588,7 +628,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
-            ListPreference themePreference = findPreference("theme");
+            themePreference = findPreference("theme");
+            batterySaverPreference = findPreference("battery_saver_theme");
             profileCategory = findPreference("profile_category");
             adminCategory = findPreference("admin_category");
             verifyEmailPreference = findPreference("verify_email");
@@ -600,6 +641,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             CheckBoxPreference checkBoxPreference = findPreference("send_statistics");
 
             if(themePreference != null) themePreference.setOnPreferenceChangeListener(this);
+            if(batterySaverPreference != null) batterySaverPreference.setOnPreferenceChangeListener(this);
             if(privacyPolicyPreference != null) privacyPolicyPreference.setOnPreferenceClickListener(this);
             if(verifyEmailPreference != null) verifyEmailPreference.setOnPreferenceClickListener(this);
             if(checkBoxPreference != null) checkBoxPreference.setOnPreferenceChangeListener(this);
@@ -610,12 +652,16 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            if(preference.getKey().equals("theme")){
-                settingCommViewModelFrag.selectItem(new Pair<>("theme",newValue));
-                return true;
-            }else if(preference.getKey().equals("send_statistics")){
-                settingCommViewModelFrag.selectItem(new Pair<>("edit_analytics_state",newValue));
-                return true;
+            switch (preference.getKey()) {
+                case "theme":
+                    settingCommViewModelFrag.selectItem(new Pair<>("theme", new ThemeData((String) newValue, batterySaverPreference.isChecked())));
+                    return true;
+                case "send_statistics":
+                    settingCommViewModelFrag.selectItem(new Pair<>("edit_analytics_state", newValue));
+                    return true;
+                case "battery_saver_theme":
+                    settingCommViewModelFrag.selectItem(new Pair<>("theme", new ThemeData(themePreference.getValue(), (Boolean) newValue)));
+                    return true;
             }
             return false;
         }

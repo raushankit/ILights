@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -76,17 +77,19 @@ public class MainActivity extends AppCompatActivity {
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String[] themeEntries = getResources().getStringArray(R.array.theme_values);
-        String themeType = sharedPreferences.getString("theme", themeEntries[0]);
-        if(themeType.equals(themeEntries[1])){
+        boolean isv29 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+        String themeType = sharedPreferences.getString("theme", isv29?"follow_system":"light");
+        boolean battery_saver_on = sharedPreferences.getBoolean("battery_saver_theme", true);
+        if(themeType.equals("light")){
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
-        if(themeType.equals(themeEntries[2])){
+        if(themeType.equals("dark")){
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
-        if(themeType.equals(themeEntries[0])){
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        if(isv29 && themeType.equals("follow_system")){
+            AppCompatDelegate.setDefaultNightMode(battery_saver_on? AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY:AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
+        Log.w(TAG, "attachBaseContext: themeType:: " + themeType + " battery_saver_on:: " + battery_saver_on);
     }
 
     @Override
@@ -138,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                     break;
                 case POLICY:
-                    webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
+                    if(!webViewDialogFragment.isAdded()) webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
                     break;
                 default:
                     Log.w(TAG, "onCreate: bad click event");
@@ -237,7 +240,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         splashViewModel.getData().observe(this, splashData -> {
-            Log.w(TAG, "onCreate: splashData" + splashData.toString());
             if(isUpdateAvailable){
                 if(splashData.getUpdatePriority() != null && splashData.getUpdatePriority().getPriority() >= UpdateType.FORCED){
                     try {
@@ -291,11 +293,11 @@ public class MainActivity extends AppCompatActivity {
         int flags = strBuilder.getSpanFlags(span);
         ClickableSpan clickable = new ClickableSpan() {
             public void onClick(View view) {
+                if(webViewDialogFragment.isAdded()) return;
                 Bundle bundle = new Bundle();
                 bundle.putString(AnalyticsParam.BUTTON_CLICKED, "viewing privacy policy");
                 mAnalytics.logEvent(AnalyticsParam.Event.VIEW_POLICY, bundle);
                 webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
-                alertDialogFragment.show(getSupportFragmentManager(), AlertDialogFragment.TAG);
             }
         };
         strBuilder.setSpan(clickable, start, end, flags);
@@ -363,14 +365,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void popupSnackbarForCompleteUpdate() {
-        Snackbar snackbar1 =
-                Snackbar.make(
-                        findViewById(android.R.id.content),
-                        "An update has just been downloaded.",
-                        Snackbar.LENGTH_INDEFINITE);
-        snackbar1.setAction("RESTART", view -> appUpdateManager.completeUpdate());
-        snackbar1.setActionTextColor(
-                getResources().getColor(R.color.custom_edit_text_background, getTheme()));
+        Snackbar snackbar1 = Snackbar.make(findViewById(android.R.id.content),R.string.update_downloaded, Snackbar.LENGTH_INDEFINITE);
+        snackbar1.setAction(R.string.restart, view -> appUpdateManager.completeUpdate());
+        snackbar1.setActionTextColor(getResources().getColor(R.color.scarlet_red, getTheme()));
         snackbar1.show();
     }
 

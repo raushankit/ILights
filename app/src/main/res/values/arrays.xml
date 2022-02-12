@@ -19,14 +19,25 @@
     </string-array>
 
     <!-- Theme Preference -->
-    <string-array name="theme_entries">
+    <string-array name="theme_entries_v29">
+        <item>Light</item>
+        <item>Dark</item>
         <item>Follow System</item>
+    </string-array>
+
+    <string-array name="theme_values_v29">
+        <item>light</item>
+        <item>dark</item>
+        <item>follow_system</item>
+    </string-array>
+
+    <!-- Theme Preference -->
+    <string-array name="theme_entries">
         <item>Light</item>
         <item>Dark</item>
     </string-array>
 
     <string-array name="theme_values">
-        <item>follow_system</item>
         <item>light</item>
         <item>dark</item>
     </string-array>

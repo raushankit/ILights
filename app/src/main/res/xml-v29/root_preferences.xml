@@ -6,10 +6,10 @@
 
         <ListPreference
             app:icon="@drawable/ic_baseline_brightness_6_24"
-            app:entries="@array/theme_entries"
-            app:entryValues="@array/theme_values"
+            app:entries="@array/theme_entries_v29"
+            app:entryValues="@array/theme_values_v29"
             app:key="theme"
-            app:defaultValue="light"
+            app:defaultValue="follow_system"
             app:dialogTitle="Choose Theme"
             app:title="@string/theme_header"
             app:useSimpleSummaryProvider="true" />
@@ -17,7 +17,7 @@
             app:icon="@drawable/ic_baseline_battery_saver_24"
             app:key="battery_saver_theme"
             app:defaultValue="true"
-            app:isPreferenceVisible="false"
+            app:isPreferenceVisible="true"
             app:title="@string/battery_saver_header"
             app:summary="@string/battery_saver_summary"/>
 

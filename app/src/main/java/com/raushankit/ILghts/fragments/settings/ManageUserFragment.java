@@ -157,7 +157,7 @@ public class ManageUserFragment extends Fragment {
 
     private void getQueriedData(CharSequence text){
         if(TextUtils.isEmpty(text)){
-            Snackbar.make(view, getString(R.string.empty_serach_string), BaseTransientBottomBar.LENGTH_SHORT).show();
+            Snackbar.make(view, R.string.empty_search_string, BaseTransientBottomBar.LENGTH_SHORT).show();
         }else{
             im.hideSoftInputFromWindow(view.getWindowToken(),0);
             manageUsersViewModel.loadMoreData(text.toString().toLowerCase(Locale.ROOT));

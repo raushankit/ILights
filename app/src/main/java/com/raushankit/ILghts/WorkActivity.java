@@ -1,16 +1,25 @@
 package com.raushankit.ILghts;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallState;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.InstallStatus;
 import com.raushankit.ILghts.entity.ControllerFragActions;
 import com.raushankit.ILghts.entity.PageKeys;
 import com.raushankit.ILghts.fragments.ControllerFragment;
@@ -20,17 +29,19 @@ import com.raushankit.ILghts.fragments.SignUpFragment;
 import com.raushankit.ILghts.utils.callbacks.CallBack;
 import com.raushankit.ILghts.viewModel.FragViewModel;
 
-public class WorkActivity extends AppCompatActivity {
+public class WorkActivity extends AppCompatActivity implements InstallStateUpdatedListener {
 
     private static final String TAG = "WorkActivity";
     private CallBack<PageKeys> changeFragment;
     private Intent signOutIntent;
+    private AppUpdateManager appUpdateManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work);
         Intent settingsIntent = new Intent(this, SettingsActivity.class);
+        appUpdateManager = AppUpdateManagerFactory.create(this);
         signOutIntent = new Intent(this, MainActivity.class);
         signOutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         FragViewModel fragViewModel = new ViewModelProvider(this).get(FragViewModel.class);
@@ -46,6 +57,19 @@ public class WorkActivity extends AppCompatActivity {
         });
         changeFragment = value -> replaceFragment(value.name());
         switchFrags();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        appUpdateManager.registerListener(this);
+    }
+
+    private void popupSnackbarForCompleteUpdate() {
+        Snackbar snackbar1 = Snackbar.make(findViewById(android.R.id.content),R.string.update_downloaded, Snackbar.LENGTH_INDEFINITE);
+        snackbar1.setAction(R.string.restart, view -> appUpdateManager.completeUpdate());
+        snackbar1.setActionTextColor(getResources().getColor(R.color.scarlet_red, getTheme()));
+        snackbar1.show();
     }
 
     private void switchFrags(){
@@ -114,5 +138,32 @@ public class WorkActivity extends AppCompatActivity {
             }
         }
         super.onBackPressed();
+    }
+
+    @SuppressLint("SwitchIntDef")
+    @Override
+    public void onStateUpdate(@NonNull InstallState installState) {
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),R.string.unknown_error, BaseTransientBottomBar.LENGTH_SHORT);
+        switch (installState.installStatus()) {
+            case InstallStatus.DOWNLOADED:
+                popupSnackbarForCompleteUpdate();
+                break;
+            case InstallStatus.FAILED:
+                snackbar.setText(R.string.failed_to_update);
+                snackbar.show();
+                break;
+            case InstallStatus.INSTALLED:
+                snackbar.setText(R.string.successfully_updated);
+                snackbar.show();
+                break;
+            default:
+                Log.w(TAG, "onStateUpdate: event type = " + installState.installStatus());
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        appUpdateManager.unregisterListener(this);
+        super.onDestroy();
     }
 }

@@ -27,9 +27,13 @@
     <string name="consent_dialog_body">We\'ll use Firebase Analytics to record events when you interact with the app to improve user experience.\nWe don\'t use your personal data and only in-app events are captured for analytics.\n\nYou can change your choice later in the app settings.</string>
     <string name="loading">Loading…</string>
     <string name="blocked">Blocked</string>
-    <string name="change_name_title">Change nabme</string>
+    <string name="change_name_title">Change name</string>
     <string name="change_name_hint">Enter new name</string>
     <string name="update">Update</string>
+    <string name="restart">RESTART</string>
+    <string name="update_downloaded">An update has just been downloaded.</string>
+    <string name="failed_to_update">Failed to update app.</string>
+    <string name="successfully_updated">App update Successful.</string>
     <string name="email_verified">Email verified</string>
     <string name="email_not_verified">Email not verified. Tap to verify</string>
     <string name="sent_verification_email">Verification Email was sent. Check Your Email inbox and verify</string>
@@ -38,7 +42,7 @@
     <string name="email_verification_sign_out">Verification Email was sent. Login Again</string>
     <string name="block_message">Your Access is blocked.\n Ask any Admin to unblock</string>
     <string name="google_play_update">Update Available</string>
-    <string name="empty_serach_string">Empty search text</string>
+    <string name="empty_search_string">Empty search text</string>
     <string name="same_as_before">Same as Previous</string>
     <string name="unknown_error">Unknown Error Occurred</string>
 
@@ -148,6 +152,8 @@
     <!-- Display Preference -->
     <string name="display_header">Display</string>
     <string name="theme_header">Theme</string>
+    <string name="battery_saver_header">Battery Saver Mode</string>
+    <string name="battery_saver_summary">Automatically switch to dark theme when battery saver is active.</string>
 
     <!-- Profile Preference -->
     <string name="name_header">Change Name</string>
@@ -164,7 +170,7 @@
     <!-- About Preferences -->
     <string name="version_name">Version</string>
     <string name="update_available">Update Available</string>
-    <string name="update_summary">%1$d -> %2$d</string>
+    <string name="update_summary">A new update with version code %1$d is available.\nTap to update.</string>
 
     <!-- Admin Preferences -->
     <string name="search_users">Search Users</string>
