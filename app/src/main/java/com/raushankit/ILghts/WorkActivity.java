@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
 import com.google.android.play.core.install.InstallState;
 import com.google.android.play.core.install.InstallStateUpdatedListener;
 import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
 import com.raushankit.ILghts.entity.ControllerFragActions;
 import com.raushankit.ILghts.entity.PageKeys;
 import com.raushankit.ILghts.fragments.ControllerFragment;
@@ -62,7 +64,11 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
     @Override
     protected void onResume() {
         super.onResume();
-        appUpdateManager.registerListener(this);
+        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(ap1 -> {
+           if(ap1.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS){
+               appUpdateManager.registerListener(this);
+           }
+        });
     }
 
     private void popupSnackbarForCompleteUpdate() {
@@ -157,6 +163,7 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
                 snackbar.show();
                 break;
             default:
+                Toast.makeText(this,"code: "+installState.installStatus(), Toast.LENGTH_LONG).show();
                 Log.w(TAG, "onStateUpdate: event type = " + installState.installStatus());
         }
     }

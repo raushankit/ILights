@@ -56,7 +56,6 @@ import com.raushankit.ILghts.viewModel.UserViewModel;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String link = "https://raushankit.github.io/ILights/";
-    private static final long SPLASH_DELAY = 1500;
     private static final long SLOW_INTERNET_TIMEOUT = 8000;
     private static final int RC_PLAY_UPDATE = 98922;
     private Handler mHandler;
@@ -89,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
         if(isv29 && themeType.equals("follow_system")){
             AppCompatDelegate.setDefaultNightMode(battery_saver_on? AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY:AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
-        Log.w(TAG, "attachBaseContext: themeType:: " + themeType + " battery_saver_on:: " + battery_saver_on);
     }
 
     @Override
@@ -170,16 +168,7 @@ public class MainActivity extends AppCompatActivity {
         spv.setMinAndMaxProgress(0.0f,0.6f);
 
         runnable = () -> {
-            if(!isUpdateAvailable){
-                if(user == null){
-                    registerBtn.setVisibility(View.VISIBLE);
-                    signInBtn.setVisibility(View.VISIBLE);
-                    helperText.setVisibility(View.VISIBLE);
-                    privacyText.setVisibility(View.VISIBLE);
-                }else{
-                    snackbar.show();
-                }
-            }
+            if(user != null) snackbar.show();
         };
 
         appUpdateManager.getAppUpdateInfo().addOnCompleteListener(task -> {
@@ -191,12 +180,21 @@ public class MainActivity extends AppCompatActivity {
                     isUpdateAvailable = true;
                 }else{
                     splashViewModel.setVersionFlag(true);
+                    if(user == null){
+                        registerBtn.setVisibility(View.VISIBLE);
+                        signInBtn.setVisibility(View.VISIBLE);
+                        helperText.setVisibility(View.VISIBLE);
+                        privacyText.setVisibility(View.VISIBLE);
+                    }
                 }
-                Log.w(TAG, "onCreate: updateAvailability:: " + appUpdateInfo.updateAvailability());
-                Log.w(TAG, "onCreate: isUpdateTypeAllowed:: " + appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE));
-                Log.w(TAG, "onCreate: availableVersionCode:: " + appUpdateInfo.availableVersionCode());
             }else{
                 splashViewModel.setVersionFlag(true);
+                if(user == null){
+                    registerBtn.setVisibility(View.VISIBLE);
+                    signInBtn.setVisibility(View.VISIBLE);
+                    helperText.setVisibility(View.VISIBLE);
+                    privacyText.setVisibility(View.VISIBLE);
+                }
                 Log.w(TAG, "appUpdateInfoTask: " + (task.getException() != null && task.getException().getMessage() != null ? task.getException().getMessage():"failed to fetch update"));
             }
         });
@@ -213,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
         });
         signInBtn.setOnClickListener(v-> {
             intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.LOGIN_PAGE.name());
-            Log.w(TAG, "onCreate: first_time signin = " + sharedRepo.getValue(SharedRefKeys.FIRST_OPEN));
             if(sharedRepo.getValue(SharedRefKeys.FIRST_OPEN).equals(SharedRefKeys.DEFAULT_VALUE.name())){
                 consentDialogFragment.show(getSupportFragmentManager(), ConsentDialogFragment.TAG);
             }else{
@@ -224,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
 
         String isAuthSuccess = sharedRepo.getValue(SharedRefKeys.AUTH_SUCCESSFUL);
         networkLoader.setVisibility(user==null?View.GONE:View.VISIBLE);
-        mHandler.postDelayed(runnable, user==null?SPLASH_DELAY:SLOW_INTERNET_TIMEOUT);
+        mHandler.postDelayed(runnable, SLOW_INTERNET_TIMEOUT);
         splashViewModel.setRoleFlag(user==null);
         if(user != null && Boolean.parseBoolean(isAuthSuccess)){
             UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
@@ -351,6 +348,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         appUpdateManager.getAppUpdateInfo().addOnSuccessListener(it -> {
+            if(it.installStatus() == InstallStatus.DOWNLOADED){
+                appUpdateManager.completeUpdate();
+                return;
+            }
             if(it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS){
                 try {
                     appUpdateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, RC_PLAY_UPDATE);
@@ -358,17 +359,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            if(it.installStatus() == InstallStatus.DOWNLOADED){
-                popupSnackbarForCompleteUpdate();
-            }
         });
-    }
-
-    private void popupSnackbarForCompleteUpdate() {
-        Snackbar snackbar1 = Snackbar.make(findViewById(android.R.id.content),R.string.update_downloaded, Snackbar.LENGTH_INDEFINITE);
-        snackbar1.setAction(R.string.restart, view -> appUpdateManager.completeUpdate());
-        snackbar1.setActionTextColor(getResources().getColor(R.color.scarlet_red, getTheme()));
-        snackbar1.show();
     }
 
     @Override

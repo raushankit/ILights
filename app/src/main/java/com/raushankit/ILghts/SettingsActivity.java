@@ -13,7 +13,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -82,6 +81,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private static final long ALPHA_ANIMATIONS_DURATION = 200;
     private static final int DAYS_FOR_FLEXIBLE_UPDATE = 30;
     private static final int RC_PLAY_UPDATE = 9858922;
+    private static final int PREF_PLAY_UPDATE = 9858955;
     private static final String link = "https://raushankit.github.io/ILights/";
 
     private FirebaseAuth mAuth;
@@ -193,15 +193,12 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                     if (themeData.getThemeType().equals("light")) {
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                        getDelegate().applyDayNight();
                     }
                     if (themeData.getThemeType().equals("dark")) {
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                        getDelegate().applyDayNight();
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && themeData.getThemeType().equals("follow_system")) {
                         AppCompatDelegate.setDefaultNightMode(themeData.isBatterySaverOn()?AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY:AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-                        getDelegate().applyDayNight();
                     }
                     break;
                 case "verify_email":
@@ -283,7 +280,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     appUpdateManager.getAppUpdateInfo().addOnSuccessListener(it1 -> {
                         if(it1.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && it1.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)){
                             try {
-                                appUpdateManager.startUpdateFlowForResult(it1, AppUpdateType.FLEXIBLE, this, RC_PLAY_UPDATE);
+                                appUpdateManager.startUpdateFlowForResult(it1, AppUpdateType.FLEXIBLE, this, PREF_PLAY_UPDATE);
                             } catch (IntentSender.SendIntentException e) {
                                 final String appPackageName = getPackageName(); // package name of the app
                                 try {
@@ -394,9 +391,9 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         appUpdateManager.getAppUpdateInfo().addOnSuccessListener(appUpdateInfo -> {
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
                 settingCommViewModel.selectItem(new Pair<>("preference_setter", new VersionInfo("", appUpdateInfo.availableVersionCode())));
-                if(/*appUpdateInfo.clientVersionStalenessDays() != null
+                if(appUpdateInfo.clientVersionStalenessDays() != null
                         && appUpdateInfo.clientVersionStalenessDays() >= DAYS_FOR_FLEXIBLE_UPDATE
-                        && */appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
+                        && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
                         && isUpdateNotificationAllowed()){
                     try {
                         appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, this, RC_PLAY_UPDATE);
@@ -470,13 +467,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         super.onResume();
         mAuth.addAuthStateListener(authListener);
         appUpdateManager.getAppUpdateInfo().addOnSuccessListener(it -> {
-            if(it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS){
-                try {
-                    appUpdateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, RC_PLAY_UPDATE);
-                } catch (IntentSender.SendIntentException e) {
-                    e.printStackTrace();
-                }
-            }
             if(it.installStatus() == InstallStatus.DOWNLOADED){
                 popupSnackbarForCompleteUpdate();
             }
@@ -538,14 +528,13 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RC_PLAY_UPDATE){
+        if(requestCode == RC_PLAY_UPDATE || requestCode == PREF_PLAY_UPDATE){
             switch (resultCode){
                 case RESULT_OK:
                     appUpdateManager.registerListener(this);
                     break;
                 case RESULT_CANCELED:
-                    Toast.makeText(this, "muted for 1 month", Toast.LENGTH_SHORT).show();
-                    //sharedRepo.insertLong(SharedRefKeys.NOTIFY_UPDATE, Calendar.getInstance().getTimeInMillis());
+                    if(requestCode == RC_PLAY_UPDATE) sharedRepo.insertLong(SharedRefKeys.NOTIFY_UPDATE, Calendar.getInstance().getTimeInMillis());
                     break;
                 case ActivityResult.RESULT_IN_APP_UPDATE_FAILED:
                     snackbar.setText(R.string.failed_to_update);
@@ -682,7 +671,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     settingCommViewModelFrag.selectItem(new Pair<>("privacy_policy", null));
                     return true;
                 default:
-                    Log.d(TAG, "onPreferenceClick: unknown click event");
+                    Log.w(TAG, "onPreferenceClick: unknown click event");
                     break;
             }
             return false;
