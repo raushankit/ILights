@@ -8,6 +8,8 @@ public enum SharedRefKeys {
     USER_EMAIL("user-email"),
     FIRST_OPEN("first-open"),
     NOTIFY_UPDATE("notify-update"),
+    SHOW_ANALYTICS_DIALOG("show-analytics-dialog"),
+    PREV_SHOWN_ANALYTICS_DIALOG("prev_show_analytics_dialog"),
     EMAIL_VERIFICATION("email-verification");
 
     SharedRefKeys(String key){

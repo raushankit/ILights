@@ -20,6 +20,15 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-assumenosideeffects class android.util.Log {
+  v(...);
+  d(...);
+  i(...);
+  w(...);
+  e(...);
+  println(...);
+}
+
 -keep class com.firebase.** { *; }
 -keep class org.apache.** { *; }
 -keepnames class com.fasterxml.jackson.** { *; }

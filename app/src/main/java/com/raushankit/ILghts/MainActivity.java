@@ -19,7 +19,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,8 +33,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.ActivityResult;
 import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,10 +52,12 @@ import com.raushankit.ILghts.utils.AnalyticsParam;
 import com.raushankit.ILghts.viewModel.SplashViewModel;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
+import java.util.Calendar;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String link = "https://raushankit.github.io/ILights/";
-    private static final long SLOW_INTERNET_TIMEOUT = 8000;
+    private static final long SLOW_INTERNET_TIMEOUT = 10000;
     private static final int RC_PLAY_UPDATE = 98922;
     private Handler mHandler;
     private Runnable runnable;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private Intent blockedIntent;
     private AppUpdateManager appUpdateManager;
     private SplashViewModel splashViewModel;
+    private boolean updateStartedHere = false;
     private AlertDialogFragment alertDialogFragment;
     private boolean isUpdateAvailable = false;
     private WebViewDialogFragment webViewDialogFragment;
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         webViewDialogFragment = WebViewDialogFragment.newInstance();
         webViewDialogFragment.setUrl(link);
         askAgainForUpdate();
-        consentDialogFragment = ConsentDialogFragment.newInstance();
+        consentDialogFragment = ConsentDialogFragment.newInstance(true, false);
         snackbar = Snackbar.make(findViewById(android.R.id.content),getString(R.string.no_network_detected), BaseTransientBottomBar.LENGTH_LONG);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         splashViewModel = new ViewModelProvider(this).get(SplashViewModel.class);
@@ -135,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
                     mAnalytics.setAnalyticsCollectionEnabled(false);
                     consentDialogFragment.dismiss();
                     sharedRepo.insert(SharedRefKeys.FIRST_OPEN, Boolean.TRUE.toString());
+                    sharedRepo.insertLong(SharedRefKeys.PREV_SHOWN_ANALYTICS_DIALOG, Calendar.getInstance().getTimeInMillis());
                     startActivity(intent);
                     finish();
                     break;
@@ -241,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
                 if(splashData.getUpdatePriority() != null && splashData.getUpdatePriority().getPriority() >= UpdateType.FORCED){
                     try {
                         appUpdateManager.startUpdateFlowForResult(splashViewModel.getAppUpdateInfo(), AppUpdateType.IMMEDIATE, this, RC_PLAY_UPDATE);
+                        updateStartedHere = true;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -320,6 +324,7 @@ public class MainActivity extends AppCompatActivity {
                     if(appUpdateInfo1.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && appUpdateInfo1.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)){
                         try {
                             appUpdateManager.startUpdateFlowForResult(appUpdateInfo1, AppUpdateType.IMMEDIATE, this, RC_PLAY_UPDATE);
+                            updateStartedHere = true;
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -338,9 +343,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(this, "onActivityResult: requestCode = " + requestCode + " resultCode = " + resultCode, Toast.LENGTH_LONG).show();
-        if(requestCode == RC_PLAY_UPDATE && resultCode == RESULT_CANCELED){
-            alertDialogFragment.show(getSupportFragmentManager(), AlertDialogFragment.TAG);
+        if(requestCode == RC_PLAY_UPDATE){
+            switch (resultCode){
+                case RESULT_OK:
+                    updateStartedHere = true;
+                    break;
+                case RESULT_CANCELED:
+                    updateStartedHere = false;
+                    alertDialogFragment.setPositiveButtonText(R.string.update);
+                    alertDialogFragment.setBodyString(getString(R.string.forced_update_message));
+                    alertDialogFragment.show(getSupportFragmentManager(), AlertDialogFragment.TAG);
+                    break;
+                case ActivityResult.RESULT_IN_APP_UPDATE_FAILED:
+                    updateStartedHere = false;
+                    alertDialogFragment.setPositiveButtonText(R.string.retry);
+                    alertDialogFragment.setBodyString(getString(R.string.in_app_update_failed));
+                    alertDialogFragment.show(getSupportFragmentManager(), AlertDialogFragment.TAG);
+                    break;
+                default:
+                    Log.w(TAG, "onActivityResult: un-captured result code: " + resultCode);
+            }
         }
     }
 
@@ -348,11 +370,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         appUpdateManager.getAppUpdateInfo().addOnSuccessListener(it -> {
-            if(it.installStatus() == InstallStatus.DOWNLOADED){
-                appUpdateManager.completeUpdate();
-                return;
-            }
-            if(it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS){
+            if(updateStartedHere && it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS){
                 try {
                     appUpdateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, RC_PLAY_UPDATE);
                 } catch (IntentSender.SendIntentException e) {

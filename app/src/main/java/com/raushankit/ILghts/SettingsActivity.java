@@ -329,6 +329,10 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     break;
                 case "edit_analytics_state":
                     mFirebaseAnalytics.setAnalyticsCollectionEnabled((Boolean) item.second);
+                    if(Boolean.FALSE.equals(item.second)){
+                        sharedRepo.insertBoolean(SharedRefKeys.SHOW_ANALYTICS_DIALOG, true);
+                        sharedRepo.insertLong(SharedRefKeys.PREV_SHOWN_ANALYTICS_DIALOG, Calendar.getInstance().getTimeInMillis());
+                    }
                     Snackbar.make(findViewById(android.R.id.content),getString(R.string.settings_snack_message), BaseTransientBottomBar.LENGTH_SHORT).show();
                     break;
                 default:
@@ -392,7 +396,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
                 settingCommViewModel.selectItem(new Pair<>("preference_setter", new VersionInfo("", appUpdateInfo.availableVersionCode())));
                 if(appUpdateInfo.clientVersionStalenessDays() != null
-                        && appUpdateInfo.clientVersionStalenessDays() >= DAYS_FOR_FLEXIBLE_UPDATE
+                        && Objects.requireNonNull(appUpdateInfo.clientVersionStalenessDays()) >= DAYS_FOR_FLEXIBLE_UPDATE
                         && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
                         && isUpdateNotificationAllowed()){
                     try {
@@ -467,8 +471,12 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         super.onResume();
         mAuth.addAuthStateListener(authListener);
         appUpdateManager.getAppUpdateInfo().addOnSuccessListener(it -> {
-            if(it.installStatus() == InstallStatus.DOWNLOADED){
+            if(it.installStatus() == InstallStatus.DOWNLOADED) {
                 popupSnackbarForCompleteUpdate();
+            }
+            if(it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
+                    && (it.installStatus() == InstallStatus.DOWNLOADING || it.installStatus() == InstallStatus.PENDING)){
+                appUpdateManager.registerListener(this);
             }
         });
     }
@@ -553,6 +561,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         switch (installState.installStatus()) {
             case InstallStatus.DOWNLOADED:
                 popupSnackbarForCompleteUpdate();
+                appUpdateManager.unregisterListener(this);
                 break;
             case InstallStatus.FAILED:
                 snackbarUpdate.setText(R.string.failed_to_update);
@@ -644,6 +653,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             switch (preference.getKey()) {
                 case "theme":
                     settingCommViewModelFrag.selectItem(new Pair<>("theme", new ThemeData((String) newValue, batterySaverPreference.isChecked())));
+                    batterySaverPreference.setEnabled(newValue.equals("follow_system"));
+                    batterySaverPreference.setSummary(newValue.equals("follow_system")?R.string.battery_saver_summary:R.string.battery_saver_disabled_summary);
                     return true;
                 case "send_statistics":
                     settingCommViewModelFrag.selectItem(new Pair<>("edit_analytics_state", newValue));

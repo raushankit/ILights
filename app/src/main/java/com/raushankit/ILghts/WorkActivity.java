@@ -2,17 +2,18 @@ package com.raushankit.ILghts;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -22,21 +23,31 @@ import com.google.android.play.core.install.InstallState;
 import com.google.android.play.core.install.InstallStateUpdatedListener;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.raushankit.ILghts.dialogs.ConsentDialogFragment;
 import com.raushankit.ILghts.entity.ControllerFragActions;
 import com.raushankit.ILghts.entity.PageKeys;
+import com.raushankit.ILghts.entity.SharedRefKeys;
 import com.raushankit.ILghts.fragments.ControllerFragment;
 import com.raushankit.ILghts.fragments.ForgotPasswordFragment;
 import com.raushankit.ILghts.fragments.LoginFragment;
 import com.raushankit.ILghts.fragments.SignUpFragment;
+import com.raushankit.ILghts.storage.SharedRepo;
 import com.raushankit.ILghts.utils.callbacks.CallBack;
 import com.raushankit.ILghts.viewModel.FragViewModel;
+
+import java.util.Calendar;
 
 public class WorkActivity extends AppCompatActivity implements InstallStateUpdatedListener {
 
     private static final String TAG = "WorkActivity";
+    private static final long CONSENT_DELAY = 15*24*3600000L;
     private CallBack<PageKeys> changeFragment;
     private Intent signOutIntent;
     private AppUpdateManager appUpdateManager;
+    private SharedPreferences sharedPreferences;
+    private SharedRepo sharedRepo;
+    private ConsentDialogFragment consentDialogFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +55,9 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
         setContentView(R.layout.activity_work);
         Intent settingsIntent = new Intent(this, SettingsActivity.class);
         appUpdateManager = AppUpdateManagerFactory.create(this);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedRepo = SharedRepo.newInstance(this);
+        consentDialogFragment = ConsentDialogFragment.newInstance(false, true);
         signOutIntent = new Intent(this, MainActivity.class);
         signOutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         FragViewModel fragViewModel = new ViewModelProvider(this).get(FragViewModel.class);
@@ -57,6 +71,30 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
                 Log.d(TAG, "onCreate: unknown event");
             }
         });
+        consentDialogFragment.addOnActionClickListener(action ->  {
+            switch (action){
+                case AGREE:
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("send_statistics", true);
+                    editor.apply();
+                    FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(true);
+                    sharedRepo.insertBoolean(SharedRefKeys.SHOW_ANALYTICS_DIALOG, true);
+                    consentDialogFragment.dismiss();
+                    break;
+                case DISAGREE:
+                    sharedRepo.insertLong(SharedRefKeys.PREV_SHOWN_ANALYTICS_DIALOG, Calendar.getInstance().getTimeInMillis());
+                    sharedRepo.insertBoolean(SharedRefKeys.SHOW_ANALYTICS_DIALOG, !consentDialogFragment.isChecked());
+                    consentDialogFragment.dismiss();
+                    break;
+                default:
+                    Log.w(TAG, "onCreate: un-captured event");
+            }
+        });
+        if(!sharedPreferences.getBoolean("send_statistics", false)
+                && sharedRepo.getBooleanValue(SharedRefKeys.SHOW_ANALYTICS_DIALOG, true)
+                && canShowConsentDialog(sharedRepo.getLongValue(SharedRefKeys.PREV_SHOWN_ANALYTICS_DIALOG, -1))){
+            consentDialogFragment.show(getSupportFragmentManager(), ConsentDialogFragment.TAG);
+        }
         changeFragment = value -> replaceFragment(value.name());
         switchFrags();
     }
@@ -65,7 +103,11 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
     protected void onResume() {
         super.onResume();
         appUpdateManager.getAppUpdateInfo().addOnSuccessListener(ap1 -> {
-           if(ap1.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS){
+            if(ap1.installStatus() == InstallStatus.DOWNLOADED) {
+                popupSnackbarForCompleteUpdate();
+            }
+            if(ap1.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
+                        && (ap1.installStatus() == InstallStatus.DOWNLOADING || ap1.installStatus() == InstallStatus.PENDING)){
                appUpdateManager.registerListener(this);
            }
         });
@@ -161,11 +203,16 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
             case InstallStatus.INSTALLED:
                 snackbar.setText(R.string.successfully_updated);
                 snackbar.show();
+                appUpdateManager.unregisterListener(this);
                 break;
             default:
-                Toast.makeText(this,"code: "+installState.installStatus(), Toast.LENGTH_LONG).show();
                 Log.w(TAG, "onStateUpdate: event type = " + installState.installStatus());
         }
+    }
+
+    private boolean canShowConsentDialog(long prevShown){
+        if(prevShown == -1) return true;
+        return prevShown + CONSENT_DELAY <= Calendar.getInstance().getTimeInMillis();
     }
 
     @Override

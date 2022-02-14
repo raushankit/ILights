@@ -34,6 +34,12 @@ public class SharedRepo {
         editor.apply();
     }
 
+    public void insertBoolean(SharedRefKeys key, boolean value){
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(key.name(), value);
+        editor.apply();
+    }
+
     public void insert(Map<SharedRefKeys, String> mp){
         SharedPreferences.Editor editor = prefs.edit();
         mp.forEach((k ,v) -> editor.putString(k.name(),v));
@@ -46,5 +52,9 @@ public class SharedRepo {
 
     public long getLongValue(SharedRefKeys keys, long defaultValue){
         return prefs.getLong(keys.name(), defaultValue);
+    }
+
+    public boolean getBooleanValue(SharedRefKeys keys, boolean defaultValue){
+        return prefs.getBoolean(keys.name(), defaultValue);
     }
 }
