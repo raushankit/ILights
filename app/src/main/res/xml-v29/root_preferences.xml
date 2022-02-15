@@ -109,7 +109,7 @@
         app:iconSpaceReserved="false"
         app:title="@string/about_header">
         <Preference
-            app:icon="@drawable/ic_play_icon"
+            app:icon="@drawable/ic_google_play_logo"
             app:isPreferenceVisible="false"
             app:title="@string/update_available"
             app:key="update_available"/>
