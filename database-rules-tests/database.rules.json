@@ -1,0 +1,68 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "(auth !== null && $uid == auth.uid)",
+        ".write": "auth !== null && $uid == auth.uid",
+        ".validate": "newData.hasChildren(['name','email'])",
+        "name": {".validate": "newData.isString()"},
+        "email": {".validate": "newData.isString()"},
+        "$other": {".validate":"false"}
+      },
+      ".read": "(root.child('role').child(auth.uid).child('level').val() >= 2 && (query.orderByChild === 'email' || query.orderByChild === 'name'))",
+      ".indexOn": [
+        "email",
+        "name"
+      ]
+    },
+    "metadata": {
+      ".write": "false",
+      "board_data": {
+        ".read": "auth !== null && root.child('role').child(auth.uid).child('level').val() >= 1"
+      },
+      "version": {
+        ".read": "auth !== null && root.child('role').child(auth.uid).child('level').val() >= 1"
+      }
+    },
+    "role": {
+      "$uid": {
+        ".write": "((!newData.exists() && $uid === auth.uid) || (!data.exists() && newData.child('level').val()==1) || (root.child('role').child(auth.uid).child('level').val() >= 2 && (root.child('role').child(auth.uid).child('level').val() > data.child('level').val() && root.child('role').child(auth.uid).child('level').val() > newData.child('level').val())))",
+        ".read": "($uid == auth.uid || root.child('role/'+auth.uid+'/level').val() >= 2)",
+        ".validate": "newData.hasChildren(['level'])",
+        "level": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3"
+        },
+        "$other": {".validate": "false"}
+      }
+    },
+    "control": {
+      "info": {
+        ".read": "auth !== null && root.child('role').child(auth.uid).child('level').val() >= 1", 
+        "$num": {
+          ".write": "(auth !== null && root.child('role').child(auth.uid).child('level').val() >= ((newData.exists() && data.exists()) ? 1 : 2))",
+          ".validate": "newData.hasChildren(['name'])",
+          "name": { ".validate": "newData.isString()" },
+          "$other": {".validate": "false"}
+        }
+      },
+      "update": {
+        ".read": "auth !== null && root.child('role').child(auth.uid).child('level').val() >= 1", 
+        "$num": {
+          ".write": "(auth !== null && root.child('role').child(auth.uid).child('level').val() >= ((newData.exists() && data.exists()) ? 1 : 2))",
+          ".validate": "newData.hasChildren(['changed_at', 'changed_by', 'changer_id'])",
+          "changed_at": { ".validate": "newData.isNumber() && newData.val() <= now+500" },
+          "changer_id": { ".validate": "newData.isString() && newData.val() === auth.uid" },
+          "changed_by": { ".validate": "newData.isString()" },
+          "$other":{ ".validate": "false" }
+        }
+      },
+      "status": {
+        ".read": "auth !== null && root.child('role').child(auth.uid).child('level').val() >= 1",
+        "$num": {
+          ".write": "(auth !== null && root.child('role').child(auth.uid).child('level').val() >= ((newData.exists() && data.exists()) ? 1 : 2))",
+          ".validate": "newData.isBoolean()"
+        }
+      }
+    }
+  }
+}

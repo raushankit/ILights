@@ -1,0 +1,73 @@
+{
+  "control" : {
+    "info" : [ null, {
+      "name" : "Tube Light"
+    }, {
+      "name" : "Room Lamp"
+    }, {
+      "name" : "Computer"
+    }, {
+      "name" : "AC"
+    } ],
+    "status" : [ null, true, true, false, false ],
+    "update" : [ null, {
+      "changed_at" : 1643485975905,
+      "changed_by" : "ankit raushan",
+      "changer_id" : "Q3JOfXbdkMa4nHxF1RAg1bnZPrh1"
+    }, {
+      "changed_at" : 1643478427769,
+      "changed_by" : "ankit raushan",
+      "changer_id" : "Q3JOfXbdkMa4nHxF1RAg1bnZPrh1"
+    }, {
+      "changed_at" : 1643273243330,
+      "changed_by" : "ankit raushan",
+      "changer_id" : "Q3JOfXbdkMa4nHxF1RAg1bnZPrh1"
+    }, {
+      "changed_at" : 1643188192263,
+      "changed_by" : "ankit raushan",
+      "changer_id" : "Q3JOfXbdkMa4nHxF1RAg1bnZPrh1"
+    } ]
+  },
+  "metadata" : {
+    "board_data" : {
+      "available_pins" : 65535,
+      "heart_beat" : 1643127590137
+    },
+    "version" : {
+      "version_code" : 16,
+      "version_name" : "2.3.7"
+    }
+  },
+  "role" : {
+    "BKVURYUugYYvhYByuH" : {
+      "level" : 1
+    },
+    "DOn8TJfvFkWfxESVvDIZb6tMw3v1" : {
+      "level" : 1
+    },
+    "Q3JOfXbdkMa4nHxF1RAg1bnZPrh1" : {
+      "level" : 3
+    },
+    "xc6OUE6qsedGBEDbQSgSUH2QeYr2" : {
+      "level" : 2
+    }
+  },
+  "users" : {
+    "BKVURYUugYYvhYByuH" : {
+      "email" : "chatappdata223@gmail.com",
+      "name" : "ankit raushan"
+    },
+    "DOn8TJfvFkWfxESVvDIZb6tMw3v1" : {
+      "email" : "raushankit160226@gmail.com",
+      "name" : "ankit raushan"
+    },
+    "Q3JOfXbdkMa4nHxF1RAg1bnZPrh1" : {
+      "email" : "chatappdata223@gmail.com",
+      "name" : "ankit raushan"
+    },
+    "xc6OUE6qsedGBEDbQSgSUH2QeYr2" : {
+      "email" : "sinhaanita160226@gmail.com",
+      "name" : "anita kumari sinha"
+    }
+  }
+}
