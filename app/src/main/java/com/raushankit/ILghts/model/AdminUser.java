@@ -12,10 +12,21 @@ import java.util.Objects;
 @IgnoreExtraProperties
 @SuppressWarnings("unused")
 public class AdminUser {
+    public static final DiffUtil.ItemCallback<AdminUser> DIFF_CALLBACK = new DiffUtil.ItemCallback<AdminUser>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull AdminUser oldItem, @NonNull AdminUser newItem) {
+            return oldItem.uid.equals(newItem.uid);
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull AdminUser oldItem, @NonNull AdminUser newItem) {
+            return oldItem.equals(newItem);
+        }
+    };
     private String uid;
     private User user;
 
-    public AdminUser(){
+    public AdminUser() {
 
     }
 
@@ -61,16 +72,4 @@ public class AdminUser {
                 ", user=" + user +
                 '}';
     }
-
-    public static final DiffUtil.ItemCallback<AdminUser> DIFF_CALLBACK = new DiffUtil.ItemCallback<AdminUser>() {
-        @Override
-        public boolean areItemsTheSame(@NonNull AdminUser oldItem, @NonNull AdminUser newItem) {
-            return oldItem.uid.equals(newItem.uid);
-        }
-
-        @Override
-        public boolean areContentsTheSame(@NonNull AdminUser oldItem, @NonNull AdminUser newItem) {
-            return oldItem.equals(newItem);
-        }
-    };
 }

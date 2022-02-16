@@ -79,16 +79,16 @@ public class MainActivity extends AppCompatActivity {
         super.attachBaseContext(newBase);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isv29 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
-        String themeType = sharedPreferences.getString("theme", isv29?"follow_system":"light");
+        String themeType = sharedPreferences.getString("theme", isv29 ? "follow_system" : "light");
         boolean battery_saver_on = sharedPreferences.getBoolean("battery_saver_theme", true);
-        if(themeType.equals("light")){
+        if (themeType.equals("light")) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
-        if(themeType.equals("dark")){
+        if (themeType.equals("dark")) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
-        if(isv29 && themeType.equals("follow_system")){
-            AppCompatDelegate.setDefaultNightMode(battery_saver_on? AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY:AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        if (isv29 && themeType.equals("follow_system")) {
+            AppCompatDelegate.setDefaultNightMode(battery_saver_on ? AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
     }
 
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         intent = new Intent(this, WorkActivity.class);
         blockedIntent = new Intent(this, SettingsActivity.class);
         SharedRepo sharedRepo = SharedRepo.newInstance(this);
-        alertDialogFragment = AlertDialogFragment.newInstance(R.string.forced_update,true,true);
+        alertDialogFragment = AlertDialogFragment.newInstance(R.string.forced_update, true, true);
         alertDialogFragment.setPositiveButtonText(R.string.update);
         alertDialogFragment.setBodyString(getString(R.string.forced_update_message));
         alertDialogFragment.setNegativeButtonText(R.string.exit);
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         webViewDialogFragment.setUrl(link);
         askAgainForUpdate();
         consentDialogFragment = ConsentDialogFragment.newInstance(true, false);
-        snackbar = Snackbar.make(findViewById(android.R.id.content),getString(R.string.no_network_detected), BaseTransientBottomBar.LENGTH_LONG);
+        snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_network_detected), BaseTransientBottomBar.LENGTH_LONG);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         splashViewModel = new ViewModelProvider(this).get(SplashViewModel.class);
         mHandler = new Handler();
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         bundle1.putString(FirebaseAnalytics.Param.SCREEN_NAME, getClass().getSimpleName());
         mAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle1);
         consentDialogFragment.addOnActionClickListener(action -> {
-            switch (action){
+            switch (action) {
                 case AGREE:
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean("send_statistics", true);
@@ -142,7 +142,8 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                     break;
                 case POLICY:
-                    if(!webViewDialogFragment.isAdded()) webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
+                    if (!webViewDialogFragment.isAdded())
+                        webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
                     break;
                 default:
                     Log.w(TAG, "onCreate: bad click event");
@@ -168,69 +169,69 @@ public class MainActivity extends AppCompatActivity {
 
         Animation zoomOutAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_out);
         spText.startAnimation(zoomOutAnimation);
-        spv.setMinAndMaxProgress(0.0f,0.6f);
+        spv.setMinAndMaxProgress(0.0f, 0.6f);
 
         runnable = () -> {
-            if(user != null) snackbar.show();
+            if (user != null && !isUpdateAvailable) snackbar.show();
         };
 
         appUpdateManager.getAppUpdateInfo().addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
+            if (task.isSuccessful()) {
                 AppUpdateInfo appUpdateInfo = task.getResult();
                 splashViewModel.setAppUpdateInfo(appUpdateInfo);
-                if(appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)){
+                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
                     splashViewModel.addSource(new UpdateTypeLiveData(appUpdateInfo.availableVersionCode()));
                     isUpdateAvailable = true;
-                }else{
+                } else {
                     splashViewModel.setVersionFlag(true);
-                    if(user == null){
+                    if (user == null) {
                         registerBtn.setVisibility(View.VISIBLE);
                         signInBtn.setVisibility(View.VISIBLE);
                         helperText.setVisibility(View.VISIBLE);
                         privacyText.setVisibility(View.VISIBLE);
                     }
                 }
-            }else{
+            } else {
                 splashViewModel.setVersionFlag(true);
-                if(user == null){
+                if (user == null) {
                     registerBtn.setVisibility(View.VISIBLE);
                     signInBtn.setVisibility(View.VISIBLE);
                     helperText.setVisibility(View.VISIBLE);
                     privacyText.setVisibility(View.VISIBLE);
                 }
-                Log.w(TAG, "appUpdateInfoTask: " + (task.getException() != null && task.getException().getMessage() != null ? task.getException().getMessage():"failed to fetch update"));
+                Log.w(TAG, "appUpdateInfoTask: " + (task.getException() != null && task.getException().getMessage() != null ? task.getException().getMessage() : "failed to fetch update"));
             }
         });
 
-        registerBtn.setOnClickListener(v-> {
+        registerBtn.setOnClickListener(v -> {
             intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.SIGN_UP_PAGE.name());
             Log.w(TAG, "onCreate: first_time register = " + sharedRepo.getValue(SharedRefKeys.FIRST_OPEN));
-            if(sharedRepo.getValue(SharedRefKeys.FIRST_OPEN).equals(SharedRefKeys.DEFAULT_VALUE.name())){
+            if (sharedRepo.getValue(SharedRefKeys.FIRST_OPEN).equals(SharedRefKeys.DEFAULT_VALUE.name())) {
                 consentDialogFragment.show(getSupportFragmentManager(), ConsentDialogFragment.TAG);
-            }else{
+            } else {
                 startActivity(intent);
                 finish();
             }
         });
-        signInBtn.setOnClickListener(v-> {
+        signInBtn.setOnClickListener(v -> {
             intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.LOGIN_PAGE.name());
-            if(sharedRepo.getValue(SharedRefKeys.FIRST_OPEN).equals(SharedRefKeys.DEFAULT_VALUE.name())){
+            if (sharedRepo.getValue(SharedRefKeys.FIRST_OPEN).equals(SharedRefKeys.DEFAULT_VALUE.name())) {
                 consentDialogFragment.show(getSupportFragmentManager(), ConsentDialogFragment.TAG);
-            }else{
+            } else {
                 startActivity(intent);
                 finish();
             }
         });
 
         String isAuthSuccess = sharedRepo.getValue(SharedRefKeys.AUTH_SUCCESSFUL);
-        networkLoader.setVisibility(user==null?View.GONE:View.VISIBLE);
+        networkLoader.setVisibility(user == null ? View.GONE : View.VISIBLE);
         mHandler.postDelayed(runnable, SLOW_INTERNET_TIMEOUT);
-        splashViewModel.setRoleFlag(user==null);
-        if(user != null && Boolean.parseBoolean(isAuthSuccess)){
+        splashViewModel.setRoleFlag(user == null);
+        if (user != null && Boolean.parseBoolean(isAuthSuccess)) {
             UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
             splashViewModel.addSource(userViewModel.getRoleData());
-        }else{
-            if(user != null){
+        } else {
+            if (user != null) {
                 Bundle bundle = new Bundle();
                 bundle.putString(AnalyticsParam.BAD_USER, "user is created without database event");
                 mAnalytics.logEvent(AnalyticsParam.Event.UNEXPECTED_EVENT, bundle);
@@ -240,19 +241,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         splashViewModel.getData().observe(this, splashData -> {
-            if(isUpdateAvailable){
-                if(splashData.getUpdatePriority() != null && splashData.getUpdatePriority().getPriority() >= UpdateType.FORCED){
+            if (isUpdateAvailable) {
+                if (splashData.getUpdatePriority() != null && splashData.getUpdatePriority().getPriority() >= UpdateType.FORCED) {
                     try {
                         appUpdateManager.startUpdateFlowForResult(splashViewModel.getAppUpdateInfo(), AppUpdateType.IMMEDIATE, this, RC_PLAY_UPDATE);
                         updateStartedHere = true;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else{
-                    if(user != null) {
+                } else {
+                    isUpdateAvailable = false;
+                    if (user != null) {
                         normalRoleFlow(splashData.getRole());
-                    }
-                    else{
+                    } else {
                         registerBtn.setVisibility(View.VISIBLE);
                         signInBtn.setVisibility(View.VISIBLE);
                         helperText.setVisibility(View.VISIBLE);
@@ -265,19 +266,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void normalRoleFlow(Role r1){
-        if(r1 != null){
-            if(r1.getAccessLevel() > 0){
+    private void normalRoleFlow(Role r1) {
+        if (r1 != null) {
+            if (r1.getAccessLevel() > 0) {
                 intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.CONTROLLER_PAGE.name());
                 startActivity(intent);
-            }else{
+            } else {
                 Bundle bundle = new Bundle();
                 bundle.putString(AnalyticsParam.BLOCKED_USER, "user is blocked");
                 mAnalytics.logEvent(AnalyticsParam.Event.UNEXPECTED_EVENT, bundle);
                 startActivity(blockedIntent);
             }
-        }
-        else{
+        } else {
             Log.w(TAG, "onCreate: role data is null");
             Bundle bundle = new Bundle();
             bundle.putString(AnalyticsParam.BAD_USER, "user is created without role data in database");
@@ -287,14 +287,13 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span)
-    {
+    protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span) {
         int start = strBuilder.getSpanStart(span);
         int end = strBuilder.getSpanEnd(span);
         int flags = strBuilder.getSpanFlags(span);
         ClickableSpan clickable = new ClickableSpan() {
             public void onClick(View view) {
-                if(webViewDialogFragment.isAdded()) return;
+                if (webViewDialogFragment.isAdded()) return;
                 Bundle bundle = new Bundle();
                 bundle.putString(AnalyticsParam.BUTTON_CLICKED, "viewing privacy policy");
                 mAnalytics.logEvent(AnalyticsParam.Event.VIEW_POLICY, bundle);
@@ -305,23 +304,22 @@ public class MainActivity extends AppCompatActivity {
         strBuilder.removeSpan(span);
     }
 
-    protected void setTextViewHTML(TextView text, String html)
-    {
+    protected void setTextViewHTML(TextView text, String html) {
         CharSequence sequence = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
         SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
         URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
-        for(URLSpan span : urls) {
+        for (URLSpan span : urls) {
             makeLinkClickable(strBuilder, span);
         }
         text.setText(strBuilder);
         text.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    private void askAgainForUpdate(){
+    private void askAgainForUpdate() {
         alertDialogFragment.addWhichButtonClickedListener(whichButton -> {
-            if(whichButton == AlertDialogFragment.WhichButton.POSITIVE){
+            if (whichButton == AlertDialogFragment.WhichButton.POSITIVE) {
                 appUpdateManager.getAppUpdateInfo().addOnSuccessListener(appUpdateInfo1 -> {
-                    if(appUpdateInfo1.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && appUpdateInfo1.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)){
+                    if (appUpdateInfo1.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && appUpdateInfo1.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
                         try {
                             appUpdateManager.startUpdateFlowForResult(appUpdateInfo1, AppUpdateType.IMMEDIATE, this, RC_PLAY_UPDATE);
                             updateStartedHere = true;
@@ -331,9 +329,9 @@ public class MainActivity extends AppCompatActivity {
                         splashViewModel.setVersionFlag(true);
                     }
                 });
-            }else if(whichButton == AlertDialogFragment.WhichButton.NEGATIVE){
+            } else if (whichButton == AlertDialogFragment.WhichButton.NEGATIVE) {
                 finish();
-            }else{
+            } else {
                 Log.w(TAG, "askAgainForUpdate: unknown event");
             }
             alertDialogFragment.dismiss();
@@ -343,8 +341,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RC_PLAY_UPDATE){
-            switch (resultCode){
+        if (requestCode == RC_PLAY_UPDATE) {
+            switch (resultCode) {
                 case RESULT_OK:
                     updateStartedHere = true;
                     break;
@@ -370,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         appUpdateManager.getAppUpdateInfo().addOnSuccessListener(it -> {
-            if(updateStartedHere && it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS){
+            if (updateStartedHere && it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                 try {
                     appUpdateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, RC_PLAY_UPDATE);
                 } catch (IntentSender.SendIntentException e) {

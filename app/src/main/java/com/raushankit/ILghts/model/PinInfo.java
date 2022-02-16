@@ -12,7 +12,7 @@ public class PinInfo {
 
     private String name;
 
-    public PinInfo(){
+    public PinInfo() {
 
     }
 

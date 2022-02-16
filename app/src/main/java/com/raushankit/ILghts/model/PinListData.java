@@ -8,6 +8,17 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class PinListData {
 
+    public static final DiffUtil.ItemCallback<PinListData> DIFF_CALLBACK = new DiffUtil.ItemCallback<PinListData>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull PinListData oldItem, @NonNull PinListData newItem) {
+            return oldItem.getPinNumber() == newItem.getPinNumber();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull PinListData oldItem, @NonNull PinListData newItem) {
+            return oldItem.equals(newItem);
+        }
+    };
     private int pinNumber;
     private String pinName;
     private String changedBy;
@@ -15,7 +26,7 @@ public class PinListData {
     private boolean status;
     private boolean you;
 
-    public PinListData(){
+    public PinListData() {
 
     }
 
@@ -101,16 +112,4 @@ public class PinListData {
                 ", you=" + you +
                 '}';
     }
-
-    public static final DiffUtil.ItemCallback<PinListData> DIFF_CALLBACK = new DiffUtil.ItemCallback<PinListData>() {
-        @Override
-        public boolean areItemsTheSame(@NonNull PinListData oldItem, @NonNull PinListData newItem) {
-            return oldItem.getPinNumber() == newItem.getPinNumber();
-        }
-
-        @Override
-        public boolean areContentsTheSame(@NonNull PinListData oldItem, @NonNull PinListData newItem) {
-            return oldItem.equals(newItem);
-        }
-    };
 }

@@ -16,26 +16,25 @@ import java.util.concurrent.TimeUnit;
 
 public class StatusViewModel extends ViewModel {
     private static final String TAG = "StatusViewModel";
-    private final PulseLiveData pulseLiveData;
     private static final int DELAY = 8000;
-
+    private final PulseLiveData pulseLiveData;
     private final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> future;
 
-    public StatusViewModel(){
+    public StatusViewModel() {
         pulseLiveData = new PulseLiveData();
     }
 
-    public LiveData<Boolean> getStatusData(){
+    public LiveData<Boolean> getStatusData() {
         MediatorLiveData<Boolean> data = new MediatorLiveData<>();
         data.addSource(pulseLiveData, aLong -> {
             boolean isAlive = Calendar.getInstance().getTimeInMillis() - aLong < DELAY;
             data.setValue(isAlive);
-            if(isAlive){
-                if(future != null && !future.isDone()) {
+            if (isAlive) {
+                if (future != null && !future.isDone()) {
                     future.cancel(true);
                 }
-                future = service.schedule(() -> data.postValue(false),DELAY, TimeUnit.MILLISECONDS);
+                future = service.schedule(() -> data.postValue(false), DELAY, TimeUnit.MILLISECONDS);
             }
         });
         return data;

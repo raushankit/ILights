@@ -20,8 +20,10 @@ import com.raushankit.ILghts.R;
 public class LoadingDialogFragment extends DialogFragment {
     public static final String TAG = "loading-dialog-fragment";
 
-    @StringRes private int title;
-    @StringRes private int message;
+    @StringRes
+    private int title;
+    @StringRes
+    private int message;
     private TextView messageView;
     private TextView titleView;
 
@@ -32,17 +34,17 @@ public class LoadingDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_loading_dialog,container,false);
+        View view = inflater.inflate(R.layout.fragment_loading_dialog, container, false);
         titleView = view.findViewById(R.id.loading_dialog_title);
         messageView = view.findViewById(R.id.loading_dialog_message);
-        try{
+        try {
             titleView.setText(title);
-        }catch (Resources.NotFoundException e){
+        } catch (Resources.NotFoundException e) {
             e.printStackTrace();
         }
-        try{
+        try {
             messageView.setText(message);
-        }catch (Resources.NotFoundException e){
+        } catch (Resources.NotFoundException e) {
             e.printStackTrace();
         }
         return view;
@@ -50,29 +52,29 @@ public class LoadingDialogFragment extends DialogFragment {
 
     public void setTitle(@StringRes int title) {
         this.title = title;
-        if(titleView == null) return;
-        try{
+        if (titleView == null) return;
+        try {
             titleView.setText(title);
-        }catch (Resources.NotFoundException e){
+        } catch (Resources.NotFoundException e) {
             e.printStackTrace();
         }
     }
 
     public void setMessage(@StringRes int message) {
         this.message = message;
-        if(messageView == null) return;
-        try{
+        if (messageView == null) return;
+        try {
             messageView.setText(message);
-        }catch (Resources.NotFoundException e){
+        } catch (Resources.NotFoundException e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void onStart() {
-        int width = (int)(getResources().getDisplayMetrics().widthPixels*0.9);
+        int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.9);
         Dialog dialog = getDialog();
-        if(dialog != null){
+        if (dialog != null) {
             dialog.getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.setCancelable(false);

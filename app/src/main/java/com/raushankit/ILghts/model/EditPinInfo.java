@@ -10,6 +10,17 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class EditPinInfo {
 
+    public static final DiffUtil.ItemCallback<EditPinInfo> DIFF_CALLBACK = new DiffUtil.ItemCallback<EditPinInfo>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull EditPinInfo oldItem, @NonNull EditPinInfo newItem) {
+            return oldItem.getPinNumber() == newItem.getPinNumber();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull EditPinInfo oldItem, @NonNull EditPinInfo newItem) {
+            return oldItem.equals(newItem);
+        }
+    };
     private int pinNumber;
     private PinInfo pinInfo;
 
@@ -55,16 +66,4 @@ public class EditPinInfo {
                 ", pinInfo=" + pinInfo +
                 '}';
     }
-
-    public static final DiffUtil.ItemCallback<EditPinInfo> DIFF_CALLBACK = new DiffUtil.ItemCallback<EditPinInfo>() {
-        @Override
-        public boolean areItemsTheSame(@NonNull EditPinInfo oldItem, @NonNull EditPinInfo newItem) {
-            return oldItem.getPinNumber() == newItem.getPinNumber();
-        }
-
-        @Override
-        public boolean areContentsTheSame(@NonNull EditPinInfo oldItem, @NonNull EditPinInfo newItem) {
-            return oldItem.equals(newItem);
-        }
-    };
 }

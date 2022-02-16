@@ -1,7 +1,5 @@
 package com.raushankit.ILghts.utils;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DatabaseReference;
@@ -16,17 +14,17 @@ public class UserUpdates {
     private static final String TAG = "UserUpdates";
     private final DatabaseReference db;
 
-    public UserUpdates(){
+    public UserUpdates() {
         db = FirebaseDatabase.getInstance().getReference();
     }
 
-    public String createUserMetaData(@NonNull String uid, @NonNull User user){
+    public String createUserMetaData(@NonNull String uid, @NonNull User user) {
         Map<String, Object> mp = new LinkedHashMap<>();
         mp.put("users/" + uid, user.toMap());
         mp.put("role/" + uid, new Role(1));
         final String[] message = new String[1];
         db.updateChildren(mp, (error, ref) -> {
-            if(error != null){
+            if (error != null) {
                 message[0] = error.getMessage();
             }
         });

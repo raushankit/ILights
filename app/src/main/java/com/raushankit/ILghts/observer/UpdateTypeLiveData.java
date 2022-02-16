@@ -26,8 +26,8 @@ public class UpdateTypeLiveData extends LiveData<UpdatePriority> {
         }
     };
 
-    public UpdateTypeLiveData(int versionCode){
-        db = FirebaseDatabase.getInstance().getReference("/metadata/version/"+versionCode);
+    public UpdateTypeLiveData(int versionCode) {
+        db = FirebaseDatabase.getInstance().getReference("/metadata/version/" + versionCode);
     }
 
     @Override

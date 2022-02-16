@@ -23,7 +23,7 @@ import com.raushankit.ILghts.model.Role;
 import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.utils.callbacks.CallBack;
 
-public class RoleDialogFragment extends DialogFragment implements View.OnClickListener{
+public class RoleDialogFragment extends DialogFragment implements View.OnClickListener {
     public static final String TAG = "RoleDialogFragment";
 
     private final RadioButton[] radioButtons = new RadioButton[4];
@@ -35,11 +35,11 @@ public class RoleDialogFragment extends DialogFragment implements View.OnClickLi
     private String uid;
     private int yourLevel;
 
-    RoleDialogFragment(){
+    RoleDialogFragment() {
 
     }
 
-    public static RoleDialogFragment newInstance(int role){
+    public static RoleDialogFragment newInstance(int role) {
         RoleDialogFragment fragment = new RoleDialogFragment();
         Bundle args = new Bundle();
         args.putInt("role", role);
@@ -64,16 +64,16 @@ public class RoleDialogFragment extends DialogFragment implements View.OnClickLi
         MaterialButton cancelButton = view.findViewById(R.id.role_dialog_negative_button);
         String[] userLevels = getResources().getStringArray(R.array.user_types);
 
-        if(getArguments() != null){
+        if (getArguments() != null) {
             yourLevel = getArguments().getInt("role");
         }
 
-        if(user != null){
+        if (user != null) {
             nameView.setText(user.getName());
             emailView.setText(user.getEmail());
         }
 
-        if(role != null){
+        if (role != null) {
             roleView.setText(getString(R.string.role_dialog_role_level, userLevels[role.getAccessLevel()]));
             enableRadios(role.getAccessLevel());
         }
@@ -85,9 +85,9 @@ public class RoleDialogFragment extends DialogFragment implements View.OnClickLi
 
     @Override
     public void onStart() {
-        int width = (int)(getResources().getDisplayMetrics().widthPixels*0.9);
+        int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.9);
         Dialog dialog = getDialog();
-        if(dialog != null){
+        if (dialog != null) {
             dialog.getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.setCancelable(false);
@@ -97,7 +97,7 @@ public class RoleDialogFragment extends DialogFragment implements View.OnClickLi
         radioGroup.check(radioButtons[role.getAccessLevel()].getId());
     }
 
-    public void addCallback(@NonNull CallBack<Pair<String, Integer>> callBack){
+    public void addCallback(@NonNull CallBack<Pair<String, Integer>> callBack) {
         this.callBack = callBack;
     }
 
@@ -113,12 +113,12 @@ public class RoleDialogFragment extends DialogFragment implements View.OnClickLi
         this.uid = uid;
     }
 
-    private void enableRadios(int userLevel){
-        for(int i = 0;i < 4;++i){
+    private void enableRadios(int userLevel) {
+        for (int i = 0; i < 4; ++i) {
             radioButtons[i].setEnabled(false);
         }
-        if(userLevel < yourLevel){
-            for(int i = 0;i < yourLevel;++i){
+        if (userLevel < yourLevel) {
+            for (int i = 0; i < yourLevel; ++i) {
                 radioButtons[i].setEnabled(true);
             }
         }
@@ -126,15 +126,15 @@ public class RoleDialogFragment extends DialogFragment implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        if(callBack != null && view.getId() == R.id.role_dialog_positive_button){
+        if (callBack != null && view.getId() == R.id.role_dialog_positive_button) {
             int id = radioGroup.getCheckedRadioButtonId();
             int level;
-            if(id == R.id.role_dialog_radio_block)level = 0;
-            else if(id == R.id.role_dialog_radio_user)level = 1;
-            else if(id == R.id.role_dialog_radio_admin)level = 2;
-            else if(id == R.id.role_dialog_radio_developer)level = 3;
+            if (id == R.id.role_dialog_radio_block) level = 0;
+            else if (id == R.id.role_dialog_radio_user) level = 1;
+            else if (id == R.id.role_dialog_radio_admin) level = 2;
+            else if (id == R.id.role_dialog_radio_developer) level = 3;
             else level = role.getAccessLevel();
-            if(role.getAccessLevel() != level) callBack.onClick(new Pair<>(uid,level));
+            if (role.getAccessLevel() != level) callBack.onClick(new Pair<>(uid, level));
         }
         dismiss();
     }

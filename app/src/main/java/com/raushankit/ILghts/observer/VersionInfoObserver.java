@@ -28,7 +28,9 @@ public class VersionInfoObserver extends LiveData<VersionInfo> {
         }
     };
 
-    public VersionInfoObserver(@NonNull String path){db = FirebaseDatabase.getInstance().getReference(path);}
+    public VersionInfoObserver(@NonNull String path) {
+        db = FirebaseDatabase.getInstance().getReference(path);
+    }
 
     @Override
     protected void onActive() {

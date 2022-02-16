@@ -85,7 +85,7 @@ public class ReAuthFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null){
+        if (getArguments() != null) {
             isActionChange = getArguments().getString("action").equals("change_password");
         }
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -98,9 +98,9 @@ public class ReAuthFragment extends Fragment {
     }
 
     private boolean getProviderData() {
-        if(user == null) return false;
-        for(UserInfo userInfo : user.getProviderData()){
-            if(userInfo.getProviderId().equals("google.com")) return true;
+        if (user == null) return false;
+        for (UserInfo userInfo : user.getProviderData()) {
+            if (userInfo.getProviderId().equals("google.com")) return true;
         }
         return false;
     }
@@ -117,13 +117,13 @@ public class ReAuthFragment extends Fragment {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(requireContext(),gso);
+        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
         reAuthButton.setOnClickListener(v -> {
-            if(isProviderGoogle){
+            if (isProviderGoogle) {
                 circularProgress.setVisibility(View.VISIBLE);
                 resultLauncher.launch(mGoogleSignInClient.getSignInIntent());
-            }else{
-                if(TextUtils.isEmpty(reAuthPasswordEditText.getText())){
+            } else {
+                if (TextUtils.isEmpty(reAuthPasswordEditText.getText())) {
                     reAuthPasswordLayout.setError(getString(R.string.required));
                     return;
                 }
@@ -135,20 +135,20 @@ public class ReAuthFragment extends Fragment {
         });
 
         positiveButton.setOnClickListener(v -> {
-            if(isActionChange){
+            if (isActionChange) {
                 boolean invalidPW = TextUtils.isEmpty(changePWEditText.getText());
                 boolean invalidConfPW = TextUtils.isEmpty(confirmPWEditText.getText());
-                if(invalidConfPW || invalidPW){
-                    if(invalidConfPW) confirmPWLayout.setError(getString(R.string.required));
-                    if(invalidPW) changePWLayout.setError(getString(R.string.required));
+                if (invalidConfPW || invalidPW) {
+                    if (invalidConfPW) confirmPWLayout.setError(getString(R.string.required));
+                    if (invalidPW) changePWLayout.setError(getString(R.string.required));
                     return;
                 }
-                if(!TextUtils.equals(changePWEditText.getText(), confirmPWEditText.getText())){
+                if (!TextUtils.equals(changePWEditText.getText(), confirmPWEditText.getText())) {
                     confirmPWLayout.setError(getString(R.string.password_not_match));
                     return;
                 }
                 settingCommViewModel.selectItem(new Pair<>("update_password", Objects.requireNonNull(changePWEditText.getText()).toString()));
-            }else{
+            } else {
                 settingCommViewModel.selectItem(new Pair<>("delete_user", null));
             }
         });
@@ -223,15 +223,15 @@ public class ReAuthFragment extends Fragment {
             }
         };
 
-        title.setText(isActionChange?R.string.change_password:R.string.delete_account);
-        reAuthPasswordLayout.setVisibility(isProviderGoogle?View.GONE:View.VISIBLE);
-        changePWLayout.setVisibility(isActionChange?View.VISIBLE:View.GONE);
-        confirmPWLayout.setVisibility(isActionChange?View.VISIBLE:View.GONE);
-        deleteTitle.setVisibility(isActionChange?View.GONE:View.VISIBLE);
-        positiveButton.setText(isActionChange? R.string.change: R.string.delete);
+        title.setText(isActionChange ? R.string.change_password : R.string.delete_account);
+        reAuthPasswordLayout.setVisibility(isProviderGoogle ? View.GONE : View.VISIBLE);
+        changePWLayout.setVisibility(isActionChange ? View.VISIBLE : View.GONE);
+        confirmPWLayout.setVisibility(isActionChange ? View.VISIBLE : View.GONE);
+        deleteTitle.setVisibility(isActionChange ? View.GONE : View.VISIBLE);
+        positiveButton.setText(isActionChange ? R.string.change : R.string.delete);
         parentChangeLayout.setVisibility(View.GONE);
         emailText.setText(user.getEmail());
-        reAuthButton.setIcon(ResourcesCompat.getDrawable(getResources(), (isProviderGoogle?R.drawable.ic_google_colored:R.drawable.ic_baseline_email_24), requireContext().getTheme()));
+        reAuthButton.setIcon(ResourcesCompat.getDrawable(getResources(), (isProviderGoogle ? R.drawable.ic_google_colored : R.drawable.ic_baseline_email_24), requireContext().getTheme()));
 
         resultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -244,26 +244,26 @@ public class ReAuthFragment extends Fragment {
                             AuthCredential googleCredential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
                             reAuthByCredential(googleCredential);
                         } catch (ApiException e) {
-                            Snackbar.make(view, (e.getMessage()==null?getString(R.string.re_auth,"failed"):e.getMessage()), BaseTransientBottomBar.LENGTH_SHORT).show();
+                            Snackbar.make(view, (e.getMessage() == null ? getString(R.string.re_auth, "failed") : e.getMessage()), BaseTransientBottomBar.LENGTH_SHORT).show();
                             circularProgress.setVisibility(View.VISIBLE);
                         }
-                    }else{
-                        Snackbar.make(view, getString(R.string.re_auth,"failed"), BaseTransientBottomBar.LENGTH_SHORT).show();
+                    } else {
+                        Snackbar.make(view, getString(R.string.re_auth, "failed"), BaseTransientBottomBar.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private void reAuthByCredential(AuthCredential credential){
+    private void reAuthByCredential(AuthCredential credential) {
         user.reauthenticate(credential)
                 .addOnCompleteListener(task -> {
                     reAuthButton.setEnabled(!task.isSuccessful());
-                    reAuthPasswordLayout.setVisibility(task.isSuccessful()? View.GONE: View.VISIBLE);
-                    if(task.isSuccessful()){
+                    reAuthPasswordLayout.setVisibility(task.isSuccessful() ? View.GONE : View.VISIBLE);
+                    if (task.isSuccessful()) {
                         parentChangeLayout.setVisibility(View.VISIBLE);
                         reAuthConfirmView.setVisibility(View.VISIBLE);
                         Log.w(TAG, "reAuthByCredential: reAuth successful");
-                    }else{
-                        Snackbar.make(view, (task.getException() != null && task.getException().getMessage() != null? task.getException().getMessage(): getString(R.string.re_auth,"failed")), BaseTransientBottomBar.LENGTH_SHORT).show();
+                    } else {
+                        Snackbar.make(view, (task.getException() != null && task.getException().getMessage() != null ? task.getException().getMessage() : getString(R.string.re_auth, "failed")), BaseTransientBottomBar.LENGTH_SHORT).show();
                     }
                     circularProgress.setVisibility(View.GONE);
                 });

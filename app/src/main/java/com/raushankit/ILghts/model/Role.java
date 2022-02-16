@@ -14,7 +14,7 @@ public class Role {
     @PropertyName("level")
     private int accessLevel;
 
-    public Role(){
+    public Role() {
 
     }
 

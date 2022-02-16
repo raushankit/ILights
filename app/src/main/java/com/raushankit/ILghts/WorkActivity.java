@@ -41,7 +41,7 @@ import java.util.Calendar;
 public class WorkActivity extends AppCompatActivity implements InstallStateUpdatedListener {
 
     private static final String TAG = "WorkActivity";
-    private static final long CONSENT_DELAY = 15*24*3600000L;
+    private static final long CONSENT_DELAY = 15 * 24 * 3600000L;
     private CallBack<PageKeys> changeFragment;
     private Intent signOutIntent;
     private AppUpdateManager appUpdateManager;
@@ -59,20 +59,20 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
         sharedRepo = SharedRepo.newInstance(this);
         consentDialogFragment = ConsentDialogFragment.newInstance(false, true);
         signOutIntent = new Intent(this, MainActivity.class);
-        signOutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        signOutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         FragViewModel fragViewModel = new ViewModelProvider(this).get(FragViewModel.class);
-        fragViewModel.getSelectedItem().observe(this, item ->{
-            if(item.equals(ControllerFragActions.OPEN_SETTINGS)) {
+        fragViewModel.getSelectedItem().observe(this, item -> {
+            if (item.equals(ControllerFragActions.OPEN_SETTINGS)) {
                 startActivity(settingsIntent);
-            }else if(item.equals(ControllerFragActions.BLOCK_EVENT)){
+            } else if (item.equals(ControllerFragActions.BLOCK_EVENT)) {
                 startActivity(signOutIntent);
                 finish();
-            }else{
+            } else {
                 Log.d(TAG, "onCreate: unknown event");
             }
         });
-        consentDialogFragment.addOnActionClickListener(action ->  {
-            switch (action){
+        consentDialogFragment.addOnActionClickListener(action -> {
+            switch (action) {
                 case AGREE:
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean("send_statistics", true);
@@ -90,9 +90,9 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
                     Log.w(TAG, "onCreate: un-captured event");
             }
         });
-        if(!sharedPreferences.getBoolean("send_statistics", false)
+        if (!sharedPreferences.getBoolean("send_statistics", false)
                 && sharedRepo.getBooleanValue(SharedRefKeys.SHOW_ANALYTICS_DIALOG, true)
-                && canShowConsentDialog(sharedRepo.getLongValue(SharedRefKeys.PREV_SHOWN_ANALYTICS_DIALOG, -1))){
+                && canShowConsentDialog(sharedRepo.getLongValue(SharedRefKeys.PREV_SHOWN_ANALYTICS_DIALOG, -1))) {
             consentDialogFragment.show(getSupportFragmentManager(), ConsentDialogFragment.TAG);
         }
         changeFragment = value -> replaceFragment(value.name());
@@ -103,32 +103,32 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
     protected void onResume() {
         super.onResume();
         appUpdateManager.getAppUpdateInfo().addOnSuccessListener(ap1 -> {
-            if(ap1.installStatus() == InstallStatus.DOWNLOADED) {
+            if (ap1.installStatus() == InstallStatus.DOWNLOADED) {
                 popupSnackbarForCompleteUpdate();
             }
-            if(ap1.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
-                        && (ap1.installStatus() == InstallStatus.DOWNLOADING || ap1.installStatus() == InstallStatus.PENDING)){
-               appUpdateManager.registerListener(this);
-           }
+            if (ap1.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
+                    && (ap1.installStatus() == InstallStatus.DOWNLOADING || ap1.installStatus() == InstallStatus.PENDING)) {
+                appUpdateManager.registerListener(this);
+            }
         });
     }
 
     private void popupSnackbarForCompleteUpdate() {
-        Snackbar snackbar1 = Snackbar.make(findViewById(android.R.id.content),R.string.update_downloaded, Snackbar.LENGTH_INDEFINITE);
+        Snackbar snackbar1 = Snackbar.make(findViewById(android.R.id.content), R.string.update_downloaded, Snackbar.LENGTH_INDEFINITE);
         snackbar1.setAction(R.string.restart, view -> appUpdateManager.completeUpdate());
         snackbar1.setActionTextColor(getResources().getColor(R.color.scarlet_red, getTheme()));
         snackbar1.show();
     }
 
-    private void switchFrags(){
+    private void switchFrags() {
         Intent receiveIntent = getIntent();
-        if(receiveIntent == null) return;
+        if (receiveIntent == null) return;
         String page = receiveIntent.getStringExtra(PageKeys.WHICH_PAGE.name());
-        if(page == null) return;
+        if (page == null) return;
         replaceFragment(page);
     }
 
-    private void replaceFragment(String id){
+    private void replaceFragment(String id) {
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -136,34 +136,31 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
         FragmentManager fm = getSupportFragmentManager();
         Intent intent = getIntent();
         FragmentTransaction ft = fm.beginTransaction();
-        if(id.equals(PageKeys.SIGN_UP_PAGE.name())){
-            if(intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
+        if (id.equals(PageKeys.SIGN_UP_PAGE.name())) {
+            if (intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
             ft.replace(R.id.work_main_frame, new SignUpFragment(
                     statusBarColor, changeFragment
             ));
             ft.commit();
-        }
-        else if(id.equals(PageKeys.LOGIN_PAGE.name()) || id.equals(PageKeys.GOOGLE_LOGIN_EVENT.name())){
-            if(intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
+        } else if (id.equals(PageKeys.LOGIN_PAGE.name()) || id.equals(PageKeys.GOOGLE_LOGIN_EVENT.name())) {
+            if (intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
             ft.replace(R.id.work_main_frame, new LoginFragment(
-                    statusBarColor,changeFragment,
+                    statusBarColor, changeFragment,
                     id.equals(PageKeys.GOOGLE_LOGIN_EVENT.name())
             ));
             ft.commit();
-        }
-        else if(id.equals(PageKeys.FORGOT_PASSWORD_PAGE.name())){
-            if(intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
+        } else if (id.equals(PageKeys.FORGOT_PASSWORD_PAGE.name())) {
+            if (intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
             ft.replace(R.id.work_main_frame, new ForgotPasswordFragment(
                     statusBarColor, changeFragment
             )).addToBackStack(null)
                     .commit();
-        }
-        else if(id.equals(PageKeys.CONTROLLER_PAGE.name())){
-            if(intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
+        } else if (id.equals(PageKeys.CONTROLLER_PAGE.name())) {
+            if (intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
             window.setStatusBarColor(getColor(R.color.controller_title_background));
             ft.replace(R.id.work_main_frame, ControllerFragment.newInstance())
                     .commit();
-        }else{
+        } else {
             Log.d(TAG, "replaceFragment: invalid Fragment action");
         }
     }
@@ -171,15 +168,15 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
     @Override
     public void onBackPressed() {
         Intent intent = getIntent();
-        if(intent != null){
+        if (intent != null) {
             String page = intent.getStringExtra(PageKeys.WHICH_PAGE.name());
-            if(page != null){
-                if(page.equals(PageKeys.LOGIN_PAGE.name()) || page.equals(PageKeys.SIGN_UP_PAGE.name())){
+            if (page != null) {
+                if (page.equals(PageKeys.LOGIN_PAGE.name()) || page.equals(PageKeys.SIGN_UP_PAGE.name())) {
                     startActivity(signOutIntent);
                     finish();
                     return;
                 }
-                if(page.equals(PageKeys.CONTROLLER_PAGE.name())){
+                if (page.equals(PageKeys.CONTROLLER_PAGE.name())) {
                     finishAffinity();
                     return;
                 }
@@ -191,7 +188,7 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
     @SuppressLint("SwitchIntDef")
     @Override
     public void onStateUpdate(@NonNull InstallState installState) {
-        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),R.string.unknown_error, BaseTransientBottomBar.LENGTH_SHORT);
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.unknown_error, BaseTransientBottomBar.LENGTH_SHORT);
         switch (installState.installStatus()) {
             case InstallStatus.DOWNLOADED:
                 popupSnackbarForCompleteUpdate();
@@ -210,8 +207,8 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
         }
     }
 
-    private boolean canShowConsentDialog(long prevShown){
-        if(prevShown == -1) return true;
+    private boolean canShowConsentDialog(long prevShown) {
+        if (prevShown == -1) return true;
         return prevShown + CONSENT_DELAY <= Calendar.getInstance().getTimeInMillis();
     }
 

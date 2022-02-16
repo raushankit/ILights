@@ -28,7 +28,7 @@ public class UserLiveData extends LiveData<User> {
         }
     };
 
-    public UserLiveData(@NonNull String path){
+    public UserLiveData(@NonNull String path) {
         db = FirebaseDatabase.getInstance().getReference(path);
     }
 

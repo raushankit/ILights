@@ -14,7 +14,7 @@ public class AnalyticsParam {
     public static final String EDIT_PIN = "edit_pin";
     public static final String DELETE_PIN = "delete_pin";
 
-    public static class Event{
+    public static class Event {
         public static final String UNEXPECTED_EVENT = "unexpected_event";
         public static final String VIEW_POLICY = "view_policy";
         public static final String CONTROLLER_EVENT = "controller_event";

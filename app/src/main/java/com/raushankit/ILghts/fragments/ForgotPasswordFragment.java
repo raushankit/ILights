@@ -35,7 +35,7 @@ public class ForgotPasswordFragment extends Fragment {
 
     private TextWatcher emailWatcher;
 
-    public ForgotPasswordFragment(){
+    public ForgotPasswordFragment() {
 
     }
 
@@ -82,16 +82,16 @@ public class ForgotPasswordFragment extends Fragment {
         };
 
         sendButton.setOnClickListener(v -> {
-            if(!TextUtils.isEmpty(emailInput.getText())){
+            if (!TextUtils.isEmpty(emailInput.getText())) {
                 mAuth.sendPasswordResetEmail(Objects.requireNonNull(emailInput.getText()).toString())
                         .addOnCompleteListener(task -> {
-                            Snackbar.make(view, (getString(task.isSuccessful()?R.string.forgot_password_email_sent_success:R.string.forgot_password_email_send_failure)), BaseTransientBottomBar.LENGTH_SHORT).show();
+                            Snackbar.make(view, (getString(task.isSuccessful() ? R.string.forgot_password_email_sent_success : R.string.forgot_password_email_send_failure)), BaseTransientBottomBar.LENGTH_SHORT).show();
                             changeFrag.onClick(PageKeys.LOGIN_PAGE);
                         });
-            }else{
+            } else {
                 emailLayout.setError(getString(R.string.required));
             }
-            if(mAuth.getCurrentUser() != null) mAuth.signOut();
+            if (mAuth.getCurrentUser() != null) mAuth.signOut();
         });
         return view;
     }

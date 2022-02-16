@@ -29,7 +29,7 @@ public class AdminUserLiveData extends LiveData<Map<String, User>> {
         }
     };
 
-    public AdminUserLiveData(@NonNull Query mQuery){
+    public AdminUserLiveData(@NonNull Query mQuery) {
         this.mQuery = mQuery;
     }
 

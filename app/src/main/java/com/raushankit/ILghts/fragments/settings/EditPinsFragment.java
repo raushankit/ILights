@@ -35,6 +35,7 @@ public class EditPinsFragment extends Fragment {
     public EditPinsFragment() {
         // Required empty public constructor
     }
+
     public static EditPinsFragment newInstance() {
         return new EditPinsFragment();
     }
@@ -65,14 +66,14 @@ public class EditPinsFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         editPinViewModel.getPinIfo().observe(getViewLifecycleOwner(), stringPinInfoMap -> {
-            if(!stringPinInfoMap.isEmpty()){
-                if(shimmerFrameLayout.isShimmerStarted()){
+            if (!stringPinInfoMap.isEmpty()) {
+                if (shimmerFrameLayout.isShimmerStarted()) {
                     shimmerFrameLayout.stopShimmer();
                     shimmerFrameLayout.setVisibility(View.GONE);
                 }
                 pinList.clear();
                 List<EditPinInfo> list = new ArrayList<>();
-                stringPinInfoMap.forEach((k,v) -> {
+                stringPinInfoMap.forEach((k, v) -> {
                     list.add(new EditPinInfo(Integer.parseInt(k), v));
                     pinList.add(Integer.parseInt(k));
                 });
@@ -82,17 +83,17 @@ public class EditPinsFragment extends Fragment {
         });
         editPinViewModel.getBoardData().observe(getViewLifecycleOwner(), allPin::set);
         fab.setOnClickListener(v -> {
-            if(allPin.get() > 0 && !pinList.isEmpty()){
+            if (allPin.get() > 0 && !pinList.isEmpty()) {
                 int temp = allPin.get();
                 List<Boolean> pins = new ArrayList<>();
                 pins.add(Boolean.FALSE);
-                while(temp > 0){
-                    pins.add((temp&1)==1?Boolean.TRUE:Boolean.FALSE);
+                while (temp > 0) {
+                    pins.add((temp & 1) == 1 ? Boolean.TRUE : Boolean.FALSE);
                     temp /= 2;
                 }
-                pinList.forEach(pin -> pins.set(pin,Boolean.FALSE));
+                pinList.forEach(pin -> pins.set(pin, Boolean.FALSE));
                 settingCommViewModel.selectItem(new Pair<>("add_pin", pins));
-            }else{
+            } else {
                 Log.d(TAG, "onCreateView: bad request");
             }
         });

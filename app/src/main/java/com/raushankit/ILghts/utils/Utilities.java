@@ -5,29 +5,29 @@ import com.google.android.play.core.install.model.UpdateAvailability;
 
 public class Utilities {
 
-    public static String debugInstallStatus(int code){
+    public static String debugInstallStatus(int code) {
         String dbg;
-        switch (code){
+        switch (code) {
             case InstallStatus.INSTALLED:
-                dbg =  "InstallStatus.INSTALLED";
+                dbg = "InstallStatus.INSTALLED";
                 break;
             case InstallStatus.DOWNLOADED:
-                dbg =  "InstallStatus.DOWNLOADED";
+                dbg = "InstallStatus.DOWNLOADED";
                 break;
             case InstallStatus.DOWNLOADING:
-                dbg =  "InstallStatus.DOWNLOADING";
+                dbg = "InstallStatus.DOWNLOADING";
                 break;
             case InstallStatus.CANCELED:
-                dbg =  "InstallStatus.CANCELED";
+                dbg = "InstallStatus.CANCELED";
                 break;
             case InstallStatus.FAILED:
-                dbg =  "InstallStatus.FAILED";
+                dbg = "InstallStatus.FAILED";
                 break;
             case InstallStatus.PENDING:
-                dbg =  "InstallStatus.PENDING";
+                dbg = "InstallStatus.PENDING";
                 break;
             case InstallStatus.UNKNOWN:
-                dbg =  "InstallStatus.UNKNOWN";
+                dbg = "InstallStatus.UNKNOWN";
                 break;
             default:
                 dbg = "purely unknown";
@@ -35,9 +35,9 @@ public class Utilities {
         return dbg;
     }
 
-    public static String debugUpdateAvailability(int code){
+    public static String debugUpdateAvailability(int code) {
         String dbg;
-        switch (code){
+        switch (code) {
             case UpdateAvailability.UPDATE_AVAILABLE:
                 dbg = "UpdateAvailability.UPDATE_AVAILABLE";
                 break;

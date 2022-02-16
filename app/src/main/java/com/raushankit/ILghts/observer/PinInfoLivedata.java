@@ -24,13 +24,13 @@ public class PinInfoLivedata extends LiveData<Map<String, PinInfo>> {
     private final ChildEventListener listener = new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-            mp.put(snapshot.getKey(),snapshot.getValue(PinInfo.class));
+            mp.put(snapshot.getKey(), snapshot.getValue(PinInfo.class));
             postValue(mp);
         }
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-            mp.put(snapshot.getKey(),snapshot.getValue(PinInfo.class));
+            mp.put(snapshot.getKey(), snapshot.getValue(PinInfo.class));
             postValue(mp);
         }
 
@@ -51,7 +51,7 @@ public class PinInfoLivedata extends LiveData<Map<String, PinInfo>> {
         }
     };
 
-    public PinInfoLivedata(){
+    public PinInfoLivedata() {
         db = FirebaseDatabase.getInstance().getReference("/control/info");
         mp = new HashMap<>();
     }

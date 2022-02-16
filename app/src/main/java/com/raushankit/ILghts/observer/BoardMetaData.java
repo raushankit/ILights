@@ -27,7 +27,7 @@ public class BoardMetaData extends LiveData<Integer> {
         }
     };
 
-    public BoardMetaData(){
+    public BoardMetaData() {
         db = FirebaseDatabase.getInstance().getReference("/metadata/board_data/available_pins");
     }
 

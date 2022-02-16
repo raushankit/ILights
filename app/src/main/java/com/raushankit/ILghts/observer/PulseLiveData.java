@@ -27,7 +27,9 @@ public class PulseLiveData extends LiveData<Long> {
         }
     };
 
-    public PulseLiveData(){db = FirebaseDatabase.getInstance().getReference("metadata/board_data/heart_beat");}
+    public PulseLiveData() {
+        db = FirebaseDatabase.getInstance().getReference("metadata/board_data/heart_beat");
+    }
 
     @Override
     protected void onActive() {

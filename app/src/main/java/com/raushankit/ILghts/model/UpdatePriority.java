@@ -14,7 +14,7 @@ public class UpdatePriority {
     @PropertyName("update_priority")
     private int priority;
 
-    public UpdatePriority(){
+    public UpdatePriority() {
 
     }
 

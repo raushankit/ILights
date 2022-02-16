@@ -9,11 +9,11 @@ import java.util.Random;
 public class ColorGen {
 
     @ColorInt
-    public static int getRandomDarkColor(float factor){
+    public static int getRandomDarkColor(float factor) {
         Random randomGenerator = new Random();
-        int color = Color.rgb((randomGenerator.nextInt(255)%156 + 100),
-                (randomGenerator.nextInt(255)%156) + 100,
-                (randomGenerator.nextInt(255)%156 + 100));
+        int color = Color.rgb((randomGenerator.nextInt(255) % 156 + 100),
+                (randomGenerator.nextInt(255) % 156) + 100,
+                (randomGenerator.nextInt(255) % 156 + 100));
         int a = Color.alpha(color);
         int r = Color.red(color);
         int g = Color.green(color);

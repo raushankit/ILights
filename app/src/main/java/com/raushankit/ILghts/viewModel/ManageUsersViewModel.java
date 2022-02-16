@@ -32,7 +32,7 @@ public class ManageUsersViewModel extends ViewModel {
     private boolean isEmail;
     private String searchText;
 
-    public ManageUsersViewModel(){
+    public ManageUsersViewModel() {
     }
 
     public LiveData<Map<String, User>> getData(boolean isEmail) {
@@ -40,21 +40,21 @@ public class ManageUsersViewModel extends ViewModel {
         return data;
     }
 
-    public LiveData<PagingLoader> getMessageData(){
+    public LiveData<PagingLoader> getMessageData() {
         return messageData;
     }
 
-    public void loadMoreData(@NonNull String text){
-        if(!TextUtils.equals(text, searchText)){
+    public void loadMoreData(@NonNull String text) {
+        if (!TextUtils.equals(text, searchText)) {
             messageData.setValue(PagingLoader.IS_LOADING);
             mp.clear();
-            for(LiveData<Map<String, User>> liveData : liveDataSet){
+            for (LiveData<Map<String, User>> liveData : liveDataSet) {
                 data.removeSource(liveData);
             }
             liveDataSet.clear();
             searchText = text;
             fetchData(text.toLowerCase(Locale.ROOT));
-        }else{
+        } else {
             Log.w(TAG, "loadMoreData: queried text is same");
         }
     }
@@ -63,17 +63,17 @@ public class ManageUsersViewModel extends ViewModel {
         LiveData<Map<String, User>> mps = new AdminUserLiveData(getQuery(text));
         liveDataSet.add(mps);
         data.addSource(mps, stringUserMap -> {
-            if(stringUserMap != null){
+            if (stringUserMap != null) {
                 stringUserMap.forEach(mp::put);
                 data.setValue(mp);
                 messageData.setValue(PagingLoader.LOADED);
-            }else{
+            } else {
                 messageData.setValue(PagingLoader.ERROR);
             }
         });
     }
 
-    private Query getQuery(@NonNull String text){
-        return db.orderByChild(isEmail?"email":"name").equalTo(text);
+    private Query getQuery(@NonNull String text) {
+        return db.orderByChild(isEmail ? "email" : "name").equalTo(text);
     }
 }

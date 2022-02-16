@@ -1,6 +1,6 @@
 package com.raushankit.ILghts.entity;
 
-public enum InfoType{
+public enum InfoType {
     PROFILE_VISIBILITY,
     EMAIL_VERIFIED,
     EMAIL_NOT_VERIFIED,

@@ -25,7 +25,7 @@ public class PinData {
     @PropertyName("changed_by")
     private String userName;
 
-    public PinData(){
+    public PinData() {
 
     }
 
@@ -33,6 +33,15 @@ public class PinData {
         this.userUid = userUid;
         this.timeStamp = timeStamp;
         this.userName = userName;
+    }
+
+    @Exclude
+    public static Map<String, Object> toMap(@NonNull String name, @NonNull String uid) {
+        Map<String, Object> mp = new LinkedHashMap<>();
+        mp.put("changed_at", ServerValue.TIMESTAMP);
+        mp.put("changer_id", uid);
+        mp.put("changed_by", name);
+        return mp;
     }
 
     @PropertyName("changed_at")
@@ -63,15 +72,6 @@ public class PinData {
     @PropertyName("changer_id")
     public void setUserUid(String userUid) {
         this.userUid = userUid;
-    }
-
-    @Exclude
-    public static Map<String, Object> toMap(@NonNull String name, @NonNull String uid){
-        Map<String, Object> mp = new LinkedHashMap<>();
-        mp.put("changed_at", ServerValue.TIMESTAMP);
-        mp.put("changer_id", uid);
-        mp.put("changed_by", name);
-        return mp;
     }
 
     @NonNull

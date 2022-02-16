@@ -38,10 +38,10 @@ import java.util.Objects;
 public class SignUpFragment extends Fragment {
 
     private static final String TAG = "SIGNUP_FRAGMENT";
+    private final UserUpdates userUpdates = new UserUpdates();
     private View view;
     private FirebaseAuth mAuth;
     private FirebaseAnalytics mFirebaseAnalytics;
-    private final UserUpdates userUpdates = new UserUpdates();
     private AlertDialogFragment alertDialogFragment;
     private LoadingDialogFragment loadingDialogFragment;
     private SharedRepo sharedRepo;
@@ -63,7 +63,7 @@ public class SignUpFragment extends Fragment {
     private TextWatcher passwordWatcher;
     private TextWatcher confPasswordWatcher;
 
-    public SignUpFragment(){
+    public SignUpFragment() {
 
     }
 
@@ -71,11 +71,11 @@ public class SignUpFragment extends Fragment {
         statusBarColor.onClick(R.color.splash_screen_bg_end);
         this.changeFrags = changeFrags;
         loadingDialogFragment = LoadingDialogFragment.newInstance();
-        alertDialogFragment = AlertDialogFragment.newInstance(R.string.signup_failed,true, false);
+        alertDialogFragment = AlertDialogFragment.newInstance(R.string.signup_failed, true, false);
         alertDialogFragment.addWhichButtonClickedListener(whichButton -> {
-            if(whichButton == AlertDialogFragment.WhichButton.POSITIVE){
+            if (whichButton == AlertDialogFragment.WhichButton.POSITIVE) {
                 alertDialogFragment.dismiss();
-            }else{
+            } else {
                 Log.w(TAG, "SignUpFragment: negative button clicked");
             }
         });
@@ -104,21 +104,21 @@ public class SignUpFragment extends Fragment {
             boolean isNameBad = TextUtils.isEmpty(nameInput.getText());
             boolean isPasswordBad = TextUtils.isEmpty(passwordInput.getText());
             boolean isConfirmPasswordBad = TextUtils.isEmpty(confPasswordInput.getText());
-            if(isEmailBad || isNameBad || isPasswordBad || isConfirmPasswordBad ){
-                if(isEmailBad) emailLayout.setError(getString(R.string.required));
-                if(isNameBad) nameLayout.setError(getString(R.string.required));
-                if(isPasswordBad) passwordLayout.setError(getString(R.string.required));
-                if(isConfirmPasswordBad) confPasswordLayout.setError(getString(R.string.required));
-            }else{
+            if (isEmailBad || isNameBad || isPasswordBad || isConfirmPasswordBad) {
+                if (isEmailBad) emailLayout.setError(getString(R.string.required));
+                if (isNameBad) nameLayout.setError(getString(R.string.required));
+                if (isPasswordBad) passwordLayout.setError(getString(R.string.required));
+                if (isConfirmPasswordBad) confPasswordLayout.setError(getString(R.string.required));
+            } else {
                 String pw = Objects.requireNonNull(passwordInput.getText()).toString();
                 String cpw = Objects.requireNonNull(confPasswordInput.getText()).toString();
-                if(pw.equals(cpw)){
+                if (pw.equals(cpw)) {
                     loadingDialogFragment.setTitle(R.string.signing_up);
                     loadingDialogFragment.setMessage(R.string.please_wait);
-                    loadingDialogFragment.show(getChildFragmentManager(),LoadingDialogFragment.TAG);
+                    loadingDialogFragment.show(getChildFragmentManager(), LoadingDialogFragment.TAG);
                     createUser(Objects.requireNonNull(emailInput.getText()).toString(),
                             Objects.requireNonNull(nameInput.getText()).toString(), pw);
-                }else{
+                } else {
                     confPasswordLayout.setError(getString(R.string.password_not_match));
                 }
             }
@@ -129,11 +129,11 @@ public class SignUpFragment extends Fragment {
 
     private void createUser(@NonNull String email, @NonNull String name, @NonNull String password) {
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, null);
-        mAuth.createUserWithEmailAndPassword(email,password)
+        mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
-                    try{
+                    try {
                         FirebaseUser user = task.getResult().getUser();
-                        if(user != null && task.isSuccessful()){
+                        if (user != null && task.isSuccessful()) {
                             Map<SharedRefKeys, String> mp = new LinkedHashMap<>();
                             mp.put(SharedRefKeys.AUTH_TYPE, "EMAIL");
                             mp.put(SharedRefKeys.AUTH_SUCCESSFUL, Boolean.FALSE.toString());
@@ -141,11 +141,11 @@ public class SignUpFragment extends Fragment {
                             mp.put(SharedRefKeys.USER_NAME, name);
                             sharedRepo.insert(mp);
                             updateMetadata(mp, user.getUid());
-                        }else{
+                        } else {
                             loadingDialogFragment.dismiss();
                             showAlert(task.getException());
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         loadingDialogFragment.dismiss();
                         showAlert(null);
                     }
@@ -233,14 +233,14 @@ public class SignUpFragment extends Fragment {
     private void updateMetadata(@NonNull Map<SharedRefKeys, String> mp, @NonNull String uid) {
         loadingDialogFragment.setMessage(R.string.verifying_user);
         UserViewModel userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-        userViewModel.getUserData().observe(getViewLifecycleOwner(), user1->{
-            if(user1 != null){
+        userViewModel.getUserData().observe(getViewLifecycleOwner(), user1 -> {
+            if (user1 != null) {
                 loadingDialogFragment.dismiss();
                 sharedRepo.insert(SharedRefKeys.AUTH_SUCCESSFUL, Boolean.TRUE.toString());
                 changeFrags.onClick(PageKeys.CONTROLLER_PAGE);
-            }else{
+            } else {
                 String errorStr = userUpdates.createUserMetaData(uid, new User(Objects.requireNonNull(mp.get(SharedRefKeys.USER_NAME)), Objects.requireNonNull(mp.get(SharedRefKeys.USER_EMAIL))));
-                if(errorStr != null){
+                if (errorStr != null) {
                     loadingDialogFragment.dismiss();
                     showAlert(new Exception(errorStr));
                 }
@@ -248,9 +248,9 @@ public class SignUpFragment extends Fragment {
         });
     }
 
-    public void showAlert(Exception exception){
-        alertDialogFragment.setBodyString(exception==null || exception.getMessage()==null?getString(R.string.internet_connection_error):exception.getMessage());
-        alertDialogFragment.show(getChildFragmentManager(),AlertDialogFragment.TAG);
+    public void showAlert(Exception exception) {
+        alertDialogFragment.setBodyString(exception == null || exception.getMessage() == null ? getString(R.string.internet_connection_error) : exception.getMessage());
+        alertDialogFragment.show(getChildFragmentManager(), AlertDialogFragment.TAG);
     }
 
     /////////////////////////////////////////////

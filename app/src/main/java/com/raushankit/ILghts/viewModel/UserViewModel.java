@@ -14,27 +14,27 @@ import java.util.List;
 public class UserViewModel extends ViewModel {
     private final UserRepository uRepo;
 
-    public UserViewModel(){
+    public UserViewModel() {
         this.uRepo = UserRepository.newInstance();
     }
 
-    public void resetRepository(){
+    public void resetRepository() {
         uRepo.signOutEvent();
     }
 
-    public boolean isNew(){
+    public boolean isNew() {
         return uRepo.isNewInstance();
     }
 
-    public LiveData<User> getUserData(){
+    public LiveData<User> getUserData() {
         return uRepo.getUserLiveData();
     }
 
-    public LiveData<Role> getRoleData(){
+    public LiveData<Role> getRoleData() {
         return uRepo.getRoleLiveData();
     }
 
-    public LiveData<VersionInfo> getVersionData(){
+    public LiveData<VersionInfo> getVersionData() {
         return uRepo.getVersionLiveData();
     }
 

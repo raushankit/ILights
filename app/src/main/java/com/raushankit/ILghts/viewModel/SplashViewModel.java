@@ -19,36 +19,36 @@ public class SplashViewModel extends ViewModel {
     private boolean GOT_VERSION_DATA;
     private AppUpdateInfo appUpdateInfo;
 
-    public SplashViewModel(){
+    public SplashViewModel() {
         GOT_ROLE_DATA = false;
         GOT_VERSION_DATA = false;
     }
 
-    public void addSource(LiveData<?> childData){
+    public void addSource(LiveData<?> childData) {
         data.addSource(childData, o -> {
-            if(o instanceof UpdatePriority){
+            if (o instanceof UpdatePriority) {
                 Log.w(TAG, "addSource: update data = " + o);
                 chunk.setUpdatePriority((UpdatePriority) o);
                 GOT_VERSION_DATA = true;
             }
-            if(o instanceof Role){
+            if (o instanceof Role) {
                 Log.w(TAG, "addSource: role data = " + o);
                 chunk.setRole((Role) o);
                 GOT_ROLE_DATA = true;
             }
-            if(GOT_ROLE_DATA && GOT_VERSION_DATA) data.setValue(chunk);
+            if (GOT_ROLE_DATA && GOT_VERSION_DATA) data.setValue(chunk);
         });
     }
 
-    public void setVersionFlag(boolean flag){
+    public void setVersionFlag(boolean flag) {
         GOT_VERSION_DATA = flag;
     }
 
-    public void setRoleFlag(boolean flag){
+    public void setRoleFlag(boolean flag) {
         GOT_ROLE_DATA = flag;
     }
 
-    public LiveData<SplashData> getData(){
+    public LiveData<SplashData> getData() {
         return data;
     }
 

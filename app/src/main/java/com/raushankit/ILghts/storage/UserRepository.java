@@ -28,19 +28,19 @@ public class UserRepository {
     private static final String TAG = "USER_REPOSITORY";
     private static int instances = 0;
     private static UserRepository INSTANCE;
-    private String userId = "ebuebeubyeydeyhdtvhdgevcrfdh";
     private final LiveData<User> userLiveData;
     private final LiveData<Role> roleLiveData;
     private final LiveData<VersionInfo> versionLiveData;
     private final PinInfoLivedata pinInfoLivedata;
     private final PinUpdateLiveData pinUpdateLiveData;
     private final PinStatusLiveData pinStatusLiveData;
+    private String userId = "ebuebeubyeydeyhdtvhdgevcrfdh";
 
-    private UserRepository(){
+    private UserRepository() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user != null){
+        if (user != null) {
             userId = user.getUid();
-        }else{
+        } else {
             Log.e(TAG, "UserRepository: user is null");
         }
         userLiveData = new UserLiveData("/users/" + userId);
@@ -52,7 +52,7 @@ public class UserRepository {
     }
 
     public static UserRepository newInstance() {
-        if(INSTANCE == null){
+        if (INSTANCE == null) {
             INSTANCE = new UserRepository();
         }
         instances++;
@@ -60,11 +60,11 @@ public class UserRepository {
         return INSTANCE;
     }
 
-    public boolean isNewInstance(){
+    public boolean isNewInstance() {
         return instances == 1;
     }
 
-    public void signOutEvent(){
+    public void signOutEvent() {
         INSTANCE = null;
         instances = 0;
     }
@@ -73,15 +73,15 @@ public class UserRepository {
         return userLiveData;
     }
 
-    public LiveData<Role> getRoleLiveData(){
+    public LiveData<Role> getRoleLiveData() {
         return roleLiveData;
     }
 
-    public LiveData<VersionInfo> getVersionLiveData(){
+    public LiveData<VersionInfo> getVersionLiveData() {
         return versionLiveData;
     }
 
-    public LiveData<List<PinListData>> fetchPinData(){
+    public LiveData<List<PinListData>> fetchPinData() {
         MediatorLiveData<List<PinListData>> data = new MediatorLiveData<>();
 
         data.addSource(pinInfoLivedata, stringPinInfoMap -> data.setValue(combineData()));
@@ -97,12 +97,12 @@ public class UserRepository {
         Map<String, PinData> mpu = pinUpdateLiveData.getValue();
         Map<String, Boolean> mps = pinStatusLiveData.getValue();
 
-        if(mpi != null && mps != null && mpu != null){
-            mpi.forEach((k,v) -> {
+        if (mpi != null && mps != null && mpu != null) {
+            mpi.forEach((k, v) -> {
                 PinData pinData = mpu.get(k);
                 Boolean status = mps.get(k);
-                if(pinData != null && status != null){
-                    list.add(new PinListData(Integer.parseInt(k),v.getName(),pinData.getUserName(),pinData.getTimeStamp(), status, pinData.getUserUid().equals(userId)));
+                if (pinData != null && status != null) {
+                    list.add(new PinListData(Integer.parseInt(k), v.getName(), pinData.getUserName(), pinData.getTimeStamp(), status, pinData.getUserUid().equals(userId)));
                 }
             });
         }

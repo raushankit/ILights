@@ -28,7 +28,7 @@ public class RoleLiveData extends LiveData<Role> {
         }
     };
 
-    public RoleLiveData(@NonNull String path){
+    public RoleLiveData(@NonNull String path) {
         db = FirebaseDatabase.getInstance().getReference(path);
     }
 

@@ -81,7 +81,7 @@ public class EditPinItemFragment extends Fragment {
             pinNumber = args.getInt("pin_number");
             pins = args.getStringArray("available_pins");
         }
-        alertDialogFragment = AlertDialogFragment.newInstance(R.string.confirm_action,true,true);
+        alertDialogFragment = AlertDialogFragment.newInstance(R.string.confirm_action, true, true);
         alertDialogFragment.setBodyString(getString(R.string.sign_out_body_text));
         alertDialogFragment.setPositiveButtonText(R.string.yes);
         alertDialogFragment.setNegativeButtonText(R.string.alert_dialog_placeholder_btn_negative);
@@ -106,22 +106,22 @@ public class EditPinItemFragment extends Fragment {
         pinNameEdittext = view.findViewById(R.id.frag_edit_pin_item_pin_name_edit_text);
         InputMethodManager im = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         boolean isEdit = action.equals("edit");
-        deleteButton.setVisibility(isEdit?View.VISIBLE:View.GONE);
-        editButton.setText(getString(isEdit?R.string.change:R.string.add));
+        deleteButton.setVisibility(isEdit ? View.VISIBLE : View.GONE);
+        editButton.setText(getString(isEdit ? R.string.change : R.string.add));
         pinNumberLayout.setEnabled(!isEdit);
-        title.setText(isEdit?"Edit Pin":"Add Pin");
-        if(isEdit){
+        title.setText(isEdit ? "Edit Pin" : "Add Pin");
+        if (isEdit) {
             pinNameEdittext.setText(pinName);
             pinNumberText.setText(getString(R.string.add_pin_frag_item_pin_number, pinNumber));
-        }else{
+        } else {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.edit_pin_item_drop_down, pins);
             pinNumberText.setAdapter(adapter);
         }
         alertDialogFragment.addWhichButtonClickedListener(whichButton -> {
-            if(whichButton.equals(AlertDialogFragment.WhichButton.POSITIVE)){
+            if (whichButton.equals(AlertDialogFragment.WhichButton.POSITIVE)) {
                 settingCommViewModel.selectItem(new Pair<>("delete_pin_item", pinNumber));
                 getParentFragmentManager().popBackStack();
-            }else{
+            } else {
                 Log.w(TAG, "onCreateView: canceled delete operation");
             }
             alertDialogFragment.dismiss();
@@ -131,37 +131,37 @@ public class EditPinItemFragment extends Fragment {
             alertDialogFragment.show(getChildFragmentManager(), AlertDialogFragment.TAG);
         });
         editButton.setOnClickListener(v -> {
-            im.hideSoftInputFromWindow(view.getWindowToken(),0);
+            im.hideSoftInputFromWindow(view.getWindowToken(), 0);
             boolean invalidPinName = TextUtils.isEmpty(pinNameEdittext.getText());
             boolean invalidPinNumber = TextUtils.isEmpty(pinNumberText.getText());
-            if(invalidPinName || invalidPinNumber){
-                if(invalidPinName) nameLayout.setError(getString(R.string.required));
-                if(invalidPinNumber) pinNumberLayout.setError(getString(R.string.required));
+            if (invalidPinName || invalidPinNumber) {
+                if (invalidPinName) nameLayout.setError(getString(R.string.required));
+                if (invalidPinNumber) pinNumberLayout.setError(getString(R.string.required));
                 return;
             }
-            if(TextUtils.equals(pinName, pinNameEdittext.getText())){
+            if (TextUtils.equals(pinName, pinNameEdittext.getText())) {
                 nameLayout.setError(getString(R.string.same_as_before));
                 return;
             }
             String[] str = pinNumberText.getText().toString().split(" ", -1);
-            settingCommViewModel.selectItem(new Pair<>((isEdit?"edit_pin_item":"add_pin_item"), new EditPinInfo(Integer.parseInt(str[str.length-1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString()))));
+            settingCommViewModel.selectItem(new Pair<>((isEdit ? "edit_pin_item" : "add_pin_item"), new EditPinInfo(Integer.parseInt(str[str.length - 1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString()))));
         });
         pinNameEdittext.setOnEditorActionListener((textView, i, keyEvent) -> {
-            if(i == EditorInfo.IME_ACTION_DONE){
-                im.hideSoftInputFromWindow(view.getWindowToken(),0);
+            if (i == EditorInfo.IME_ACTION_DONE) {
+                im.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 boolean invalidPinName = TextUtils.isEmpty(pinNameEdittext.getText());
                 boolean invalidPinNumber = TextUtils.isEmpty(pinNumberText.getText());
-                if(invalidPinName || invalidPinNumber){
-                    if(invalidPinName) nameLayout.setError(getString(R.string.required));
-                    if(invalidPinNumber) pinNumberLayout.setError(getString(R.string.required));
+                if (invalidPinName || invalidPinNumber) {
+                    if (invalidPinName) nameLayout.setError(getString(R.string.required));
+                    if (invalidPinNumber) pinNumberLayout.setError(getString(R.string.required));
                     return false;
                 }
-                if(TextUtils.equals(pinName, pinNameEdittext.getText())){
+                if (TextUtils.equals(pinName, pinNameEdittext.getText())) {
                     nameLayout.setError(getString(R.string.same_as_before));
                     return false;
                 }
                 String[] str = pinNumberText.getText().toString().split(" ", -1);
-                settingCommViewModel.selectItem(new Pair<>((isEdit?"edit_pin_item":"add_pin_item"), new EditPinInfo(Integer.parseInt(str[str.length-1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString()))));
+                settingCommViewModel.selectItem(new Pair<>((isEdit ? "edit_pin_item" : "add_pin_item"), new EditPinInfo(Integer.parseInt(str[str.length - 1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString()))));
                 return true;
             }
             return false;

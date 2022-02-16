@@ -90,19 +90,19 @@ public class ChangeName extends Fragment {
         circularProgressBar.setVisibility(View.GONE);
         InputMethodManager im = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference("users/"+userUid+"/name");
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference("users/" + userUid + "/name");
 
-        if(!TextUtils.isEmpty(prevUserName)){
+        if (!TextUtils.isEmpty(prevUserName)) {
             nameText.setText(prevUserName);
         }
 
         update.setOnClickListener(v -> {
-            im.hideSoftInputFromWindow(view.getWindowToken(),0);
-            if(nameText.getText()!= null && TextUtils.isEmpty(nameText.getText())){
+            im.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            if (nameText.getText() != null && TextUtils.isEmpty(nameText.getText())) {
                 nameLayout.setError(getString(R.string.required));
                 return;
             }
-            if(TextUtils.equals(prevUserName, nameText.getText())){
+            if (TextUtils.equals(prevUserName, nameText.getText())) {
                 nameLayout.setError(getString(R.string.same_as_before));
                 return;
             }
@@ -110,19 +110,19 @@ public class ChangeName extends Fragment {
             db.setValue(nameText.getText().toString().toLowerCase())
                     .addOnCompleteListener(task -> {
                         Bundle result = new Bundle();
-                        result.putString("result",getString(task.isSuccessful()?R.string.name_successfully_updated:R.string.failed_to_update_name));
+                        result.putString("result", getString(task.isSuccessful() ? R.string.name_successfully_updated : R.string.failed_to_update_name));
                         getParentFragmentManager().setFragmentResult("request", result);
                         getParentFragmentManager().popBackStackImmediate();
                     });
         });
         nameText.setOnEditorActionListener((textView, i, keyEvent) -> {
-            im.hideSoftInputFromWindow(view.getWindowToken(),0);
-            if(i == EditorInfo.IME_ACTION_DONE){
-                if(nameText.getText()!= null && TextUtils.isEmpty(nameText.getText())){
+            im.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            if (i == EditorInfo.IME_ACTION_DONE) {
+                if (nameText.getText() != null && TextUtils.isEmpty(nameText.getText())) {
                     nameLayout.setError(getString(R.string.required));
                     return false;
                 }
-                if(TextUtils.equals(prevUserName, nameText.getText())){
+                if (TextUtils.equals(prevUserName, nameText.getText())) {
                     nameLayout.setError(getString(R.string.same_as_before));
                     return false;
                 }
@@ -130,7 +130,7 @@ public class ChangeName extends Fragment {
                 db.setValue(nameText.getText().toString().toLowerCase())
                         .addOnCompleteListener(task -> {
                             Bundle result = new Bundle();
-                            result.putString("result",getString(task.isSuccessful()?R.string.name_successfully_updated:R.string.failed_to_update_name));
+                            result.putString("result", getString(task.isSuccessful() ? R.string.name_successfully_updated : R.string.failed_to_update_name));
                             getParentFragmentManager().setFragmentResult("request", result);
                             getParentFragmentManager().popBackStackImmediate();
                         });

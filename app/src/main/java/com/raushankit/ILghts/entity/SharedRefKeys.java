@@ -12,6 +12,6 @@ public enum SharedRefKeys {
     PREV_SHOWN_ANALYTICS_DIALOG("prev_show_analytics_dialog"),
     EMAIL_VERIFICATION("email-verification");
 
-    SharedRefKeys(String key){
+    SharedRefKeys(String key) {
     }
 }

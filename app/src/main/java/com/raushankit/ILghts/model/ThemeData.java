@@ -10,7 +10,8 @@ public class ThemeData {
 
     private boolean batterySaverOn;
 
-    public ThemeData(){}
+    public ThemeData() {
+    }
 
     public ThemeData(String themeType, boolean batterySaverOn) {
         this.themeType = themeType;

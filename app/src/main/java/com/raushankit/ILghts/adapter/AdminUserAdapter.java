@@ -33,7 +33,7 @@ public class AdminUserAdapter extends ListAdapter<AdminUser, AdminUserAdapter.Ad
         holder.bind(getItem(position));
     }
 
-     class AdminUserViewHolder extends RecyclerView.ViewHolder {
+    class AdminUserViewHolder extends RecyclerView.ViewHolder {
         final TextView name;
         final TextView email;
 

@@ -17,7 +17,7 @@ public class VersionInfo {
     @PropertyName("version_code")
     private Integer versionCode;
 
-    public VersionInfo(){
+    public VersionInfo() {
 
     }
 

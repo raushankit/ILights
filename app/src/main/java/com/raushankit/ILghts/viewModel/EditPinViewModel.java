@@ -13,16 +13,16 @@ public class EditPinViewModel extends ViewModel {
     private final PinInfoLivedata pinInfoLivedata;
     private final BoardMetaData boardMetaData;
 
-    public EditPinViewModel(){
+    public EditPinViewModel() {
         pinInfoLivedata = new PinInfoLivedata();
         boardMetaData = new BoardMetaData();
     }
 
-    public LiveData<Map<String, PinInfo>> getPinIfo(){
+    public LiveData<Map<String, PinInfo>> getPinIfo() {
         return pinInfoLivedata;
     }
 
-    public LiveData<Integer> getBoardData(){
+    public LiveData<Integer> getBoardData() {
         return boardMetaData;
     }
 

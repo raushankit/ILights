@@ -20,7 +20,7 @@ public class User {
     private String name;
     private String email;
 
-    public User(){
+    public User() {
 
     }
 
@@ -59,7 +59,7 @@ public class User {
     }
 
     @Exclude
-    public Map<String, Object> toMap(){
+    public Map<String, Object> toMap() {
         Map<String, Object> mp = new LinkedHashMap<>();
         mp.put("name", name.toLowerCase());
         mp.put("email", email.toLowerCase());

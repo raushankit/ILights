@@ -81,42 +81,42 @@ public class ControllerFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.frag_controller_pin_items_list_recyclerview);
         PinListAdapter adapter = new PinListAdapter(getString(R.string.controller_item_details),
                 value -> {
-                        if(name.get() != null){
-                            Map<String, Object> mp = new LinkedHashMap<>();
-                            mp.put("control/status/"+ value.getPinNumber(), !value.isStatus());
-                            mp.put("control/update/"+ value.getPinNumber(), PinData.toMap(name.get().toLowerCase(), Objects.requireNonNull(mAuth.getUid())));
-                            db.updateChildren(mp, (error, ref) -> {
-                                if(error != null){
-                                    Snackbar.make(view, error.getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();
-                                }
-                            });
-                            Bundle bundle = new Bundle();
-                            bundle.putInt(AnalyticsParam.PIN_NUMBER, value.getPinNumber());
-                            bundle.putString(AnalyticsParam.PIN_NAME, value.getPinName());
-                            mFirebaseAnalytics.logEvent(AnalyticsParam.Event.CONTROLLER_EVENT, bundle);
-                        }else{
-                            Log.e(TAG, "onCreateView: name: " + name);
-                        }
+                    if (name.get() != null) {
+                        Map<String, Object> mp = new LinkedHashMap<>();
+                        mp.put("control/status/" + value.getPinNumber(), !value.isStatus());
+                        mp.put("control/update/" + value.getPinNumber(), PinData.toMap(name.get().toLowerCase(), Objects.requireNonNull(mAuth.getUid())));
+                        db.updateChildren(mp, (error, ref) -> {
+                            if (error != null) {
+                                Snackbar.make(view, error.getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();
+                            }
+                        });
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(AnalyticsParam.PIN_NUMBER, value.getPinNumber());
+                        bundle.putString(AnalyticsParam.PIN_NAME, value.getPinName());
+                        mFirebaseAnalytics.logEvent(AnalyticsParam.Event.CONTROLLER_EVENT, bundle);
+                    } else {
+                        Log.e(TAG, "onCreateView: name: " + name);
+                    }
                 });
         UserViewModel userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         userViewModel.getPinData().observe(getViewLifecycleOwner(), pinListData -> {
-            if(!pinListData.isEmpty()){
+            if (!pinListData.isEmpty()) {
                 pinListData.sort(Comparator.comparingInt(PinListData::getPinNumber));
                 adapter.submitList(pinListData);
-                if(shimmerFrameLayout.isShimmerStarted()){
+                if (shimmerFrameLayout.isShimmerStarted()) {
                     shimmerFrameLayout.stopShimmer();
                     shimmerFrameLayout.setVisibility(View.GONE);
                 }
             }
         });
         userViewModel.getRoleData().observe(getViewLifecycleOwner(), role -> {
-            if(role.getAccessLevel() <= 0){
+            if (role.getAccessLevel() <= 0) {
                 fragViewModel.selectItem(ControllerFragActions.BLOCK_EVENT);
             }
         });
         StatusViewModel statusViewModel = new ViewModelProvider(requireActivity()).get(StatusViewModel.class);
         userViewModel.getUserData().observe(getViewLifecycleOwner(), user -> name.set(user.getName()));
-        statusViewModel.getStatusData().observe(getViewLifecycleOwner(), aBoolean -> boardStatus.setText(getString(R.string.controller_board_status, (aBoolean?"ONLINE":"OFFLINE"))));
+        statusViewModel.getStatusData().observe(getViewLifecycleOwner(), aBoolean -> boardStatus.setText(getString(R.string.controller_board_status, (aBoolean ? "ONLINE" : "OFFLINE"))));
         recyclerView.setAdapter(adapter);
         return view;
     }

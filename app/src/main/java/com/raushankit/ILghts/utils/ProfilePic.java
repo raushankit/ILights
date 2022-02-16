@@ -16,24 +16,19 @@ import androidx.annotation.Nullable;
 import com.raushankit.ILghts.R;
 
 public class ProfilePic extends View {
+    private final Point dimens = new Point();
+    private final Paint strokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private String name;
     private float radius = 0;
-    private final Point dimens = new Point();
     private int backGroundColor;
     private int strokeColor;
     private boolean adjustText = false;
     private float strokeWidth;
     private float gap;
-    private final Paint strokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public ProfilePic(Context context) {
         super(context);
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        invalidate();
     }
 
     public ProfilePic(Context context, @Nullable AttributeSet attrs) {
@@ -46,11 +41,16 @@ public class ProfilePic extends View {
         initialize(attrs);
     }
 
+    public void setName(String name) {
+        this.name = name;
+        invalidate();
+    }
+
     private void initialize(AttributeSet attrs) {
-        TypedArray tp = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.ProfilePic,0,0);
+        TypedArray tp = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.ProfilePic, 0, 0);
         int textColor;
         float textSize;
-        try{
+        try {
             backGroundColor = tp.getColor(R.styleable.ProfilePic_backgroundColor, Color.RED);
             strokeColor = tp.getColor(R.styleable.ProfilePic_strokeColor, Color.GREEN);
             strokeWidth = tp.getDimension(R.styleable.ProfilePic_strokeWidth, 10);
@@ -58,8 +58,8 @@ public class ProfilePic extends View {
             textColor = tp.getColor(R.styleable.ProfilePic_android_textColor, Color.BLACK);
             name = tp.getString(R.styleable.ProfilePic_android_text);
             textSize = tp.getDimension(R.styleable.ProfilePic_android_textSize, -1);
-            adjustText = textSize==-1;
-        }finally {
+            adjustText = textSize == -1;
+        } finally {
             tp.recycle();
         }
         strokePaint.setColor(strokeColor);
@@ -67,7 +67,7 @@ public class ProfilePic extends View {
         strokePaint.setStrokeWidth(strokeWidth);
         strokePaint.setAntiAlias(true);
 
-        textPaint.setTextSize(adjustText?30:textSize);
+        textPaint.setTextSize(adjustText ? 30 : textSize);
         textPaint.setColor(textColor);
         textPaint.setAntiAlias(true);
         textPaint.setTextAlign(Paint.Align.CENTER);
@@ -91,20 +91,20 @@ public class ProfilePic extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(Color.TRANSPARENT);
-        canvas.drawCircle(0.5f*dimens.x, 0.5f*dimens.y, 0.5f*dimens.x-strokeWidth, strokePaint);
+        canvas.drawCircle(0.5f * dimens.x, 0.5f * dimens.y, 0.5f * dimens.x - strokeWidth, strokePaint);
         drawBackGround(canvas);
-        if(!TextUtils.isEmpty(name)) drawText(canvas);
+        if (!TextUtils.isEmpty(name)) drawText(canvas);
     }
 
     private void drawText(Canvas canvas) {
         String text;
-        String [] words = name.split(" ",-1);
+        String[] words = name.split(" ", -1);
         text = words[0].toUpperCase().charAt(0) +
-                (words.length > 1?words[words.length-1].toUpperCase().substring(0,1):"");
-        if(adjustText)adjustTextSize(text);
+                (words.length > 1 ? words[words.length - 1].toUpperCase().substring(0, 1) : "");
+        if (adjustText) adjustTextSize(text);
         Rect bounds = new Rect();
-        textPaint.getTextBounds(text, 0, text.length(),bounds);
-        canvas.drawText(text, dimens.x*.5f,dimens.y*0.5f+bounds.height()*0.5f,textPaint);
+        textPaint.getTextBounds(text, 0, text.length(), bounds);
+        canvas.drawText(text, dimens.x * .5f, dimens.y * 0.5f + bounds.height() * 0.5f, textPaint);
     }
 
     public void setBackGroundCol(int backGroundColor) {
@@ -115,18 +115,18 @@ public class ProfilePic extends View {
     private void adjustTextSize(String text) {
         float textSize = textPaint.getTextSize();
         Rect bounds = new Rect();
-        textPaint.getTextBounds(text, 0, text.length(),bounds);
-        textPaint.setTextSize(0.95f*textSize*1.414f*radius/bounds.height());
-        if(bounds.width() > 1.414f*radius){
-            textPaint.setTextSize(0.95f*textSize*1.414f*radius/bounds.width());
+        textPaint.getTextBounds(text, 0, text.length(), bounds);
+        textPaint.setTextSize(0.95f * textSize * 1.414f * radius / bounds.height());
+        if (bounds.width() > 1.414f * radius) {
+            textPaint.setTextSize(0.95f * textSize * 1.414f * radius / bounds.width());
         }
     }
 
     private void drawBackGround(Canvas canvas) {
         strokePaint.setStyle(Paint.Style.FILL);
         strokePaint.setColor(backGroundColor);
-        radius = 0.5f*dimens.x-strokeWidth-gap;
-        canvas.drawCircle(0.5f*dimens.x, 0.5f*dimens.y, radius, strokePaint);
+        radius = 0.5f * dimens.x - strokeWidth - gap;
+        canvas.drawCircle(0.5f * dimens.x, 0.5f * dimens.y, radius, strokePaint);
         strokePaint.setStyle(Paint.Style.STROKE);
         strokePaint.setColor(strokeColor);
     }

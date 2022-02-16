@@ -77,7 +77,7 @@ import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, AppBarLayout.OnOffsetChangedListener, InstallStateUpdatedListener {
     private static final String TAG = "SETTINGS_ACTIVITY";
-    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.8f;
+    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.8f;
     private static final long ALPHA_ANIMATIONS_DURATION = 200;
     private static final int DAYS_FOR_FLEXIBLE_UPDATE = 30;
     private static final int RC_PLAY_UPDATE = 9858922;
@@ -87,7 +87,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private FirebaseAuth mAuth;
     private DatabaseReference db;
     private FirebaseAnalytics mFirebaseAnalytics;
-    private Pair<Boolean,Boolean> providerData;
+    private Pair<Boolean, Boolean> providerData;
     private UserViewModel userViewModel;
     private SettingCommViewModel settingCommViewModel;
     private AppUpdateManager appUpdateManager;
@@ -104,6 +104,16 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private TextView toolBarTextView;
     private boolean mIsTheTitleVisible = false;
     private FirebaseAuth.AuthStateListener authListener;
+
+    public static void startAlphaAnimation(View v, long duration, int visibility) {
+        AlphaAnimation alphaAnimation = (visibility == View.VISIBLE)
+                ? new AlphaAnimation(0f, 1f)
+                : new AlphaAnimation(1f, 0f);
+
+        alphaAnimation.setDuration(duration);
+        alphaAnimation.setFillAfter(true);
+        v.startAnimation(alphaAnimation);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,10 +148,10 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         settingCommViewModel = new ViewModelProvider(this).get(SettingCommViewModel.class);
         snackbar = Snackbar.make(findViewById(android.R.id.content), "", BaseTransientBottomBar.LENGTH_SHORT);
         badAuthIntent = new Intent(this, MainActivity.class);
-        badAuthIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        badAuthIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         db = FirebaseDatabase.getInstance().getReference();
         authListener = firebaseAuth -> {
-            if(firebaseAuth.getCurrentUser()==null){
+            if (firebaseAuth.getCurrentUser() == null) {
                 Log.w(TAG, "onCreate: null user");
                 startActivity(badAuthIntent);
                 userViewModel.resetRepository();
@@ -149,14 +159,14 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             }
         };
         providerData = getProviderData();
-        alertDialogFragment = AlertDialogFragment.newInstance(R.string.confirm_action,true,true);
+        alertDialogFragment = AlertDialogFragment.newInstance(R.string.confirm_action, true, true);
         alertDialogFragment.setPositiveButtonText(R.string.yes);
         alertDialogFragment.setNegativeButtonText(R.string.no);
         alertDialogFragment.addWhichButtonClickedListener(whichButton -> {
-            if(whichButton.equals(AlertDialogFragment.WhichButton.POSITIVE)){
-                if(alertDialogFragment.getActionType().equals("sign_out")){
+            if (whichButton.equals(AlertDialogFragment.WhichButton.POSITIVE)) {
+                if (alertDialogFragment.getActionType().equals("sign_out")) {
                     mAuth.signOut();
-                }else{
+                } else {
                     Log.w(TAG, "onCreate: bad event");
                 }
             }
@@ -174,17 +184,17 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
     private Pair<Boolean, Boolean> getProviderData() {
         FirebaseUser user = mAuth.getCurrentUser();
-        if(user == null) return new Pair<>(false, false);
-        for(UserInfo userInfo : user.getProviderData()){
+        if (user == null) return new Pair<>(false, false);
+        for (UserInfo userInfo : user.getProviderData()) {
             boolean isProviderGoogle = userInfo.getProviderId().equals("google.com");
-            if(isProviderGoogle) return new Pair<>(true, user.isEmailVerified());
+            if (isProviderGoogle) return new Pair<>(true, user.isEmailVerified());
         }
         return new Pair<>(false, user.isEmailVerified());
     }
 
     private void implementListeners() {
         settingCommViewModel.getSelectedItem().observe(this, item -> {
-            if(item.first.equals("preference_setter")) return;
+            if (item.first.equals("preference_setter")) return;
             Bundle bundle = new Bundle();
             switch (item.first) {
                 case "theme":
@@ -198,7 +208,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && themeData.getThemeType().equals("follow_system")) {
-                        AppCompatDelegate.setDefaultNightMode(themeData.isBatterySaverOn()?AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY:AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                        AppCompatDelegate.setDefaultNightMode(themeData.isBatterySaverOn() ? AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                     }
                     break;
                 case "verify_email":
@@ -213,16 +223,17 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                                     sharedRepo.insert(SharedRefKeys.EMAIL_VERIFICATION, String.valueOf(task.isSuccessful()));
                                 });
                     } else {
-                        Snackbar.make(findViewById(android.R.id.content), user.isEmailVerified()?R.string.email_already_verified:R.string.email_verification_sign_out, BaseTransientBottomBar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), user.isEmailVerified() ? R.string.email_already_verified : R.string.email_verification_sign_out, BaseTransientBottomBar.LENGTH_SHORT).show();
                     }
                     break;
                 case "sign_out":
                     alertDialogFragment.setBodyString(getString(R.string.sign_out_body_text));
                     alertDialogFragment.setActionType(item.first);
-                    alertDialogFragment.show(getSupportFragmentManager(), AlertDialogFragment.TAG);
+                    if (!alertDialogFragment.isAdded())
+                        alertDialogFragment.show(getSupportFragmentManager(), AlertDialogFragment.TAG);
                     break;
                 case "edit_pin":
-                    if(item.second instanceof EditPinInfo){
+                    if (item.second instanceof EditPinInfo) {
                         final Fragment fragment = EditPinItemFragment.newInstance("edit", (EditPinInfo) item.second);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.settings_fragment, fragment)
@@ -232,13 +243,13 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     break;
                 case "add_pin":
                     List<String> list = new ArrayList<>();
-                    for(int i = 1;i < ((List<?>) item.second).size();i++){
+                    for (int i = 1; i < ((List<?>) item.second).size(); i++) {
                         Boolean val = (Boolean) ((List<?>) item.second).get(i);
-                        if(val) list.add(getString(R.string.add_pin_frag_item_pin_number,i));
+                        if (val) list.add(getString(R.string.add_pin_frag_item_pin_number, i));
                     }
-                    if(list.isEmpty()){
-                        Snackbar.make(findViewById(android.R.id.content), R.string.all_pins_active,BaseTransientBottomBar.LENGTH_SHORT).show();
-                    }else{
+                    if (list.isEmpty()) {
+                        Snackbar.make(findViewById(android.R.id.content), R.string.all_pins_active, BaseTransientBottomBar.LENGTH_SHORT).show();
+                    } else {
                         final Fragment fragment = EditPinItemFragment.newInstance("add", list.toArray(new String[0]));
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.settings_fragment, fragment)
@@ -251,18 +262,18 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                     int deletePinNum = (int) item.second;
                     Map<String, Object> mp1 = new LinkedHashMap<>();
-                    mp1.put("control/info/"+deletePinNum,null);
-                    mp1.put("control/info/"+deletePinNum, null);
-                    mp1.put("control/update/"+deletePinNum, null);
-                    mp1.put("control/status/"+deletePinNum, null);
-                    db.updateChildren(mp1, ((error, ref) -> Snackbar.make(findViewById(android.R.id.content), (error == null?getString(R.string.pin_name_delete_successful, deletePinNum):getString(R.string.pin_name_delete_failure)), BaseTransientBottomBar.LENGTH_SHORT).show()));
+                    mp1.put("control/info/" + deletePinNum, null);
+                    mp1.put("control/info/" + deletePinNum, null);
+                    mp1.put("control/update/" + deletePinNum, null);
+                    mp1.put("control/status/" + deletePinNum, null);
+                    db.updateChildren(mp1, ((error, ref) -> Snackbar.make(findViewById(android.R.id.content), (error == null ? getString(R.string.pin_name_delete_successful, deletePinNum) : getString(R.string.pin_name_delete_failure)), BaseTransientBottomBar.LENGTH_SHORT).show()));
                     break;
                 case "edit_pin_item":
                     bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.EDIT_PIN);
                     mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                     EditPinInfo info = (EditPinInfo) item.second;
-                    db.child("control/info/"+info.getPinNumber()).setValue(info.getPinInfo())
-                            .addOnCompleteListener(task -> Snackbar.make(findViewById(android.R.id.content), (task.isSuccessful()?getString(R.string.pin_name_update_successful, info.getPinNumber()):getString(R.string.pin_name_update_failure)), BaseTransientBottomBar.LENGTH_SHORT).show());
+                    db.child("control/info/" + info.getPinNumber()).setValue(info.getPinInfo())
+                            .addOnCompleteListener(task -> Snackbar.make(findViewById(android.R.id.content), (task.isSuccessful() ? getString(R.string.pin_name_update_successful, info.getPinNumber()) : getString(R.string.pin_name_update_failure)), BaseTransientBottomBar.LENGTH_SHORT).show());
                     getSupportFragmentManager().popBackStackImmediate();
                     break;
                 case "add_pin_item":
@@ -270,15 +281,15 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                     EditPinInfo info1 = (EditPinInfo) item.second;
                     Map<String, Object> mp = new LinkedHashMap<>();
-                    mp.put("control/info/"+info1.getPinNumber(), info1.getPinInfo());
-                    mp.put("control/update/"+info1.getPinNumber(), PinData.toMap(name, Objects.requireNonNull(mAuth.getUid())));
-                    mp.put("control/status/"+info1.getPinNumber(), Boolean.FALSE);
-                    db.updateChildren(mp, ((error, ref) -> Snackbar.make(findViewById(android.R.id.content), (error == null?getString(R.string.pin_name_add_successful, info1.getPinNumber()):getString(R.string.pin_name_add_failure)), BaseTransientBottomBar.LENGTH_SHORT).show()));
+                    mp.put("control/info/" + info1.getPinNumber(), info1.getPinInfo());
+                    mp.put("control/update/" + info1.getPinNumber(), PinData.toMap(name, Objects.requireNonNull(mAuth.getUid())));
+                    mp.put("control/status/" + info1.getPinNumber(), Boolean.FALSE);
+                    db.updateChildren(mp, ((error, ref) -> Snackbar.make(findViewById(android.R.id.content), (error == null ? getString(R.string.pin_name_add_successful, info1.getPinNumber()) : getString(R.string.pin_name_add_failure)), BaseTransientBottomBar.LENGTH_SHORT).show()));
                     getSupportFragmentManager().popBackStackImmediate();
                     break;
                 case "play_update":
                     appUpdateManager.getAppUpdateInfo().addOnSuccessListener(it1 -> {
-                        if(it1.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && it1.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)){
+                        if (it1.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && it1.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
                             try {
                                 appUpdateManager.startUpdateFlowForResult(it1, AppUpdateType.FLEXIBLE, this, PREF_PLAY_UPDATE);
                             } catch (IntentSender.SendIntentException e) {
@@ -300,15 +311,15 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                     Map<String, Object> mp2 = new LinkedHashMap<>();
                     String uid = mAuth.getUid();
-                    mp2.put("users/"+uid, null);
-                    mp2.put("role/"+uid, null);
+                    mp2.put("users/" + uid, null);
+                    mp2.put("role/" + uid, null);
                     db.updateChildren(mp2, ((error, ref) -> {
-                        if(error == null){
+                        if (error == null) {
                             loadingDialogFragment.setMessage(R.string.please_wait);
                             Objects.requireNonNull(mAuth.getCurrentUser()).delete()
                                     .addOnFailureListener(e -> Snackbar.make(findViewById(android.R.id.content), Objects.requireNonNull(e.getMessage()), BaseTransientBottomBar.LENGTH_SHORT).show());
-                        }else{
-                            Snackbar.make(findViewById(android.R.id.content),error.getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();
+                        } else {
+                            Snackbar.make(findViewById(android.R.id.content), error.getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();
                         }
                     }));
                     getSupportFragmentManager().popBackStackImmediate();
@@ -321,7 +332,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     getSupportFragmentManager().popBackStackImmediate();
                     break;
                 case "privacy_policy":
-                    if(!webViewDialogFragment.isAdded()){
+                    if (!webViewDialogFragment.isAdded()) {
                         bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.PRIVACY_POLICY);
                         mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                         webViewDialogFragment.show(getSupportFragmentManager(), "privacy_policy");
@@ -329,11 +340,11 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     break;
                 case "edit_analytics_state":
                     mFirebaseAnalytics.setAnalyticsCollectionEnabled((Boolean) item.second);
-                    if(Boolean.FALSE.equals(item.second)){
+                    if (Boolean.FALSE.equals(item.second)) {
                         sharedRepo.insertBoolean(SharedRefKeys.SHOW_ANALYTICS_DIALOG, true);
                         sharedRepo.insertLong(SharedRefKeys.PREV_SHOWN_ANALYTICS_DIALOG, Calendar.getInstance().getTimeInMillis());
                     }
-                    Snackbar.make(findViewById(android.R.id.content),getString(R.string.settings_snack_message), BaseTransientBottomBar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.settings_snack_message), BaseTransientBottomBar.LENGTH_SHORT).show();
                     break;
                 default:
                     Log.w(TAG, "implementListeners: clear events");
@@ -343,10 +354,11 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         });
     }
 
-    private void showSnack(boolean isSuccessful, @StringRes int successMessage, @StringRes int failureMessage,@Nullable Exception exception){
-        if(isSuccessful) snackbar.setText(successMessage);
-        else{
-            if(exception == null || exception.getMessage() == null) snackbar.setText(failureMessage);
+    private void showSnack(boolean isSuccessful, @StringRes int successMessage, @StringRes int failureMessage, @Nullable Exception exception) {
+        if (isSuccessful) snackbar.setText(successMessage);
+        else {
+            if (exception == null || exception.getMessage() == null)
+                snackbar.setText(failureMessage);
             else snackbar.setText(exception.getMessage());
         }
         snackbar.show();
@@ -358,18 +370,18 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         TextView nameView = userLayout.findViewById(R.id.user_info_name);
         TextView emailView = userLayout.findViewById(R.id.user_info_email);
         TextView roleView = userLayout.findViewById(R.id.user_info_access_level);
-        String []roleType = getResources().getStringArray(R.array.user_types);
+        String[] roleType = getResources().getStringArray(R.array.user_types);
 
         pic.setBackGroundCol(ColorGen.getRandomDarkColor(0.7f));
         boolean[] flag = new boolean[2];
 
         userViewModel.getUserData().observe(this, user -> {
-            if(user != null){
+            if (user != null) {
                 name = user.getName();
                 toolBarTextView.setText(name);
-                if(!flag[0]){
+                if (!flag[0]) {
                     flag[0] = true;
-                    if(flag[1]){
+                    if (flag[1]) {
                         dataReceiveEvent();
                     }
                 }
@@ -379,15 +391,15 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             }
         });
         userViewModel.getRoleData().observe(this, role -> {
-            if(!flag[1]){
+            if (!flag[1]) {
                 flag[1] = true;
-                if(flag[0]){
+                if (flag[0]) {
                     dataReceiveEvent();
                 }
             }
-            if(role != null){
-                accessLevel = Math.max(0,Math.min(roleType.length, role.getAccessLevel()));
-                settingCommViewModel.selectItem(new Pair<>("preference_setter", accessLevel >= 2?InfoType.ADMIN_VISIBILITY:InfoType.ADMIN_INVISIBILITY));
+            if (role != null) {
+                accessLevel = Math.max(0, Math.min(roleType.length, role.getAccessLevel()));
+                settingCommViewModel.selectItem(new Pair<>("preference_setter", accessLevel >= 2 ? InfoType.ADMIN_VISIBILITY : InfoType.ADMIN_INVISIBILITY));
                 roleView.setText(getString(R.string.access_level_place_holder, roleType[accessLevel]));
             }
         });
@@ -395,17 +407,17 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         appUpdateManager.getAppUpdateInfo().addOnSuccessListener(appUpdateInfo -> {
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
                 settingCommViewModel.selectItem(new Pair<>("preference_setter", new VersionInfo("", appUpdateInfo.availableVersionCode())));
-                if(appUpdateInfo.clientVersionStalenessDays() != null
+                if (appUpdateInfo.clientVersionStalenessDays() != null
                         && Objects.requireNonNull(appUpdateInfo.clientVersionStalenessDays()) >= DAYS_FOR_FLEXIBLE_UPDATE
                         && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
-                        && isUpdateNotificationAllowed()){
+                        && isUpdateNotificationAllowed()) {
                     try {
                         appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, this, RC_PLAY_UPDATE);
                     } catch (IntentSender.SendIntentException e) {
                         e.printStackTrace();
                     }
                 }
-            }else{
+            } else {
                 Log.w(TAG, "fillUserdata: no update available");
             }
         });
@@ -415,8 +427,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         userLayout.setVisibility(View.VISIBLE);
         shimmerFrameLayout.stopShimmer();
         shimmerFrameLayout.setVisibility(View.GONE);
-        settingCommViewModel.selectItem(new Pair<>("preference_setter",providerData.first?InfoType.LOGIN_METHOD_GOOGLE:InfoType.LOGIN_METHOD_EMAIL));
-        settingCommViewModel.selectItem(new Pair<>("preference_setter",providerData.second?InfoType.EMAIL_VERIFIED:InfoType.EMAIL_NOT_VERIFIED));
+        settingCommViewModel.selectItem(new Pair<>("preference_setter", providerData.first ? InfoType.LOGIN_METHOD_GOOGLE : InfoType.LOGIN_METHOD_EMAIL));
+        settingCommViewModel.selectItem(new Pair<>("preference_setter", providerData.second ? InfoType.EMAIL_VERIFIED : InfoType.EMAIL_NOT_VERIFIED));
         settingCommViewModel.selectItem(new Pair<>("preference_setter", InfoType.PROFILE_VISIBILITY));
         sharedRepo.insert(SharedRefKeys.EMAIL_VERIFICATION, String.valueOf(false));
     }
@@ -450,12 +462,12 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             default:
                 Log.w(TAG, "onPreferenceStartFragment: no fragment as such: ");
         }
-        if(pref.getFragment()==null)return false;
+        if (pref.getFragment() == null) return false;
         final Fragment fragment = getSupportFragmentManager()
                 .getFragmentFactory().instantiate(getClassLoader(), pref.getFragment());
         fragment.setArguments(args);
         getSupportFragmentManager().setFragmentResultListener("request", this, (requestKey, result) -> {
-            if(requestKey.equals("request")){
+            if (requestKey.equals("request")) {
                 Snackbar.make(findViewById(android.R.id.content), result.getString("result"), BaseTransientBottomBar.LENGTH_SHORT).show();
             }
         });
@@ -471,11 +483,11 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         super.onResume();
         mAuth.addAuthStateListener(authListener);
         appUpdateManager.getAppUpdateInfo().addOnSuccessListener(it -> {
-            if(it.installStatus() == InstallStatus.DOWNLOADED) {
+            if (it.installStatus() == InstallStatus.DOWNLOADED) {
                 popupSnackbarForCompleteUpdate();
             }
-            if(it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
-                    && (it.installStatus() == InstallStatus.DOWNLOADING || it.installStatus() == InstallStatus.PENDING)){
+            if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
+                    && (it.installStatus() == InstallStatus.DOWNLOADING || it.installStatus() == InstallStatus.PENDING)) {
                 appUpdateManager.registerListener(this);
             }
         });
@@ -491,18 +503,17 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         int maxScroll = appBarLayout.getTotalScrollRange();
-        float factor = Math.abs(verticalOffset)/(maxScroll*1f);
+        float factor = Math.abs(verticalOffset) / (maxScroll * 1f);
         handleToolbarTitleVisibility(factor);
     }
 
     private void handleToolbarTitleVisibility(float percentage) {
-        if(percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
-            if(!mIsTheTitleVisible) {
+        if (percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
+            if (!mIsTheTitleVisible) {
                 startAlphaAnimation(toolBarTextView, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
                 mIsTheTitleVisible = true;
             }
-        }
-        else{
+        } else {
             if (mIsTheTitleVisible) {
                 startAlphaAnimation(toolBarTextView, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
                 mIsTheTitleVisible = false;
@@ -510,39 +521,30 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         }
     }
 
-    public static void startAlphaAnimation (View v, long duration, int visibility) {
-        AlphaAnimation alphaAnimation = (visibility == View.VISIBLE)
-                ? new AlphaAnimation(0f, 1f)
-                : new AlphaAnimation(1f, 0f);
-
-        alphaAnimation.setDuration(duration);
-        alphaAnimation.setFillAfter(true);
-        v.startAnimation(alphaAnimation);
-    }
-
     private void popupSnackbarForCompleteUpdate() {
-        Snackbar snackbar1 = Snackbar.make(findViewById(android.R.id.content),R.string.update_downloaded, Snackbar.LENGTH_INDEFINITE);
+        Snackbar snackbar1 = Snackbar.make(findViewById(android.R.id.content), R.string.update_downloaded, Snackbar.LENGTH_INDEFINITE);
         snackbar1.setAction(R.string.restart, view -> appUpdateManager.completeUpdate());
         snackbar1.setActionTextColor(getResources().getColor(R.color.scarlet_red, getTheme()));
         snackbar1.show();
     }
 
-    private boolean isUpdateNotificationAllowed(){
+    private boolean isUpdateNotificationAllowed() {
         long lastTime = sharedRepo.getLongValue(SharedRefKeys.NOTIFY_UPDATE, -1);
-        if(lastTime == -1) return true;
-        return Calendar.getInstance().getTimeInMillis() - lastTime >= DAYS_FOR_FLEXIBLE_UPDATE*24*3600000L;
+        if (lastTime == -1) return true;
+        return Calendar.getInstance().getTimeInMillis() - lastTime >= DAYS_FOR_FLEXIBLE_UPDATE * 24 * 3600000L;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RC_PLAY_UPDATE || requestCode == PREF_PLAY_UPDATE){
-            switch (resultCode){
+        if (requestCode == RC_PLAY_UPDATE || requestCode == PREF_PLAY_UPDATE) {
+            switch (resultCode) {
                 case RESULT_OK:
                     appUpdateManager.registerListener(this);
                     break;
                 case RESULT_CANCELED:
-                    if(requestCode == RC_PLAY_UPDATE) sharedRepo.insertLong(SharedRefKeys.NOTIFY_UPDATE, Calendar.getInstance().getTimeInMillis());
+                    if (requestCode == RC_PLAY_UPDATE)
+                        sharedRepo.insertLong(SharedRefKeys.NOTIFY_UPDATE, Calendar.getInstance().getTimeInMillis());
                     break;
                 case ActivityResult.RESULT_IN_APP_UPDATE_FAILED:
                     snackbar.setText(R.string.failed_to_update);
@@ -557,7 +559,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     @SuppressLint("SwitchIntDef")
     @Override
     public void onStateUpdate(@NonNull InstallState installState) {
-        Snackbar snackbarUpdate = Snackbar.make(findViewById(android.R.id.content),"", BaseTransientBottomBar.LENGTH_SHORT);
+        Snackbar snackbarUpdate = Snackbar.make(findViewById(android.R.id.content), "", BaseTransientBottomBar.LENGTH_SHORT);
         switch (installState.installStatus()) {
             case InstallStatus.DOWNLOADED:
                 popupSnackbarForCompleteUpdate();
@@ -593,30 +595,30 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             super.onViewCreated(view, savedInstanceState);
             settingCommViewModelFrag = new ViewModelProvider(requireActivity()).get(SettingCommViewModel.class);
             settingCommViewModelFrag.getSelectedItem().observe(getViewLifecycleOwner(), item -> {
-                if(item == null || !item.first.equals("preference_setter")) return;
-                if(item.second instanceof InfoType){
-                    if(item.second.equals(InfoType.PROFILE_VISIBILITY)){
-                        if(profileCategory != null) profileCategory.setEnabled(true);
+                if (item == null || !item.first.equals("preference_setter")) return;
+                if (item.second instanceof InfoType) {
+                    if (item.second.equals(InfoType.PROFILE_VISIBILITY)) {
+                        if (profileCategory != null) profileCategory.setEnabled(true);
+                    } else if (item.second.equals(InfoType.EMAIL_NOT_VERIFIED)) {
+                        if (verifyEmailPreference != null)
+                            verifyEmailPreference.setSummary(R.string.email_not_verified);
+                    } else if (item.second.equals(InfoType.EMAIL_VERIFIED)) {
+                        Log.w(TAG, "onViewCreated: verifyEmailPreference: " + (verifyEmailPreference == null));
+                        if (verifyEmailPreference != null)
+                            verifyEmailPreference.setSummary(R.string.email_verified);
+                    } else if (item.second.equals(InfoType.ADMIN_VISIBILITY) || item.second.equals(InfoType.ADMIN_INVISIBILITY)) {
+                        if (adminCategory != null)
+                            adminCategory.setVisible(item.second.equals(InfoType.ADMIN_VISIBILITY));
+                    } else if (item.second.equals(InfoType.LOGIN_METHOD_GOOGLE) || item.second.equals(InfoType.LOGIN_METHOD_EMAIL)) {
+                        if (changePWPreference != null)
+                            changePWPreference.setVisible(item.second.equals(InfoType.LOGIN_METHOD_EMAIL));
                     }
-                    else if(item.second.equals(InfoType.EMAIL_NOT_VERIFIED)){
-                        if(verifyEmailPreference != null) verifyEmailPreference.setSummary(R.string.email_not_verified);
-                    }
-                    else if(item.second.equals(InfoType.EMAIL_VERIFIED)){
-                        Log.w(TAG, "onViewCreated: verifyEmailPreference: " + (verifyEmailPreference==null));
-                        if(verifyEmailPreference != null) verifyEmailPreference.setSummary(R.string.email_verified);
-                    }
-                    else if(item.second.equals(InfoType.ADMIN_VISIBILITY) || item.second.equals(InfoType.ADMIN_INVISIBILITY)){
-                        if(adminCategory != null) adminCategory.setVisible(item.second.equals(InfoType.ADMIN_VISIBILITY));
-                    }else if(item.second.equals(InfoType.LOGIN_METHOD_GOOGLE) || item.second.equals(InfoType.LOGIN_METHOD_EMAIL)){
-                        if(changePWPreference != null) changePWPreference.setVisible(item.second.equals(InfoType.LOGIN_METHOD_EMAIL));
-                    }
-                }
-                else if(item.second instanceof VersionInfo){
-                    if(updatePreference != null){
+                } else if (item.second instanceof VersionInfo) {
+                    if (updatePreference != null) {
                         updatePreference.setVisible(BuildConfig.VERSION_CODE < ((VersionInfo) item.second).getVersionCode());
                         updatePreference.setSummary(getString(R.string.update_summary, ((VersionInfo) item.second).getVersionCode()));
                     }
-                }else{
+                } else {
                     Log.w(TAG, "onViewCreated: unknown even in preference frag:: " + item.second);
                 }
             });
@@ -638,14 +640,18 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             changePWPreference = findPreference("change_password");
             CheckBoxPreference checkBoxPreference = findPreference("send_statistics");
 
-            if(themePreference != null) themePreference.setOnPreferenceChangeListener(this);
-            if(batterySaverPreference != null) batterySaverPreference.setOnPreferenceChangeListener(this);
-            if(privacyPolicyPreference != null) privacyPolicyPreference.setOnPreferenceClickListener(this);
-            if(verifyEmailPreference != null) verifyEmailPreference.setOnPreferenceClickListener(this);
-            if(checkBoxPreference != null) checkBoxPreference.setOnPreferenceChangeListener(this);
-            if(signOutPreference != null) signOutPreference.setOnPreferenceClickListener(this);
-            if(updatePreference != null) updatePreference.setOnPreferenceClickListener(this);
-            if(versionNamePreference != null) versionNamePreference.setSummary(BuildConfig.VERSION_NAME);
+            if (themePreference != null) themePreference.setOnPreferenceChangeListener(this);
+            if (batterySaverPreference != null)
+                batterySaverPreference.setOnPreferenceChangeListener(this);
+            if (privacyPolicyPreference != null)
+                privacyPolicyPreference.setOnPreferenceClickListener(this);
+            if (verifyEmailPreference != null)
+                verifyEmailPreference.setOnPreferenceClickListener(this);
+            if (checkBoxPreference != null) checkBoxPreference.setOnPreferenceChangeListener(this);
+            if (signOutPreference != null) signOutPreference.setOnPreferenceClickListener(this);
+            if (updatePreference != null) updatePreference.setOnPreferenceClickListener(this);
+            if (versionNamePreference != null)
+                versionNamePreference.setSummary(BuildConfig.VERSION_NAME);
         }
 
         @Override
@@ -654,7 +660,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 case "theme":
                     settingCommViewModelFrag.selectItem(new Pair<>("theme", new ThemeData((String) newValue, batterySaverPreference.isChecked())));
                     batterySaverPreference.setEnabled(newValue.equals("follow_system"));
-                    batterySaverPreference.setSummary(newValue.equals("follow_system")?R.string.battery_saver_summary:R.string.battery_saver_disabled_summary);
+                    batterySaverPreference.setSummary(newValue.equals("follow_system") ? R.string.battery_saver_summary : R.string.battery_saver_disabled_summary);
                     return true;
                 case "send_statistics":
                     settingCommViewModelFrag.selectItem(new Pair<>("edit_analytics_state", newValue));

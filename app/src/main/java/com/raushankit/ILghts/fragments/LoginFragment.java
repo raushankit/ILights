@@ -51,16 +51,34 @@ import java.util.Objects;
 public class LoginFragment extends Fragment {
 
     private static final String TAG = "LoginFragment";
+    private final UserUpdates userUpdates = new UserUpdates();
     private View view;
     private FirebaseAuth mAuth;
     private FirebaseAnalytics mFirebaseAnalytics;
     private boolean isGoogleLogin;
     private CallBack<PageKeys> changeFrag;
     private SharedRepo sharedRepo;
-    private final UserUpdates userUpdates = new UserUpdates();
     private AlertDialogFragment alertDialogFragment;
     private LoadingDialogFragment loadingDialogFragment;
-
+    final ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent intent = result.getData();
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(intent);
+                    try {
+                        loadingDialogFragment.setTitle(R.string.singing_in);
+                        loadingDialogFragment.setMessage(R.string.please_wait);
+                        loadingDialogFragment.show(getChildFragmentManager(), LoadingDialogFragment.TAG);
+                        GoogleSignInAccount account = task.getResult(ApiException.class);
+                        assert account != null;
+                        firebaseAuthWithGoogle(account.getIdToken());
+                    } catch (ApiException e) {
+                        showAlert(e);
+                    }
+                } else {
+                    showAlert(new Exception(getString(R.string.unknown_error)));
+                }
+            });
     private TextInputLayout emailLayout;
     private TextInputEditText emailInput;
     private TextInputLayout passwordLayout;
@@ -68,11 +86,10 @@ public class LoginFragment extends Fragment {
     private MaterialButton loginButton;
     private MaterialButton forgotPassButton;
     private MaterialButton googleLoginButton;
-
     private TextWatcher emailWatcher;
     private TextWatcher passwordWatcher;
 
-    public LoginFragment(){
+    public LoginFragment() {
 
     }
 
@@ -81,14 +98,14 @@ public class LoginFragment extends Fragment {
         this.changeFrag = changeFrag;
         this.isGoogleLogin = isGoogleLogin;
         loadingDialogFragment = LoadingDialogFragment.newInstance();
-        alertDialogFragment = AlertDialogFragment.newInstance(R.string.login_failed,true, false);
+        alertDialogFragment = AlertDialogFragment.newInstance(R.string.login_failed, true, false);
         alertDialogFragment.addWhichButtonClickedListener(whichButton -> {
-            if(whichButton == AlertDialogFragment.WhichButton.POSITIVE){
+            if (whichButton == AlertDialogFragment.WhichButton.POSITIVE) {
                 alertDialogFragment.dismiss();
             }
         });
         mAuth = FirebaseAuth.getInstance();
-        Log.e(TAG, "LoginFragment: " + (mAuth.getCurrentUser()==null ? "no user":mAuth.getCurrentUser().getEmail()));
+        Log.e(TAG, "LoginFragment: " + (mAuth.getCurrentUser() == null ? "no user" : mAuth.getCurrentUser().getEmail()));
     }
 
     @Override
@@ -112,8 +129,8 @@ public class LoginFragment extends Fragment {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(requireContext(),gso);
-        if(isGoogleLogin) {
+        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
+        if (isGoogleLogin) {
             resultLauncher.launch(mGoogleSignInClient.getSignInIntent());
             isGoogleLogin = false;
         }
@@ -127,18 +144,17 @@ public class LoginFragment extends Fragment {
         loginButton.setOnClickListener(v -> {
             boolean isEmailCheck = TextUtils.isEmpty(emailInput.getText());
             boolean isPassCheck = TextUtils.isEmpty(passwordInput.getText());
-            if(isEmailCheck || isPassCheck){
-                if(isEmailCheck){
+            if (isEmailCheck || isPassCheck) {
+                if (isEmailCheck) {
                     emailLayout.setError(getString(R.string.required));
                 }
-                if(isPassCheck){
+                if (isPassCheck) {
                     passwordLayout.setError(getString(R.string.required));
                 }
-            }
-            else{
+            } else {
                 loadingDialogFragment.setTitle(R.string.singing_in);
                 loadingDialogFragment.setMessage(R.string.please_wait);
-                loadingDialogFragment.show(getChildFragmentManager(),LoadingDialogFragment.TAG);
+                loadingDialogFragment.show(getChildFragmentManager(), LoadingDialogFragment.TAG);
                 signInWithEmailPassword(Objects.requireNonNull(emailInput.getText()).toString(),
                         Objects.requireNonNull(passwordInput.getText()).toString());
             }
@@ -191,31 +207,31 @@ public class LoginFragment extends Fragment {
         };
     }
 
-    public void showAlert(Exception exception){
-        alertDialogFragment.setBodyString(exception==null || exception.getMessage()==null?getString(R.string.internet_connection_error):exception.getMessage());
-        alertDialogFragment.show(getChildFragmentManager(),AlertDialogFragment.TAG);
+    public void showAlert(Exception exception) {
+        alertDialogFragment.setBodyString(exception == null || exception.getMessage() == null ? getString(R.string.internet_connection_error) : exception.getMessage());
+        alertDialogFragment.show(getChildFragmentManager(), AlertDialogFragment.TAG);
     }
 
-    private void signInWithEmailPassword(String email, String password){
+    private void signInWithEmailPassword(String email, String password) {
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.METHOD, "username password login");
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
-                    try{
+                    try {
                         FirebaseUser user = task.getResult().getUser();
-                        if(user != null && task.isSuccessful()){
+                        if (user != null && task.isSuccessful()) {
                             Map<SharedRefKeys, String> mp = new LinkedHashMap<>();
                             mp.put(SharedRefKeys.AUTH_TYPE, "EMAIL");
                             mp.put(SharedRefKeys.AUTH_SUCCESSFUL, Boolean.FALSE.toString());
                             mp.put(SharedRefKeys.USER_EMAIL, user.getEmail());
                             sharedRepo.insert(mp);
                             updateMetadata(user.getUid());
-                        }else{
+                        } else {
                             loadingDialogFragment.dismiss();
                             showAlert(task.getException());
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         loadingDialogFragment.dismiss();
                         showAlert(e);
                     }
@@ -225,16 +241,16 @@ public class LoginFragment extends Fragment {
     private void updateMetadata(@NonNull String uid) {
         loadingDialogFragment.setMessage(R.string.verifying_user);
         UserViewModel userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-        userViewModel.getUserData().observe(getViewLifecycleOwner(), user1->{
-            if(user1 != null){
+        userViewModel.getUserData().observe(getViewLifecycleOwner(), user1 -> {
+            if (user1 != null) {
                 loadingDialogFragment.dismiss();
                 sharedRepo.insert(SharedRefKeys.AUTH_SUCCESSFUL, Boolean.TRUE.toString());
                 changeFrag.onClick(PageKeys.CONTROLLER_PAGE);
-            }else{
+            } else {
                 String name = sharedRepo.getValue(SharedRefKeys.USER_NAME).toLowerCase(Locale.ROOT);
                 String email = sharedRepo.getValue(SharedRefKeys.USER_EMAIL).toLowerCase(Locale.ROOT);
-                String errorStr = userUpdates.createUserMetaData(uid, new User(name,email));
-                if(errorStr != null){
+                String errorStr = userUpdates.createUserMetaData(uid, new User(name, email));
+                if (errorStr != null) {
                     loadingDialogFragment.dismiss();
                     showAlert(new Exception(errorStr));
                 }
@@ -242,33 +258,13 @@ public class LoginFragment extends Fragment {
         });
     }
 
-    final ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent intent = result.getData();
-                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(intent);
-                    try {
-                        loadingDialogFragment.setTitle(R.string.singing_in);
-                        loadingDialogFragment.setMessage(R.string.please_wait);
-                        loadingDialogFragment.show(getChildFragmentManager(),LoadingDialogFragment.TAG);
-                        GoogleSignInAccount account = task.getResult(ApiException.class);
-                        assert account != null;
-                        firebaseAuthWithGoogle(account.getIdToken());
-                    } catch (ApiException e) {
-                        showAlert(e);
-                    }
-                }else{
-                    showAlert(new Exception(getString(R.string.unknown_error)));
-                }
-            });
-
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(task -> {
-                    try{
+                    try {
                         FirebaseUser user = task.getResult().getUser();
-                        if(user != null && task.isSuccessful()){
+                        if (user != null && task.isSuccessful()) {
                             Map<SharedRefKeys, String> mp = new LinkedHashMap<>();
                             mp.put(SharedRefKeys.AUTH_TYPE, "EMAIL");
                             mp.put(SharedRefKeys.AUTH_SUCCESSFUL, Boolean.FALSE.toString());
@@ -276,11 +272,11 @@ public class LoginFragment extends Fragment {
                             mp.put(SharedRefKeys.USER_NAME, user.getDisplayName());
                             sharedRepo.insert(mp);
                             updateMetadata(user.getUid());
-                        }else{
+                        } else {
                             loadingDialogFragment.dismiss();
                             showAlert(task.getException());
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         loadingDialogFragment.dismiss();
                         showAlert(e);
                     }

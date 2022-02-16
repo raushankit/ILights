@@ -29,7 +29,7 @@ public class PinListAdapter extends ListAdapter<PinListData, PinListAdapter.PinL
     @NonNull
     @Override
     public PinListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new PinListViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.pin_list_items,parent,false));
+        return new PinListViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.pin_list_items, parent, false));
     }
 
     @Override
@@ -37,7 +37,7 @@ public class PinListAdapter extends ListAdapter<PinListData, PinListAdapter.PinL
         holder.bind(getItem(position));
     }
 
-    class PinListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class PinListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final TextView name;
         private final TextView details;
@@ -51,10 +51,10 @@ public class PinListAdapter extends ListAdapter<PinListData, PinListAdapter.PinL
             _switch.setOnClickListener(this);
         }
 
-        void bind(PinListData data){
+        void bind(PinListData data) {
             name.setText(data.getPinName());
             _switch.setChecked(data.isStatus());
-            details.setText(String.format(detailsString, data.getPinNumber(),(data.isStatus()?"ON":"OFF"), (data.isYou()?"You":StringUtils.capitalize(data.getChangedBy())), StringUtils.formattedTime(data.getChangedAt())));
+            details.setText(String.format(detailsString, data.getPinNumber(), (data.isStatus() ? "ON" : "OFF"), (data.isYou() ? "You" : StringUtils.capitalize(data.getChangedBy())), StringUtils.formattedTime(data.getChangedAt())));
         }
 
         @Override

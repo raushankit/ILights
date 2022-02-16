@@ -35,7 +35,7 @@ public class EditPinAdapter extends ListAdapter<EditPinInfo, EditPinAdapter.Edit
         holder.bind(getItem(position));
     }
 
-    class EditPinViewHolder extends RecyclerView.ViewHolder{
+    class EditPinViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView title;
         private final TextView name;
@@ -48,7 +48,7 @@ public class EditPinAdapter extends ListAdapter<EditPinInfo, EditPinAdapter.Edit
             itemView.setOnClickListener(v -> callBack.onClick(getCurrentList().get(getAdapterPosition())));
         }
 
-        void bind(EditPinInfo data){
+        void bind(EditPinInfo data) {
             title.setText(String.format(titleText, data.getPinNumber()));
             name.setText(data.getPinInfo().getName());
         }

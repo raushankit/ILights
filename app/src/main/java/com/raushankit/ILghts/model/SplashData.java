@@ -10,7 +10,8 @@ public class SplashData {
     private Role role;
     private UpdatePriority updatePriority;
 
-    public SplashData() {}
+    public SplashData() {
+    }
 
     public SplashData(Role role, UpdatePriority updatePriority) {
         this.role = role;

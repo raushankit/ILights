@@ -12,6 +12,7 @@ public class SettingCommViewModel extends ViewModel {
     public void selectItem(Pair<String, Object> item) {
         selectedItem.setValue(item);
     }
+
     public LiveData<Pair<String, Object>> getSelectedItem() {
         return selectedItem;
     }

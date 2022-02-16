@@ -12,6 +12,7 @@ public class FragViewModel extends ViewModel {
     public void selectItem(ControllerFragActions item) {
         selectedItem.setValue(item);
     }
+
     public LiveData<ControllerFragActions> getSelectedItem() {
         return selectedItem;
     }

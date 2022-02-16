@@ -44,7 +44,7 @@ public class WebViewDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dialog_web_view, container, false);
-        if(url == null){
+        if (url == null) {
             Log.w(TAG, "onCreateView: np url to load");
         }
         textView = view.findViewById(R.id.frag_web_view_title_text);
@@ -62,10 +62,10 @@ public class WebViewDialogFragment extends DialogFragment {
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
-                if(newProgress < 100){
+                if (newProgress < 100) {
                     progressBar.setVisibility(View.VISIBLE);
                     progressBar.setProgress(newProgress);
-                }else{
+                } else {
                     progressBar.setVisibility(View.GONE);
                 }
                 super.onProgressChanged(view, newProgress);
@@ -98,7 +98,7 @@ public class WebViewDialogFragment extends DialogFragment {
         super.onStart();
     }
 
-    public void addDialogButtonClickListener(@NonNull DialogInterface.OnClickListener listener){
+    public void addDialogButtonClickListener(@NonNull DialogInterface.OnClickListener listener) {
         this.listener = listener;
     }
 
@@ -106,7 +106,7 @@ public class WebViewDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         okButton.setOnClickListener(v -> {
-            if(listener != null) listener.onClick(null, DialogInterface.BUTTON_POSITIVE);
+            if (listener != null) listener.onClick(null, DialogInterface.BUTTON_POSITIVE);
             dismiss();
         });
     }
