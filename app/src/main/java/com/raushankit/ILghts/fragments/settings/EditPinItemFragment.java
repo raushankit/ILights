@@ -6,7 +6,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,7 +118,7 @@ public class EditPinItemFragment extends Fragment {
         }
         alertDialogFragment.addWhichButtonClickedListener(whichButton -> {
             if (whichButton.equals(AlertDialogFragment.WhichButton.POSITIVE)) {
-                settingCommViewModel.selectItem(new Pair<>("delete_pin_item", pinNumber));
+                settingCommViewModel.selectItem("delete_pin_item", pinNumber);
                 getParentFragmentManager().popBackStack();
             } else {
                 Log.w(TAG, "onCreateView: canceled delete operation");
@@ -144,7 +143,7 @@ public class EditPinItemFragment extends Fragment {
                 return;
             }
             String[] str = pinNumberText.getText().toString().split(" ", -1);
-            settingCommViewModel.selectItem(new Pair<>((isEdit ? "edit_pin_item" : "add_pin_item"), new EditPinInfo(Integer.parseInt(str[str.length - 1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString()))));
+            settingCommViewModel.selectItem((isEdit ? "edit_pin_item" : "add_pin_item"), new EditPinInfo(Integer.parseInt(str[str.length - 1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString())));
         });
         pinNameEdittext.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_DONE) {
@@ -161,7 +160,7 @@ public class EditPinItemFragment extends Fragment {
                     return false;
                 }
                 String[] str = pinNumberText.getText().toString().split(" ", -1);
-                settingCommViewModel.selectItem(new Pair<>((isEdit ? "edit_pin_item" : "add_pin_item"), new EditPinInfo(Integer.parseInt(str[str.length - 1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString()))));
+                settingCommViewModel.selectItem((isEdit ? "edit_pin_item" : "add_pin_item"), new EditPinInfo(Integer.parseInt(str[str.length - 1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString())));
                 return true;
             }
             return false;

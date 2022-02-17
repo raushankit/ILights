@@ -2,7 +2,6 @@ package com.raushankit.ILghts.fragments.settings;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +61,7 @@ public class EditPinsFragment extends Fragment {
         List<Integer> pinList = new ArrayList<>();
         AtomicInteger allPin = new AtomicInteger(0);
 
-        EditPinAdapter adapter = new EditPinAdapter(getString(R.string.add_pin_item_title), value -> settingCommViewModel.selectItem(new Pair<>("edit_pin", value)));
+        EditPinAdapter adapter = new EditPinAdapter(getString(R.string.add_pin_item_title), value -> settingCommViewModel.selectItem("edit_pin", value));
         recyclerView.setAdapter(adapter);
 
         editPinViewModel.getPinIfo().observe(getViewLifecycleOwner(), stringPinInfoMap -> {
@@ -92,7 +91,7 @@ public class EditPinsFragment extends Fragment {
                     temp /= 2;
                 }
                 pinList.forEach(pin -> pins.set(pin, Boolean.FALSE));
-                settingCommViewModel.selectItem(new Pair<>("add_pin", pins));
+                settingCommViewModel.selectItem("add_pin", pins);
             } else {
                 Log.d(TAG, "onCreateView: bad request");
             }

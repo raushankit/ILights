@@ -7,7 +7,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -147,12 +146,12 @@ public class ReAuthFragment extends Fragment {
                     confirmPWLayout.setError(getString(R.string.password_not_match));
                     return;
                 }
-                settingCommViewModel.selectItem(new Pair<>("update_password", Objects.requireNonNull(changePWEditText.getText()).toString()));
+                settingCommViewModel.selectItem("update_password", Objects.requireNonNull(changePWEditText.getText()).toString());
             } else {
-                settingCommViewModel.selectItem(new Pair<>("delete_user", null));
+                settingCommViewModel.selectItem("delete_user", null);
             }
         });
-        negativeButton.setOnClickListener(v -> settingCommViewModel.selectItem(new Pair<>("remove_fragment", null)));
+        negativeButton.setOnClickListener(v -> settingCommViewModel.selectItem("remove_fragment", null));
 
         return view;
     }
