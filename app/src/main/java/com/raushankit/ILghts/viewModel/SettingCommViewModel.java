@@ -1,7 +1,5 @@
 package com.raushankit.ILghts.viewModel;
 
-import android.util.Pair;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

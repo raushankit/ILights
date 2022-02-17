@@ -95,8 +95,11 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
                 && canShowConsentDialog(sharedRepo.getLongValue(SharedRefKeys.PREV_SHOWN_ANALYTICS_DIALOG, -1))) {
             consentDialogFragment.show(getSupportFragmentManager(), ConsentDialogFragment.TAG);
         }
-        changeFragment = value -> replaceFragment(value.name());
-        switchFrags();
+        changeFragment = value -> {
+            changeStatusBarColor(value.name());
+            replaceFragment(value.name());
+        };
+        switchFrags(savedInstanceState != null);
     }
 
     @Override
@@ -120,46 +123,46 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
         snackbar1.show();
     }
 
-    private void switchFrags() {
+    private void changeStatusBarColor(String page) {
+        if (page == null) return;
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        if (page.equals(PageKeys.SIGN_UP_PAGE.name()) || page.equals(PageKeys.LOGIN_PAGE.name()) || page.equals(PageKeys.GOOGLE_LOGIN_EVENT.name()) || page.equals(PageKeys.FORGOT_PASSWORD_PAGE.name())) {
+            window.setStatusBarColor(getColor(R.color.splash_screen_bg_end));
+        } else if (page.equals(PageKeys.CONTROLLER_PAGE.name())) {
+            window.setStatusBarColor(getColor(R.color.controller_title_background));
+        } else {
+            Log.w(TAG, "switchFrags: no fragment");
+        }
+    }
+
+    private void switchFrags(boolean isConfigChanged) {
         Intent receiveIntent = getIntent();
         if (receiveIntent == null) return;
         String page = receiveIntent.getStringExtra(PageKeys.WHICH_PAGE.name());
         if (page == null) return;
-        replaceFragment(page);
+        changeStatusBarColor(page);
+        if (!isConfigChanged) replaceFragment(page);
     }
 
     private void replaceFragment(String id) {
-        Window window = getWindow();
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        CallBack<Integer> statusBarColor = value -> window.setStatusBarColor(getColor(value));
         FragmentManager fm = getSupportFragmentManager();
         Intent intent = getIntent();
         FragmentTransaction ft = fm.beginTransaction();
+        Log.i(TAG, "replaceFragment: " + id);
         if (id.equals(PageKeys.SIGN_UP_PAGE.name())) {
             if (intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
-            ft.replace(R.id.work_main_frame, new SignUpFragment(
-                    statusBarColor, changeFragment
-            ));
-            ft.commit();
+            ft.replace(R.id.work_main_frame, new SignUpFragment(changeFragment)).commit();
         } else if (id.equals(PageKeys.LOGIN_PAGE.name()) || id.equals(PageKeys.GOOGLE_LOGIN_EVENT.name())) {
             if (intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
-            ft.replace(R.id.work_main_frame, new LoginFragment(
-                    statusBarColor, changeFragment,
-                    id.equals(PageKeys.GOOGLE_LOGIN_EVENT.name())
-            ));
-            ft.commit();
+            ft.replace(R.id.work_main_frame, new LoginFragment(changeFragment, id.equals(PageKeys.GOOGLE_LOGIN_EVENT.name()))).commit();
         } else if (id.equals(PageKeys.FORGOT_PASSWORD_PAGE.name())) {
             if (intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
-            ft.replace(R.id.work_main_frame, new ForgotPasswordFragment(
-                    statusBarColor, changeFragment
-            )).addToBackStack(null)
-                    .commit();
+            ft.replace(R.id.work_main_frame, new ForgotPasswordFragment(changeFragment)).addToBackStack(null).commit();
         } else if (id.equals(PageKeys.CONTROLLER_PAGE.name())) {
             if (intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
-            window.setStatusBarColor(getColor(R.color.controller_title_background));
-            ft.replace(R.id.work_main_frame, ControllerFragment.newInstance())
-                    .commit();
+            ft.replace(R.id.work_main_frame, ControllerFragment.newInstance()).commit();
         } else {
             Log.d(TAG, "replaceFragment: invalid Fragment action");
         }
@@ -175,8 +178,9 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
                     startActivity(signOutIntent);
                     finish();
                     return;
-                }
-                if (page.equals(PageKeys.CONTROLLER_PAGE.name())) {
+                } else if (page.equals(PageKeys.FORGOT_PASSWORD_PAGE.name())) {
+                    intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.LOGIN_PAGE.name());
+                } else if (page.equals(PageKeys.CONTROLLER_PAGE.name())) {
                     finishAffinity();
                     return;
                 }

@@ -28,6 +28,7 @@ import com.raushankit.ILghts.model.PinData;
 import com.raushankit.ILghts.model.PinListData;
 import com.raushankit.ILghts.utils.AnalyticsParam;
 import com.raushankit.ILghts.viewModel.FragViewModel;
+import com.raushankit.ILghts.viewModel.PinDataViewModel;
 import com.raushankit.ILghts.viewModel.StatusViewModel;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
@@ -45,6 +46,7 @@ public class ControllerFragment extends Fragment {
     private ShimmerFrameLayout shimmerFrameLayout;
     private DatabaseReference db;
     private FirebaseAuth mAuth;
+    private PinDataViewModel pinDataViewModel;
     private FirebaseAnalytics mFirebaseAnalytics;
 
     public ControllerFragment() {
@@ -60,6 +62,7 @@ public class ControllerFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(requireContext());
+        pinDataViewModel = new ViewModelProvider(requireActivity()).get(PinDataViewModel.class);
         Bundle bundle1 = new Bundle();
         bundle1.putString(FirebaseAnalytics.Param.SCREEN_NAME, getClass().getSimpleName());
         bundle1.putString(FirebaseAnalytics.Param.SCREEN_CLASS, "Work Activity");
@@ -99,9 +102,10 @@ public class ControllerFragment extends Fragment {
                     }
                 });
         UserViewModel userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-        userViewModel.getPinData().observe(getViewLifecycleOwner(), pinListData -> {
+        pinDataViewModel.getPinData(Objects.requireNonNull(mAuth.getUid())).observe(getViewLifecycleOwner(), pinListData -> {
             if (!pinListData.isEmpty()) {
                 pinListData.sort(Comparator.comparingInt(PinListData::getPinNumber));
+                Log.i(TAG, "onCreateView: pinListData = " + pinListData);
                 adapter.submitList(pinListData);
                 if (shimmerFrameLayout.isShimmerStarted()) {
                     shimmerFrameLayout.stopShimmer();
@@ -127,5 +131,11 @@ public class ControllerFragment extends Fragment {
         fragViewModel = new ViewModelProvider(requireActivity()).get(FragViewModel.class);
         fragViewModel.selectItem(ControllerFragActions.STATUS_BAR_COLOR);
         settingsButton.setOnClickListener(v -> fragViewModel.selectItem(ControllerFragActions.OPEN_SETTINGS));
+    }
+
+    @Override
+    public void onDestroy() {
+        pinDataViewModel.removeSources();
+        super.onDestroy();
     }
 }

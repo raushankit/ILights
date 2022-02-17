@@ -39,8 +39,7 @@ public class ForgotPasswordFragment extends Fragment {
 
     }
 
-    public ForgotPasswordFragment(@NonNull CallBack<Integer> statusBarColor, @NonNull CallBack<PageKeys> changeFrag) {
-        statusBarColor.onClick(R.color.splash_screen_bg_end);
+    public ForgotPasswordFragment(@NonNull CallBack<PageKeys> changeFrag) {
         this.changeFrag = changeFrag;
     }
 

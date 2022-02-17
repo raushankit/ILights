@@ -93,8 +93,7 @@ public class LoginFragment extends Fragment {
 
     }
 
-    public LoginFragment(@NonNull CallBack<Integer> statusBarColor, CallBack<PageKeys> changeFrag, boolean isGoogleLogin) {
-        statusBarColor.onClick(R.color.splash_screen_bg_end);
+    public LoginFragment(CallBack<PageKeys> changeFrag, boolean isGoogleLogin) {
         this.changeFrag = changeFrag;
         this.isGoogleLogin = isGoogleLogin;
         loadingDialogFragment = LoadingDialogFragment.newInstance();

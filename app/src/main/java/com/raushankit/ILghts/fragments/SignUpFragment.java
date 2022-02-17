@@ -67,8 +67,7 @@ public class SignUpFragment extends Fragment {
 
     }
 
-    public SignUpFragment(@NonNull CallBack<Integer> statusBarColor, CallBack<PageKeys> changeFrags) {
-        statusBarColor.onClick(R.color.splash_screen_bg_end);
+    public SignUpFragment(CallBack<PageKeys> changeFrags) {
         this.changeFrags = changeFrags;
         loadingDialogFragment = LoadingDialogFragment.newInstance();
         alertDialogFragment = AlertDialogFragment.newInstance(R.string.signup_failed, true, false);

@@ -11,11 +11,11 @@ public class SettingsFragmentViewModel extends ViewModel {
     private MutableLiveData<InfoType> profileInfo = new MutableLiveData<>();
     private MutableLiveData<VersionInfo> versionInfo = new MutableLiveData<>();
 
-    public LiveData<VersionInfo> getLiveVersionInfo(){
+    public LiveData<VersionInfo> getLiveVersionInfo() {
         return versionInfo;
     }
 
-    public LiveData<InfoType> getLiveProfileInfo(){
+    public LiveData<InfoType> getLiveProfileInfo() {
         return profileInfo;
     }
 

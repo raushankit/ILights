@@ -153,7 +153,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         badAuthIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         db = FirebaseDatabase.getInstance().getReference();
         authListener = firebaseAuth -> {
-            if(firebaseAuth.getCurrentUser() !=null) return;
+            if (firebaseAuth.getCurrentUser() != null) return;
             Log.w(TAG, "onCreate: null user");
             startActivity(badAuthIntent);
             userViewModel.resetRepository();
@@ -181,9 +181,9 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         });
 
         shimmerFrameLayout = findViewById(R.id.settings_user_data_shimmer);
+        toolBarTextView = findViewById(R.id.settings_activity_toolbar_textview);
         implementListeners();
         fillUserdata();
-        toolBarTextView = findViewById(R.id.settings_activity_toolbar_textview);
         AppBarLayout appBarLayout = findViewById(R.id.settings_activity_appbar_layout);
         appBarLayout.addOnOffsetChangedListener(this);
     }
@@ -202,10 +202,10 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         settingCommViewModel.getSelectedItem().observe(this, item -> {
             Bundle bundle = new Bundle();
             String requestKey = settingCommViewModel.getRequestKey();
-            if(requestKey.equals(SettingCommViewModel.DEFAULT_KEY)) return;
+            if (requestKey.equals(SettingCommViewModel.DEFAULT_KEY)) return;
             switch (requestKey) {
                 case "theme":
-                    if(!(item instanceof ThemeData)) break;
+                    if (!(item instanceof ThemeData)) break;
                     ThemeData themeData = (ThemeData) item;
                     bundle.putString(AnalyticsParam.THEME_TYPE, themeData.getThemeType());
                     mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
@@ -241,7 +241,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                         alertDialogFragment.show(getSupportFragmentManager(), AlertDialogFragment.TAG);
                     break;
                 case "edit_pin":
-                    if(!(item instanceof EditPinInfo)) break;
+                    if (!(item instanceof EditPinInfo)) break;
                     final Fragment fragmentEdit = EditPinItemFragment.newInstance("edit", (EditPinInfo) item);
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.settings_fragment, fragmentEdit)
@@ -284,7 +284,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     getSupportFragmentManager().popBackStackImmediate();
                     break;
                 case "add_pin_item":
-                    if(!(item instanceof EditPinInfo)) break;
+                    if (!(item instanceof EditPinInfo)) break;
                     bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.ADD_PIN);
                     mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
                     EditPinInfo info1 = (EditPinInfo) item;
@@ -383,8 +383,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         pic.setBackGroundCol(ColorGen.getRandomDarkColor(0.7f));
 
         settingUserViewModel.getUserData().observe(this, settingUserData -> {
-            Log.e(TAG, "fillUserdata: settingUserData: " + settingUserData);
             name = settingUserData.getUser().getName();
+            toolBarTextView.setText(name);
             nameView.setText(name);
             pic.setName(name);
             emailView.setText(settingUserData.getUser().getEmail());
@@ -582,21 +582,24 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             settingCommViewModelFrag = new ViewModelProvider(requireActivity()).get(SettingCommViewModel.class);
             SettingsFragmentViewModel sFViewModel = new ViewModelProvider(requireActivity()).get(SettingsFragmentViewModel.class);
             sFViewModel.getLiveProfileInfo().observe(getViewLifecycleOwner(), infoType -> {
-                switch (infoType){
+                switch (infoType) {
                     case PROFILE_VISIBILITY:
                         if (profileCategory != null) profileCategory.setEnabled(true);
                         break;
                     case EMAIL_NOT_VERIFIED:
                     case EMAIL_VERIFIED:
-                        if (verifyEmailPreference != null) verifyEmailPreference.setSummary(infoType.equals(InfoType.EMAIL_VERIFIED)?R.string.email_verified:R.string.email_not_verified);
+                        if (verifyEmailPreference != null)
+                            verifyEmailPreference.setSummary(infoType.equals(InfoType.EMAIL_VERIFIED) ? R.string.email_verified : R.string.email_not_verified);
                         break;
                     case ADMIN_VISIBILITY:
                     case ADMIN_INVISIBILITY:
-                        if (adminCategory != null) adminCategory.setVisible(infoType.equals(InfoType.ADMIN_VISIBILITY));
+                        if (adminCategory != null)
+                            adminCategory.setVisible(infoType.equals(InfoType.ADMIN_VISIBILITY));
                         break;
                     case LOGIN_METHOD_GOOGLE:
                     case LOGIN_METHOD_EMAIL:
-                        if (changePWPreference != null) changePWPreference.setVisible(infoType.equals(InfoType.LOGIN_METHOD_EMAIL));
+                        if (changePWPreference != null)
+                            changePWPreference.setVisible(infoType.equals(InfoType.LOGIN_METHOD_EMAIL));
                         break;
                     default:
                         Log.w(TAG, "setProfileCategory: infoType = " + infoType);
@@ -625,31 +628,31 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             changePWPreference = findPreference("change_password");
             CheckBoxPreference checkBoxPreference = findPreference("send_statistics");
 
-            if (themePreference != null){
+            if (themePreference != null) {
                 themePreference.setOnPreferenceChangeListener(this);
             }
-            if (batterySaverPreference != null){
-                String themeValue = (themePreference == null || themePreference.getValue()==null?"null":themePreference.getValue());
+            if (batterySaverPreference != null) {
+                String themeValue = (themePreference == null || themePreference.getValue() == null ? "null" : themePreference.getValue());
                 batterySaverPreference.setEnabled(themeValue.equals("follow_system"));
                 batterySaverPreference.setSummary(themeValue.equals("follow_system") ? R.string.battery_saver_summary : R.string.battery_saver_disabled_summary);
                 batterySaverPreference.setOnPreferenceChangeListener(this);
             }
-            if (privacyPolicyPreference != null){
+            if (privacyPolicyPreference != null) {
                 privacyPolicyPreference.setOnPreferenceClickListener(this);
             }
-            if (verifyEmailPreference != null){
+            if (verifyEmailPreference != null) {
                 verifyEmailPreference.setOnPreferenceClickListener(this);
             }
-            if (checkBoxPreference != null){
+            if (checkBoxPreference != null) {
                 checkBoxPreference.setOnPreferenceChangeListener(this);
             }
-            if (signOutPreference != null){
+            if (signOutPreference != null) {
                 signOutPreference.setOnPreferenceClickListener(this);
             }
-            if (updatePreference != null){
+            if (updatePreference != null) {
                 updatePreference.setOnPreferenceClickListener(this);
             }
-            if (versionNamePreference != null){
+            if (versionNamePreference != null) {
                 versionNamePreference.setSummary(BuildConfig.VERSION_NAME);
                 versionNamePreference.setOnPreferenceClickListener(this);
             }
