@@ -27,6 +27,8 @@ public class LoadingDialogFragment extends DialogFragment {
     private TextView messageView;
     private TextView titleView;
 
+    public LoadingDialogFragment(){}
+
     public static LoadingDialogFragment newInstance() {
         return new LoadingDialogFragment();
     }

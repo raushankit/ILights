@@ -12,6 +12,8 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -34,6 +36,7 @@ import com.raushankit.ILghts.model.AdminUser;
 import com.raushankit.ILghts.model.Role;
 import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.viewModel.ManageUsersViewModel;
+import com.raushankit.ILghts.viewModel.RoleDialogViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,8 +82,6 @@ public class ManageUserFragment extends Fragment {
         db = FirebaseDatabase.getInstance().getReference();
         im = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         roleDialogFragment = RoleDialogFragment.newInstance(accessLevel);
-        roleDialogFragment.addCallback(value -> db.child("role/" + value.first).setValue(new Role(value.second))
-                .addOnCompleteListener(task -> Snackbar.make(view, (task.isSuccessful() ? R.string.modified_user_access : R.string.not_modified_user_access), BaseTransientBottomBar.LENGTH_SHORT).show()));
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         String[] searchEntries = getResources().getStringArray(R.array.admin_search_values);
         String searchFilterType = sharedPreferences.getString("admin_search", searchEntries[0]);
@@ -98,19 +99,16 @@ public class ManageUserFragment extends Fragment {
         manageUsersViewModel = new ViewModelProvider(requireActivity()).get(ManageUsersViewModel.class);
         ((SimpleItemAnimator) Objects.requireNonNull(userListView.getItemAnimator())).setSupportsChangeAnimations(false);
         userListView.addItemDecoration(new DividerItemDecoration(userListView.getContext(), DividerItemDecoration.VERTICAL));
-        AdminUserAdapter adapter = new AdminUserAdapter(value -> {
-            roleDialogFragment.setUser(value.getUser());
-            roleDialogFragment.setUid(value.getUid());
-            db.child("role/" + value.getUid()).get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            roleDialogFragment.setRole(task.getResult().getValue(Role.class));
-                            roleDialogFragment.show(getChildFragmentManager(), RoleDialogFragment.TAG);
-                        } else {
-                            Snackbar.make(view, R.string.data_fetch_failure, BaseTransientBottomBar.LENGTH_SHORT).show();
-                        }
-                    });
-        });
+        AdminUserAdapter adapter = new AdminUserAdapter(value -> db.child("role/" + value.getUid()).get()
+                .addOnCompleteListener(task -> {
+                    Role role = task.getResult().getValue(Role.class);
+                    if (task.isSuccessful() && role != null) {
+                        roleDialogFragment.setAdminUser(role.getAccessLevel(), value);
+                        if(!roleDialogFragment.isAdded())roleDialogFragment.show(getChildFragmentManager(), RoleDialogFragment.TAG);
+                    } else {
+                        Snackbar.make(view, R.string.data_fetch_failure, BaseTransientBottomBar.LENGTH_SHORT).show();
+                    }
+                }));
         userListView.setAdapter(adapter);
         editText.setCompoundDrawablesWithIntrinsicBounds((isSearchFilterEmail ? R.drawable.ic_baseline_email_24 : R.drawable.ic_baseline_person_24), 0, 0, 0);
         editText.setHint(isSearchFilterEmail ? R.string.email_search_hint : R.string.name_search_hint);
@@ -153,6 +151,17 @@ public class ManageUserFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        RoleDialogViewModel roleDialogViewModel = new ViewModelProvider(this).get(RoleDialogViewModel.class);
+        roleDialogViewModel.getData().observe(getViewLifecycleOwner(), roleModData -> {
+            Log.w(TAG, "onCreate: addCallbackL " + roleModData);
+            db.child("role/" + roleModData.getUid()).setValue(roleModData.getRole())
+                    .addOnCompleteListener(task -> Snackbar.make(view, (task.isSuccessful() ? R.string.modified_user_access : R.string.not_modified_user_access), BaseTransientBottomBar.LENGTH_SHORT).show());
+        });
     }
 
     private void getQueriedData(CharSequence text) {

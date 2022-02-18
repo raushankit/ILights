@@ -222,7 +222,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 case "verify_email":
                     FirebaseUser user = mAuth.getCurrentUser();
                     assert user != null;
-                    settingsFragmentViewModel.setProfileInfo(user.isEmailVerified() ? InfoType.EMAIL_VERIFIED : InfoType.EMAIL_NOT_VERIFIED);
+                    settingsFragmentViewModel.setProfileInfo(InfoType.Keys.EMAIL_VERIFICATION,user.isEmailVerified() ? InfoType.EMAIL_VERIFIED : InfoType.EMAIL_NOT_VERIFIED);
                     boolean value = Boolean.parseBoolean(sharedRepo.getValue(SharedRefKeys.EMAIL_VERIFICATION));
                     if (!user.isEmailVerified() && !value) {
                         user.sendEmailVerification()
@@ -383,20 +383,21 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         pic.setBackGroundCol(ColorGen.getRandomDarkColor(0.7f));
 
         settingUserViewModel.getUserData().observe(this, settingUserData -> {
+            Log.i(TAG, "fillUserdata: settingUserData " + settingUserData);
             name = settingUserData.getUser().getName();
             toolBarTextView.setText(name);
             nameView.setText(name);
             pic.setName(name);
             emailView.setText(settingUserData.getUser().getEmail());
             accessLevel = Math.max(0, Math.min(roleType.length, settingUserData.getRole().getAccessLevel()));
-            settingsFragmentViewModel.setProfileInfo(accessLevel >= ADMIN_THRESHOLD ? InfoType.ADMIN_VISIBILITY : InfoType.ADMIN_INVISIBILITY);
+            settingsFragmentViewModel.setProfileInfo(InfoType.Keys.ADMIN,accessLevel >= ADMIN_THRESHOLD ? InfoType.ADMIN_VISIBILITY : InfoType.ADMIN_INVISIBILITY);
             roleView.setText(getString(R.string.access_level_place_holder, roleType[accessLevel]));
             userLayout.setVisibility(View.VISIBLE);
             shimmerFrameLayout.stopShimmer();
             shimmerFrameLayout.setVisibility(View.GONE);
-            settingsFragmentViewModel.setProfileInfo(providerData.first ? InfoType.LOGIN_METHOD_GOOGLE : InfoType.LOGIN_METHOD_EMAIL);
-            settingsFragmentViewModel.setProfileInfo(providerData.second ? InfoType.EMAIL_VERIFIED : InfoType.EMAIL_NOT_VERIFIED);
-            settingsFragmentViewModel.setProfileInfo(InfoType.PROFILE_VISIBILITY);
+            settingsFragmentViewModel.setProfileInfo(InfoType.Keys.LOGIN_METHOD, providerData.first ? InfoType.LOGIN_METHOD_GOOGLE : InfoType.LOGIN_METHOD_EMAIL);
+            settingsFragmentViewModel.setProfileInfo(InfoType.Keys.EMAIL_VERIFICATION, providerData.second ? InfoType.EMAIL_VERIFIED : InfoType.EMAIL_NOT_VERIFIED);
+            settingsFragmentViewModel.setProfileInfo(InfoType.Keys.PROFILE, InfoType.PROFILE_VISIBILITY);
             sharedRepo.insert(SharedRefKeys.EMAIL_VERIFICATION, String.valueOf(false));
         });
 
