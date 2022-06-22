@@ -49,6 +49,7 @@ import com.raushankit.ILghts.model.Role;
 import com.raushankit.ILghts.observer.UpdateTypeLiveData;
 import com.raushankit.ILghts.storage.SharedRepo;
 import com.raushankit.ILghts.utils.AnalyticsParam;
+import com.raushankit.ILghts.utils.UserUpdates;
 import com.raushankit.ILghts.viewModel.SplashViewModel;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
@@ -110,8 +111,7 @@ public class MainActivity extends AppCompatActivity {
         alertDialogFragment.setPositiveButtonText(R.string.update);
         alertDialogFragment.setBodyString(getString(R.string.forced_update_message));
         alertDialogFragment.setNegativeButtonText(R.string.exit);
-        webViewDialogFragment = WebViewDialogFragment.newInstance();
-        webViewDialogFragment.setUrl(link);
+        webViewDialogFragment = WebViewDialogFragment.newInstance(link);
         askAgainForUpdate();
         consentDialogFragment = ConsentDialogFragment.newInstance(true, false);
         snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_network_detected), BaseTransientBottomBar.LENGTH_LONG);
@@ -175,7 +175,9 @@ public class MainActivity extends AppCompatActivity {
             if (user != null && !isUpdateAvailable) snackbar.show();
         };
 
+        UserUpdates u = new UserUpdates();
         appUpdateManager.getAppUpdateInfo().addOnCompleteListener(task -> {
+            u.setUpdateLog(TAG, task);
             if (task.isSuccessful()) {
                 AppUpdateInfo appUpdateInfo = task.getResult();
                 splashViewModel.setAppUpdateInfo(appUpdateInfo);

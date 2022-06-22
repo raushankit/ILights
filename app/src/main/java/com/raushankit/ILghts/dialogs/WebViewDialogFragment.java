@@ -24,8 +24,8 @@ import com.raushankit.ILghts.R;
 
 public class WebViewDialogFragment extends DialogFragment {
     private static final String TAG = "WebViewDialogFragment";
+    private static final String LOAD_URL = "load_url";
 
-    private String url;
     private WebView webView;
     private ProgressBar progressBar;
     private TextView textView;
@@ -36,27 +36,35 @@ public class WebViewDialogFragment extends DialogFragment {
 
     }
 
-    public static WebViewDialogFragment newInstance() {
-        return new WebViewDialogFragment();
+    public static WebViewDialogFragment newInstance(@NonNull String url) {
+        WebViewDialogFragment fragment = new WebViewDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(LOAD_URL, url);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dialog_web_view, container, false);
-        if (url == null) {
-            Log.w(TAG, "onCreateView: np url to load");
-        }
         textView = view.findViewById(R.id.frag_web_view_title_text);
-        textView.setText(url);
         progressBar = view.findViewById(R.id.frag_web_view_progress_bar);
         webView = view.findViewById(R.id.frag_web_view_container);
         okButton = view.findViewById(R.id.frag_web_view_button);
-        initWebView();
+        Bundle args = getArguments();
+        if(args != null){
+            String url = args.getString(LOAD_URL);
+            textView.setText(url);
+            initWebView(url, savedInstanceState == null);
+        }else {
+            Log.w(TAG, "onCreateView: no url to load");
+        }
         return view;
     }
 
-    private void initWebView() {
+    private void initWebView(String url, boolean loadUrl) {
+        if(url == null) return;
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(false);
         webView.setWebChromeClient(new WebChromeClient() {
@@ -77,17 +85,13 @@ public class WebViewDialogFragment extends DialogFragment {
                 super.onReceivedTitle(view, title);
             }
         });
-        webView.loadUrl(url);
-    }
-
-    public void setUrl(@NonNull String url) {
-        this.url = url;
+        if(loadUrl) webView.loadUrl(url);
     }
 
     @Override
     public void onStart() {
         int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.95);
-        int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.9);
+        int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.95);
         Dialog dialog = getDialog();
         if (dialog != null) {
             dialog.getWindow().setLayout(width, height);

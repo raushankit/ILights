@@ -49,7 +49,6 @@ public class ValueDelayLiveData<T> extends LiveData<T> implements Runnable {
     @Override
     public void run() {
         db.removeEventListener(valueEventListener);
-        FirebaseDatabase.getInstance().getReference("test/" + cls.getSimpleName()).setValue(true);
         isRemovalPending = false;
         Log.w(TAG, "run: removing listeners for " + cls.getSimpleName());
     }

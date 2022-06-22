@@ -65,6 +65,7 @@ import com.raushankit.ILghts.storage.SharedRepo;
 import com.raushankit.ILghts.utils.AnalyticsParam;
 import com.raushankit.ILghts.utils.ColorGen;
 import com.raushankit.ILghts.utils.ProfilePic;
+import com.raushankit.ILghts.utils.UserUpdates;
 import com.raushankit.ILghts.viewModel.SettingCommViewModel;
 import com.raushankit.ILghts.viewModel.SettingUserViewModel;
 import com.raushankit.ILghts.viewModel.SettingsFragmentViewModel;
@@ -79,7 +80,7 @@ import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, AppBarLayout.OnOffsetChangedListener, InstallStateUpdatedListener {
     private static final String TAG = "SETTINGS_ACTIVITY";
-    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.8f;
+    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.4f;
     private static final long ALPHA_ANIMATIONS_DURATION = 200;
     private static final int DAYS_FOR_FLEXIBLE_UPDATE = 30;
     private static final int RC_PLAY_UPDATE = 9858922;
@@ -135,9 +136,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         }
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         appUpdateManager = AppUpdateManagerFactory.create(this);
-        webViewDialogFragment = WebViewDialogFragment.newInstance();
+        webViewDialogFragment = WebViewDialogFragment.newInstance(link);
         loadingDialogFragment = LoadingDialogFragment.newInstance();
-        webViewDialogFragment.setUrl(link);
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -400,7 +400,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             settingsFragmentViewModel.setProfileInfo(InfoType.Keys.PROFILE, InfoType.PROFILE_VISIBILITY);
             sharedRepo.insert(SharedRefKeys.EMAIL_VERIFICATION, String.valueOf(false));
         });
-
+        UserUpdates u = new UserUpdates();
+        appUpdateManager.getAppUpdateInfo().addOnCompleteListener(task -> u.setUpdateLog(TAG, task));
         appUpdateManager.getAppUpdateInfo().addOnSuccessListener(appUpdateInfo -> {
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
                 settingsFragmentViewModel.setVersionInfo(new VersionInfo("", appUpdateInfo.availableVersionCode()));
@@ -608,7 +609,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             });
             sFViewModel.getLiveVersionInfo().observe(getViewLifecycleOwner(), vInfo -> {
                 if (updatePreference == null) return;
-                updatePreference.setVisible(BuildConfig.VERSION_CODE < vInfo.getVersionCode());
+                updatePreference.setVisible(true);
                 updatePreference.setSummary(getString(R.string.update_summary, vInfo.getVersionCode()));
             });
         }

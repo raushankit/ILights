@@ -1,12 +1,18 @@
 package com.raushankit.ILghts.utils;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.model.Role;
 import com.raushankit.ILghts.model.User;
 
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -29,5 +35,26 @@ public class UserUpdates {
             }
         });
         return message[0];
+    }
+
+    public void setUpdateLog(String tag, Task<AppUpdateInfo> task){
+        Map<String, Object> mp = new LinkedHashMap<>();
+        mp.put("success", task.isSuccessful());
+        if(task.isSuccessful()){
+            AppUpdateInfo info = task.getResult();
+            mp.put("updateAvailability", Utilities.debugUpdateAvailability(info.updateAvailability()));
+            mp.put("availableVersionCode", info.availableVersionCode());
+            mp.put("flexible", info.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE));
+            mp.put("immediate", info.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE));
+            mp.put("updatePriority", info.updatePriority());
+            mp.put("packageName", info.packageName());
+        }else{
+            mp.put("error", (task.getException() != null && task.getException().getMessage() != null) ? task.getException().getMessage(): "unknown");
+        }
+        db.child("test/updates/"+ tag + "/" + Calendar.getInstance().getTimeInMillis()).updateChildren(mp, ((error, ref) -> {
+            if(error != null){
+                Log.w(TAG, "setUpdateLog: error: " + error.getMessage());
+            }
+        }));
     }
 }
