@@ -141,6 +141,12 @@
     <string name="controller_update_failure">Failed to update data</string>
     <string name="controller_item_details">Pin Configuration %1$d\n\nTurned %2$s by %3$s\nat %4$s</string>
 
+    <!-- Board Activity -->
+    <string name="edit">edit</string>
+    <string name="add_board">Add Board</string>
+    <string name="board_list_item_details">%1$s\n\nCreated By: %2$s \nCreated on: %3$s</string>
+    <string name="board_list_item_uid">UID <b>:</b> GvjyhTVytGTVbyuVYJVcfgyvCGF</string>
+
     <!-- Settings page -->
     <string name="text_box_placeholder">Random Text</string>
     <string name="access_level_place_holder">Access Level: %1$s</string>

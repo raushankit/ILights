@@ -46,4 +46,11 @@
     <color name="controller_title_status_online_background">#00cc00</color>
     <color name="controller_title_settings_background">#0f000000</color>
 
+    <color name="board_activity_appBar_strip_background">#35000000</color>
+    <color name="board_list_item_status_tag">#dd0000</color>
+    <color name="board_fragment_add_board_fab">#00bfff</color>
+    <color name="board_list_item_visibility_tag">@color/dark_pink</color>
+    <color name="board_list_item_access_level_tag">@color/purple_700</color>
+    <color name="board_list_item_title_text">#616161</color>
+
 </resources>

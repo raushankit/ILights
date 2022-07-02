@@ -12,11 +12,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ILights">
         <activity
+            android:name=".BoardActivity"
+            android:exported="false" />
+        <activity
             android:name=".SettingsActivity"
             android:exported="false"
+            android:label="@string/title_activity_settings"
             android:launchMode="singleTop"
-            android:theme="@style/PreferenceScreen"
-            android:label="@string/title_activity_settings" />
+            android:theme="@style/PreferenceScreen" />
         <activity
             android:name=".WorkActivity"
             android:exported="false" />
@@ -25,10 +28,14 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
+
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
     </application>
 
 </manifest>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/design_default_color_background"
+    android:fitsSystemWindows="true"
+    tools:context=".fragments.board.BoardFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/board_fragment_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_height="match_parent"
+        android:background="#10000000"
+        android:layout_alignParentBottom="true"
+        android:nestedScrollingEnabled="true"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/board_fragment_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:text="@string/add_board"
+        android:textAllCaps="true"
+        android:backgroundTint="@color/board_fragment_add_board_fab"
+        app:icon="@drawable/ic_baseline_add_24" />
+
+</RelativeLayout>

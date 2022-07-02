@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".BoardActivity">
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/board_fragment_toolbar"
+        android:layout_width="match_parent"
+        app:title="@string/about_header"
+        android:background="@color/controller_title_background"
+        app:navigationIconTint="@color/user_info_name_text"
+        app:contentInsetStartWithNavigation="0dp"
+        app:navigationIcon="@drawable/ic_baseline_settings_24"
+        android:layout_height="?attr/actionBarSize">
+    </com.google.android.material.appbar.MaterialToolbar>
+    <FrameLayout
+        android:id="@+id/board_main_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>
