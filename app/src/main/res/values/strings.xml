@@ -22,6 +22,8 @@
     <string name="login_failed">Login Failed</string>
     <string name="signup_failed">Signup Failed</string>
     <string name="agree">Agree</string>
+    <string name="prev">prev</string>
+    <string name="next">next</string>
     <string name="disagree">Disagree</string>
     <string name="consent_dialog_title">Analytics Consent</string>
     <string name="consent_dialog_body">We\'ll use Firebase Analytics to record events when you interact with the app to improve user experience.\nWe don\'t use your personal data and only in-app events are captured for analytics.\n\nYou can change your choice later in the app settings.</string>
@@ -142,6 +144,7 @@
     <string name="controller_item_details">Pin Configuration %1$d\n\nTurned %2$s by %3$s\nat %4$s</string>
 
     <!-- Board Activity -->
+    <string name="board">Boards</string>
     <string name="edit">edit</string>
     <string name="add_board">Add Board</string>
     <string name="board_list_item_details">%1$s\n\nCreated By: %2$s \nCreated on: %3$s</string>

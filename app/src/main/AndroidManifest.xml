@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ILights">
         <activity
+            android:name=".BoardForm"
+            android:exported="false" />
+        <activity
             android:name=".BoardActivity"
             android:exported="false" />
         <activity

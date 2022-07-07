@@ -6,7 +6,7 @@
     android:layout_marginBottom="@dimen/_10sdp"
     app:cardCornerRadius="@dimen/_5sdp"
     app:rippleColor="#10000000"
-    android:elevation="@dimen/_10sdp"
+    android:elevation="@dimen/_100sdp"
     android:background="@color/pin_item_background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content">

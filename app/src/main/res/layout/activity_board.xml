@@ -9,9 +9,11 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/board_fragment_toolbar"
         android:layout_width="match_parent"
-        app:title="@string/about_header"
-        android:background="@color/controller_title_background"
-        app:navigationIconTint="@color/user_info_name_text"
+        app:title="@string/board"
+        android:elevation="@dimen/_10sdp"
+        app:titleTextColor="@color/white"
+        android:background="@color/primary_toolbar_and_status_bar"
+        app:navigationIconTint="@color/white"
         app:contentInsetStartWithNavigation="0dp"
         app:navigationIcon="@drawable/ic_baseline_settings_24"
         android:layout_height="?attr/actionBarSize">

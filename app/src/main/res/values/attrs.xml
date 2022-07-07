@@ -9,4 +9,18 @@
         <attr name="android:text"/>
         <attr name="strokeColor"/>
     </declare-styleable>
+
+    <declare-styleable name="FormFlowLine">
+        <attr name="backgroundColor"/>
+        <attr name="number_of_steps" format="integer"/>
+        <attr name="icon"/>
+        <attr name="pointer_radius" format="dimension"/>
+        <attr name="strokeWidth"/>
+        <attr name="active_index" format="integer"/>
+        <attr name="gap" format="dimension"/>
+        <attr name="android:textColor"/>
+        <attr name="text_size_percentage" format="float"/>
+        <attr name="active_color" format="color"/>
+        <attr name="inactive_color" format="color"/>
+    </declare-styleable>
 </resources>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BoardForm">
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/board_form_toolbar"
+        android:layout_width="match_parent"
+        app:title="@string/board"
+        android:elevation="@dimen/_10sdp"
+        app:titleTextColor="@color/white"
+        android:background="@color/primary_toolbar_and_status_bar"
+        app:navigationIconTint="@color/white"
+        app:contentInsetStartWithNavigation="0dp"
+        app:navigationIcon="@drawable/ic_baseline_clear_24"
+        android:layout_height="?attr/actionBarSize"/>
+
+    <FrameLayout
+        android:id="@+id/board_form_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/board_form_toolbar"/>
+
+    <com.raushankit.ILghts.utils.FormFlowLine
+        android:id="@+id/board_form_flow_line"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:strokeWidth="@dimen/_4sdp"
+        app:pointer_radius="@dimen/_10sdp"
+        app:backgroundColor="#19009e60"
+        app:gap="@dimen/_25sdp"
+        android:elevation="@dimen/_10sdp"
+        android:layout_below="@id/board_form_toolbar"
+        app:active_color="@color/shamrock_green"/>
+</RelativeLayout>
