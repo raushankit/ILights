@@ -4,63 +4,161 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.RelativeLayout;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.raushankit.ILghts.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BoardTitle#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class BoardTitle extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "BoardTitle";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private TextInputLayout nameLayout;
+    private TextInputLayout descLayout;
+    private TextInputLayout visibilityLayout;
+    private TextInputEditText nameEditText;
+    private TextInputEditText descEditText;
+    private TextWatcher nameWatcher;
+    private TextWatcher descWatcher;
+    private TextWatcher visibilityWatcher;
+    private MaterialAutoCompleteTextView visibilityText;
+
 
     public BoardTitle() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BoardTitle.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BoardTitle newInstance(String param1, String param2) {
+    public static BoardTitle newInstance() {
         BoardTitle fragment = new BoardTitle();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_board_title, container, false);
+        View view = inflater.inflate(R.layout.fragment_board_title, container, false);
+        init(view);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.board_form_visibility_options));
+        visibilityText.setAdapter(adapter);
+
+        return view;
+    }
+
+    private void init(View view){
+        nameLayout = view.findViewById(R.id.board_form_title_frag_name_input_layout);
+        nameEditText = view.findViewById(R.id.board_form_title_frag_name_input_edit_text);
+        descLayout = view.findViewById(R.id.board_form_title_frag_description_input_layout);
+        descEditText = view.findViewById(R.id.board_form_title_frag_description_input_edit_text);
+        visibilityLayout = view.findViewById(R.id.board_form_title_frag_visibility_input_layout);
+        visibilityText = view.findViewById(R.id.board_form_title_frag_visibility_input_edit_text);
+        RelativeLayout navLayout = view.findViewById(R.id.board_form_title_frag_nav_button_layout);
+        MaterialButton prevButton = navLayout.findViewById(R.id.form_navigation_prev_button);
+        MaterialButton nextButton = navLayout.findViewById(R.id.form_navigation_next_button);
+        prevButton.setEnabled(false);
+
+        nameWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                nameLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        };
+        descWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                descLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        };
+        visibilityWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                visibilityLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        };
+        String required = getString(R.string.required);
+        nextButton.setOnClickListener(v ->{
+            if(checkIfEmpty(required)){return;}
+            Log.d(TAG, "init: everything good");
+        });
+    }
+
+    private boolean checkIfEmpty(String message){
+        boolean flag = false;
+        if(TextUtils.isEmpty(nameEditText.getText())){
+            nameLayout.setError(message);
+            flag = true;
+        }
+        if(TextUtils.isEmpty(descEditText.getText())){
+            descLayout.setError(message);
+            flag = true;
+        }
+        if(TextUtils.isEmpty(visibilityText.getText())){
+            visibilityLayout.setError(message);
+            flag = true;
+        }
+        return flag;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        nameEditText.addTextChangedListener(nameWatcher);
+        descEditText.addTextChangedListener(descWatcher);
+        visibilityText.addTextChangedListener(visibilityWatcher);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        nameEditText.removeTextChangedListener(nameWatcher);
+        descEditText.removeTextChangedListener(descWatcher);
+        visibilityText.removeTextChangedListener(visibilityWatcher);
     }
 }

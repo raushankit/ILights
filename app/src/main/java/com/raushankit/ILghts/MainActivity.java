@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         alertDialogFragment.setBodyString(getString(R.string.forced_update_message));
         alertDialogFragment.setNegativeButtonText(R.string.exit);
         webViewDialogFragment = WebViewDialogFragment.newInstance(link);
-        startActivity(new Intent(this, BoardActivity.class));
+        startActivity(new Intent(this, BoardForm.class));
         finish();
         /*askAgainForUpdate();
         consentDialogFragment = ConsentDialogFragment.newInstance(true, false);

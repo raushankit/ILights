@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <attr name="toolbarColor" format="color"/>
+    <attr name="flowBackgroundColor" format="color"/>
+
     <declare-styleable name="ProfilePic">
         <attr name="backgroundColor"/>
         <attr name="android:textColor"/>

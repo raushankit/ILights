@@ -149,6 +149,16 @@
     <string name="add_board">Add Board</string>
     <string name="board_list_item_details">%1$s\n\nCreated By: %2$s \nCreated on: %3$s</string>
     <string name="board_list_item_uid">UID <b>:</b> GvjyhTVytGTVbyuVYJVcfgyvCGF</string>
+    <string name="board_form_title_hint">Enter name…</string>
+    <string name="board_form_title_helper">Pick a name for the board</string>
+    <string name="board_form_description_hint">Enter description…</string>
+    <string name="board_form_description_helper">Describe briefly the use of this board</string>
+    <string name="board_form_visibility_hint">Pick Visibility</string>
+    <string-array name="board_form_visibility_options">
+        <item>PUBLIC</item>
+        <item>PRIVATE</item>
+    </string-array>
+    <string name="board_form_visibility_helper_text">If visibility is \"PUBLIC\" then this board will be visible to everyone in the app else it will only be visible to people you will choose.\nIn either case, users will need permission before they get access to the board.</string>
 
     <!-- Settings page -->
     <string name="text_box_placeholder">Random Text</string>
