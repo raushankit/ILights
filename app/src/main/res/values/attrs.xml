@@ -3,6 +3,10 @@
 
     <attr name="toolbarColor" format="color"/>
     <attr name="flowBackgroundColor" format="color"/>
+    <attr name="gap" format="dimension"/>
+    <attr name="selectedColor" format="color"/>
+    <attr name="unselectedColor" format="color"/>
+    <attr name="numberOfPins" format="integer"/>
 
     <declare-styleable name="ProfilePic">
         <attr name="backgroundColor"/>
@@ -21,10 +25,23 @@
         <attr name="pointer_radius" format="dimension"/>
         <attr name="strokeWidth"/>
         <attr name="active_index" format="integer"/>
-        <attr name="gap" format="dimension"/>
+        <attr name="gap"/>
         <attr name="android:textColor"/>
         <attr name="text_size_percentage" format="float"/>
         <attr name="active_color" format="color"/>
         <attr name="inactive_color" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="NumberPicker">
+        <attr name="android:textColor"/>
+        <attr name="android:textSize"/>
+        <attr name="backgroundColor"/>
+        <attr name="gap"/>
+        <attr name="icon"/>
+        <attr name="iconTint"/>
+        <attr name="selectedColor"/>
+        <attr name="unselectedColor"/>
+        <attr name="numberOfPins"/>
+        <attr name="android:rowCount"/>
     </declare-styleable>
 </resources>
