@@ -46,8 +46,10 @@ public class BoardForm extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         // window.setStatusBarColor(getColor(R.color.primary_status_bar_color));
 
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.board_form_frame, BoardPinSelection.newInstance()).commit();
+        if(savedInstanceState == null){
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.board_form_frame, BoardPinSelection.newInstance()).commit();
+        }
     }
 }

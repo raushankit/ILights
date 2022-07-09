@@ -7,6 +7,7 @@
     <attr name="selectedColor" format="color"/>
     <attr name="unselectedColor" format="color"/>
     <attr name="numberOfPins" format="integer"/>
+    <attr name="text_size_percentage" format="float"/>
 
     <declare-styleable name="ProfilePic">
         <attr name="backgroundColor"/>
@@ -27,7 +28,7 @@
         <attr name="active_index" format="integer"/>
         <attr name="gap"/>
         <attr name="android:textColor"/>
-        <attr name="text_size_percentage" format="float"/>
+        <attr name="text_size_percentage"/>
         <attr name="active_color" format="color"/>
         <attr name="inactive_color" format="color"/>
     </declare-styleable>
@@ -42,6 +43,7 @@
         <attr name="selectedColor"/>
         <attr name="unselectedColor"/>
         <attr name="numberOfPins"/>
-        <attr name="android:rowCount"/>
+        <attr name="text_size_percentage"/>
+        <attr name="android:columnCount"/>
     </declare-styleable>
 </resources>

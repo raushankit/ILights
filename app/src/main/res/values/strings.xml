@@ -149,16 +149,30 @@
     <string name="add_board">Add Board</string>
     <string name="board_list_item_details">%1$s\n\nCreated By: %2$s \nCreated on: %3$s</string>
     <string name="board_list_item_uid">UID <b>:</b> GvjyhTVytGTVbyuVYJVcfgyvCGF</string>
+    <string name="board_form_title_frag_title">Enter details</string>
     <string name="board_form_title_hint">Enter name…</string>
     <string name="board_form_title_helper">Pick a name for the board</string>
     <string name="board_form_description_hint">Enter description…</string>
     <string name="board_form_description_helper">Describe briefly the use of this board</string>
-    <string name="board_form_visibility_hint">Pick Visibility</string>
+    <string name="board_form_visibility_hint">Select Visibility</string>
     <string-array name="board_form_visibility_options">
         <item>PUBLIC</item>
         <item>PRIVATE</item>
     </string-array>
     <string name="board_form_visibility_helper_text">If visibility is \"PUBLIC\" then this board will be visible to everyone in the app else it will only be visible to people you will choose.\nIn either case, users will need permission before they get access to the board.</string>
+    <string name="board_form_pin_selection_title">Select Pins</string>
+    <string name="board_form_pin_selection_pick_board_hint">Choose Board</string>
+    <string name="board_form_pin_selection_pick_board_helper">All Boards come with a lot of pins but not all of them are to be used because not all GPIOs are exposed to normal use, some GPIOs are not recommended to use and others have very specific functions. So, choose pins in this page wisely or you board might misbehave.\nFor ex: The ESP8266 board comes with 17 GPIO pins but only pins 2, 4, 5, 10, 12, 13, 14, 15, 16, 17 are safe to use.</string>
+    <string name="board_form_pin_selection_choose_pins_hint">No. of Pins</string>
+    <string name="board_form_pin_selection_choose_pins_helper">Select pins to be used from below grid by touching or sliding over cells.</string>
+    <string name="board_form_pin_selection_choose_pins_error_text">You have not selected any Pin from the square grid.\nSelect pins to be used from below grid by touching or sliding over cells.</string>
+    <string-array name="board_form_pin_selection_boards">
+        <item>ESP8266</item>
+        <item>ESP32</item>
+        <item>Other</item>
+    </string-array>
+    <string name="esp8266_total_pin">17</string>
+    <string name="esp32_total_pin">48</string>
 
     <!-- Settings page -->
     <string name="text_box_placeholder">Random Text</string>

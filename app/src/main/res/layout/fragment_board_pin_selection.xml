@@ -1,15 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Theme.ILights.1"
     tools:context=".forms.board.BoardPinSelection">
 
-    <com.raushankit.ILghts.utils.NumberPicker
-        android:layout_width="@dimen/_10sdp"
-        android:layout_height="@dimen/_10sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:paddingBottom="?attr/actionBarSize"
+        android:paddingTop="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/board_form_pin_selection_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:fontFamily="@font/rubik_variable"
+            android:text="@string/board_form_pin_selection_title"
+            android:textSize="@dimen/_22sdp"
+            android:textStyle="bold"
+            android:layout_marginStart="@dimen/_10sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/board_form_pin_selection_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_25sdp"
+            android:hint="@string/board_form_pin_selection_pick_board_hint"
+            app:boxCornerRadiusBottomEnd="@dimen/_5sdp"
+            app:boxCornerRadiusBottomStart="@dimen/_5sdp"
+            app:boxCornerRadiusTopEnd="@dimen/_5sdp"
+            app:boxCornerRadiusTopStart="@dimen/_5sdp"
+            app:errorEnabled="true"
+            app:helperText="@string/board_form_pin_selection_pick_board_helper"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/board_form_pin_selection_title"
+            app:layout_constraintWidth_percent="0.9"
+            app:startIconDrawable="@drawable/ic_keyboard_command_key_black_24dp">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/board_form_pin_selection_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/board_form_pin_selection_number_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:hint="@string/board_form_pin_selection_choose_pins_hint"
+            app:boxCornerRadiusBottomEnd="@dimen/_5sdp"
+            app:boxCornerRadiusBottomStart="@dimen/_5sdp"
+            app:boxCornerRadiusTopEnd="@dimen/_5sdp"
+            app:boxCornerRadiusTopStart="@dimen/_5sdp"
+            app:errorEnabled="true"
+            app:endIconMode="custom"
+            app:helperText="@string/board_form_pin_selection_choose_pins_helper"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/board_form_pin_selection_input_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.9"
+            app:startIconDrawable="@drawable/ic_dialpad_black_24dp">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/board_form_pin_selection_number_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:maxLength="2"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.raushankit.ILghts.utils.NumberPicker
+            android:id="@+id/board_form_pin_selection_ui"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:textColor="@color/white"
+            android:columnCount="6"
+            android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/board_form_pin_selection_number_input_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.9"
+            app:numberOfPins="6"
+            app:text_size_percentage="0.65" />
+
+        <include
+            android:id="@+id/board_form_pin_selection_nav_button_layout"
+            layout="@layout/form_navigation_buttons"
+            android:layout_width="0dp"
+            android:layout_marginTop="@dimen/_30sdp"
+            app:layout_constraintWidth_percent="0.9"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintTop_toBottomOf="@id/board_form_pin_selection_ui"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</ScrollView>
