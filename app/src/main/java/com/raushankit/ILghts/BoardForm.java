@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
+import com.raushankit.ILghts.forms.board.BoardCredentials;
 import com.raushankit.ILghts.forms.board.BoardPinSelection;
 import com.raushankit.ILghts.forms.board.BoardTitle;
 import com.raushankit.ILghts.fragments.board.BoardFragment;
@@ -49,7 +50,7 @@ public class BoardForm extends AppCompatActivity {
         if(savedInstanceState == null){
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.board_form_frame, BoardPinSelection.newInstance()).commit();
+            ft.replace(R.id.board_form_frame, BoardCredentials.newInstance()).commit();
         }
     }
 }
