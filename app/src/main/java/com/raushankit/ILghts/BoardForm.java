@@ -16,6 +16,7 @@ import com.google.android.material.button.MaterialButton;
 import com.raushankit.ILghts.forms.board.BoardCredentials;
 import com.raushankit.ILghts.forms.board.BoardPinSelection;
 import com.raushankit.ILghts.forms.board.BoardTitle;
+import com.raushankit.ILghts.forms.board.BoardVerification;
 import com.raushankit.ILghts.fragments.board.BoardFragment;
 
 public class BoardForm extends AppCompatActivity {
@@ -50,7 +51,7 @@ public class BoardForm extends AppCompatActivity {
         if(savedInstanceState == null){
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.board_form_frame, BoardCredentials.newInstance()).commit();
+            ft.replace(R.id.board_form_frame, BoardVerification.newInstance()).commit();
         }
     }
 }

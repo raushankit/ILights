@@ -39,4 +39,5 @@
     <color name="on_primary_color">@color/black</color>
 
     <color name="board_form_title_texts">#cecece</color>
+    <color name="board_form_subtitle_texts">#bebebe</color>
 </resources>

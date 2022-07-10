@@ -260,8 +260,23 @@ public class NumberPicker extends View {
         }
     }
 
-    public List<Boolean> getSelectedPins() {
-        return isActive;
+    public String getSelectedPins() {
+        char []arr = new char[numberOfPins+1];
+        arr[0] = '0';
+        for(int i = 1;i <= numberOfPins;++i){
+            arr[i] = (((isActive != null) && isActive.get(i-1)) ? '1':'0');
+        }
+        return String.valueOf(arr);
+    }
+
+    public boolean isAnyPinSelected(){
+        if(isActive == null) return false;
+        for(int i = 0; i < numberOfPins;++i){
+            if(isActive.get(i) != null && isActive.get(i)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setSelectedPins(Boolean[] active){
@@ -269,6 +284,7 @@ public class NumberPicker extends View {
         isActive.addAll(Arrays.asList(active));
         invalidate();
     }
+
 
     public void turnOnPin(int pin){
         if(pin < 0 || pin >= numberOfPins){ return; }

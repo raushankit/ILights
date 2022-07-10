@@ -57,5 +57,6 @@
     <color name="primary_toolbar_and_status_bar">#009e60</color>
     <color name="on_primary_color">@color/white</color>
     <color name="board_form_title_texts">#505050</color>
+    <color name="board_form_subtitle_texts">#606060</color>
 
 </resources>

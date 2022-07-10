@@ -9,7 +9,7 @@
         android:id="@+id/form_navigation_prev_button"
         android:layout_width="@dimen/_100sdp"
         android:layout_height="match_parent"
-        android:text="@string/prev"
+        android:text="@string/back"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"

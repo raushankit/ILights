@@ -139,13 +139,7 @@ public class BoardPinSelection extends Fragment {
             pickBoardLayout.setError(errorString);
             return false;
         }
-        List<Boolean> values = numberPicker.getSelectedPins();
-        boolean flag = false;
-        for(int i = 0; i < values.size();++i){
-            if(values.get(i) != null && values.get(i)){
-                flag = true;
-            }
-        }
+        boolean flag = numberPicker.isAnyPinSelected();
         if(!flag) pinNumberLayout.setError(pinErrorString);
         return flag;
     }
