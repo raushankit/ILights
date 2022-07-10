@@ -153,6 +153,11 @@ public class FormFlowLine extends View {
 
     public void setActiveIndex(int index){
         this.activeIndex = index;
+        invalidate();
+    }
+
+    public int getActiveIndex() {
+        return activeIndex;
     }
 
     private void adjustTextSize(String text) {

@@ -125,6 +125,7 @@ public class BoardPinSelection extends Fragment {
 
         prevButton.setOnClickListener(v -> {
             //TODO: go to previous frame
+            getParentFragmentManager().popBackStackImmediate();
         });
 
         nextButton.setOnClickListener(v -> {

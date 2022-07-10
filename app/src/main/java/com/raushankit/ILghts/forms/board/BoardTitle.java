@@ -1,29 +1,38 @@
 package com.raushankit.ILghts.forms.board;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.raushankit.ILghts.BoardForm;
 import com.raushankit.ILghts.R;
+import com.raushankit.ILghts.model.board.BoardBasicModel;
+import com.raushankit.ILghts.viewModel.BoardFormCommViewModel;
+import com.raushankit.ILghts.viewModel.BoardFormViewModel;
 
 
 public class BoardTitle extends Fragment {
 
     private static final String TAG = "BoardTitle";
+
+    private BoardFormViewModel boardFormViewModel;
+    private BoardFormCommViewModel boardFormCommViewModel;
+    private String[] visibilityOpt;
 
     private TextInputLayout nameLayout;
     private TextInputLayout descLayout;
@@ -31,6 +40,7 @@ public class BoardTitle extends Fragment {
     private TextInputEditText nameEditText;
     private TextInputEditText descEditText;
     private TextWatcher nameWatcher;
+
     private TextWatcher descWatcher;
     private TextWatcher visibilityWatcher;
     private MaterialAutoCompleteTextView visibilityText;
@@ -56,7 +66,8 @@ public class BoardTitle extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_board_title, container, false);
         init(view);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.board_form_visibility_options));
+        visibilityOpt = getResources().getStringArray(R.array.board_form_visibility_options);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, visibilityOpt);
         visibilityText.setAdapter(adapter);
 
         return view;
@@ -125,7 +136,12 @@ public class BoardTitle extends Fragment {
         String required = getString(R.string.required);
         nextButton.setOnClickListener(v ->{
             if(checkIfEmpty(required)){return;}
-            Log.d(TAG, "init: everything good");
+            BoardBasicModel model = new BoardBasicModel();
+            model.setName(String.valueOf(nameEditText.getText()));
+            model.setDescription(String.valueOf(descEditText.getText()));
+            model.setVisibility(TextUtils.equals(visibilityText.getText(), visibilityOpt[0])?0:1);
+            boardFormViewModel.setBasicModel(model);
+            boardFormCommViewModel.putData(BoardForm.FORM2);
         });
     }
 
@@ -144,6 +160,26 @@ public class BoardTitle extends Fragment {
             flag = true;
         }
         return flag;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        boardFormViewModel = new ViewModelProvider(requireActivity()).get(BoardFormViewModel.class);
+        boardFormCommViewModel = new ViewModelProvider(requireActivity()).get(BoardFormCommViewModel.class);
+
+        boardFormViewModel.getBasicData().observe(getViewLifecycleOwner(), boardBasicModel -> {
+            if(boardBasicModel == null) return;
+            if(!TextUtils.isEmpty(boardBasicModel.getName())){
+                nameEditText.setText(boardBasicModel.getName());
+            }
+            if(!TextUtils.isEmpty(boardBasicModel.getDescription())){
+                descEditText.setText(boardBasicModel.getName());
+            }
+            if(boardBasicModel.getVisibility() != -1){
+                visibilityText.setText(visibilityOpt[boardBasicModel.getVisibility()]);
+            }
+        });
     }
 
     @Override

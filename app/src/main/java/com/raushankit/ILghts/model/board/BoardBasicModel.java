@@ -16,7 +16,7 @@ public class BoardBasicModel implements Parcelable {
 
     private String name;
     private String description;
-    private int visibility;
+    private int visibility = -1;
 
     public BoardBasicModel(){}
 

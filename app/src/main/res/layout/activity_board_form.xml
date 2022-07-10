@@ -34,10 +34,10 @@
         android:layout_height="?attr/actionBarSize"
         android:layout_below="@id/board_form_toolbar"
         android:elevation="@dimen/_10sdp"
+        android:textColor="?attr/colorOnPrimary"
         app:active_color="?attr/colorPrimary"
         app:backgroundColor="?attr/flowBackgroundColor"
         app:gap="@dimen/_25sdp"
-        android:textColor="?attr/colorOnPrimary"
         app:pointer_radius="@dimen/_10sdp"
         app:strokeWidth="@dimen/_4sdp" />
     <ProgressBar
