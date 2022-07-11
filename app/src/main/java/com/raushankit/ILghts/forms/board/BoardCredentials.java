@@ -1,26 +1,33 @@
 package com.raushankit.ILghts.forms.board;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.raushankit.ILghts.R;
+import com.raushankit.ILghts.entity.BoardFormConst;
+import com.raushankit.ILghts.model.board.BoardCredentialModel;
+import com.raushankit.ILghts.viewModel.BoardFormViewModel;
 
 
 public class BoardCredentials extends Fragment {
-    private static final String TAG = "BoardCredentials";
 
+    private static final String TAG = "BoardCredentials";
+    private BoardFormViewModel boardFormViewModel;
     private TextInputLayout usernameLayout;
     private TextInputLayout passwordLayout;
     private TextInputEditText usernameText;
@@ -29,14 +36,12 @@ public class BoardCredentials extends Fragment {
     private TextWatcher passwordWatcher;
     private String requiredString;
 
-
     public BoardCredentials() {
         // Required empty public constructor
     }
 
     public static BoardCredentials newInstance() {
-        BoardCredentials fragment = new BoardCredentials();
-        return fragment;
+        return new BoardCredentials();
     }
 
     @Override
@@ -96,13 +101,39 @@ public class BoardCredentials extends Fragment {
             }
         };
 
-        prevButton.setOnClickListener(v -> {
-            // TODO: implement this
-        });
+        prevButton.setOnClickListener(v -> getParentFragmentManager().popBackStackImmediate());
 
         nextButton.setOnClickListener(v -> {
-            if(!checkCredentials()) return;
-            // TODO: implement this
+            if(checkIfEmpty()) {
+                Log.i(TAG, "init: empty credentials");
+                return;
+            }
+            Bundle args = new Bundle();
+            args.putString(BoardFormConst.CHANGE_FRAGMENT, BoardFormConst.FORM4);
+            getParentFragmentManager().setFragmentResult(BoardFormConst.REQUEST, args);
+        });
+    }
+
+    private void saveData(){
+        BoardCredentialModel model = new BoardCredentialModel();
+        model.setUsername(String.valueOf(usernameText.getText()));
+        model.setPassword(String.valueOf(passwordText.getText()));
+        boardFormViewModel.setCredentialModel(model);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        boardFormViewModel = new ViewModelProvider(requireActivity()).get(BoardFormViewModel.class);
+
+        boardFormViewModel.getCredentialsData().observe(getViewLifecycleOwner(), boardCredentialModel -> {
+            if(boardCredentialModel == null) return;
+            if(!TextUtils.isEmpty(boardCredentialModel.getUsername())){
+                usernameText.setText(boardCredentialModel.getUsername());
+            }
+            if(!TextUtils.isEmpty(boardCredentialModel.getPassword())){
+                passwordText.setText(boardCredentialModel.getPassword());
+            }
         });
     }
 
@@ -111,17 +142,20 @@ public class BoardCredentials extends Fragment {
         super.onResume();
         usernameText.addTextChangedListener(usernameWatcher);
         passwordText.addTextChangedListener(passwordWatcher);
+        Bundle args = new Bundle();
+        args.putInt(BoardFormConst.CURRENT_FRAGMENT, 3);
+        getParentFragmentManager().setFragmentResult(BoardFormConst.REQUEST, args);
     }
 
-    private boolean checkCredentials(){
-        boolean flag = true;
+    private boolean checkIfEmpty(){
+        boolean flag = false;
         if(TextUtils.isEmpty(usernameText.getText())){
             usernameLayout.setError(requiredString);
-            flag = false;
+            flag = true;
         }
         if(TextUtils.isEmpty(passwordText.getText())){
             passwordLayout.setError(requiredString);
-            flag = false;
+            flag = true;
         }
         return flag;
     }
@@ -129,6 +163,7 @@ public class BoardCredentials extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        saveData();
         usernameText.removeTextChangedListener(usernameWatcher);
         passwordText.removeTextChangedListener(passwordWatcher);
     }

@@ -15,21 +15,24 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class BoardPinsModel implements Parcelable{
 
+    private String board;
     private String usablePins;
     private int n;
 
     public BoardPinsModel(){}
 
-    public BoardPinsModel(int n) {
-        this.n = n;
-    }
-
-    public BoardPinsModel(String usablePins, int n) {
+    public BoardPinsModel(String board, String usablePins, int n) {
+        this.board = board;
         this.usablePins = usablePins;
         this.n = n;
     }
 
+    public BoardPinsModel(int n) {
+        this.n = n;
+    }
+
     protected BoardPinsModel(Parcel in) {
+        board = in.readString();
         usablePins = in.readString();
         n = in.readInt();
     }
@@ -45,6 +48,14 @@ public class BoardPinsModel implements Parcelable{
             return new BoardPinsModel[size];
         }
     };
+
+    public String getBoard() {
+        return board;
+    }
+
+    public void setBoard(String board) {
+        this.board = board;
+    }
 
     public String getUsablePins() {
         return usablePins;
@@ -67,21 +78,12 @@ public class BoardPinsModel implements Parcelable{
         if (this == o) return true;
         if (!(o instanceof BoardPinsModel)) return false;
         BoardPinsModel that = (BoardPinsModel) o;
-        return n == that.n && Objects.equals(usablePins, that.usablePins);
+        return n == that.n && Objects.equals(board, that.board) && Objects.equals(usablePins, that.usablePins);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(usablePins, n);
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "BoardPinsModel{" +
-                "usablePins='" + usablePins + '\'' +
-                ", n=" + n +
-                '}';
+        return Objects.hash(board, usablePins, n);
     }
 
     @Override
@@ -91,7 +93,18 @@ public class BoardPinsModel implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(board);
         parcel.writeString(usablePins);
         parcel.writeInt(n);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "BoardPinsModel{" +
+                "board='" + board + '\'' +
+                ", usablePins='" + usablePins + '\'' +
+                ", n=" + n +
+                '}';
     }
 }

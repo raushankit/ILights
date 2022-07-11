@@ -152,6 +152,7 @@ public class FormFlowLine extends View {
     }
 
     public void setActiveIndex(int index){
+        if(index == this.activeIndex) return;
         this.activeIndex = index;
         invalidate();
     }

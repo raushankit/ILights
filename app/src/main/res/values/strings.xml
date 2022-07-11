@@ -116,6 +116,7 @@
     <string name="not_show_again">Don\'t show again</string>
     <string name="cancel">Cancel</string>
     <string name="change">Change</string>
+    <string name="twice_back_press_message">Press back button again to exit.</string>
     <string name="no_network_detected">Network error\nYour network might be very slow or you are not connected to internet</string>
     <string name="delete_account_body_text">This will delete your account and data associated with it.\nClick Yes to proceed </string>
 

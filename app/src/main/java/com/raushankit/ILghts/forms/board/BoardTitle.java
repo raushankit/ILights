@@ -19,10 +19,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.raushankit.ILghts.BoardForm;
 import com.raushankit.ILghts.R;
+import com.raushankit.ILghts.entity.BoardFormConst;
 import com.raushankit.ILghts.model.board.BoardBasicModel;
-import com.raushankit.ILghts.viewModel.BoardFormCommViewModel;
 import com.raushankit.ILghts.viewModel.BoardFormViewModel;
 
 
@@ -31,7 +30,6 @@ public class BoardTitle extends Fragment {
     private static final String TAG = "BoardTitle";
 
     private BoardFormViewModel boardFormViewModel;
-    private BoardFormCommViewModel boardFormCommViewModel;
     private String[] visibilityOpt;
 
     private TextInputLayout nameLayout;
@@ -47,12 +45,10 @@ public class BoardTitle extends Fragment {
 
 
     public BoardTitle() {
-        // Required empty public constructor
     }
 
     public static BoardTitle newInstance() {
-        BoardTitle fragment = new BoardTitle();
-        return fragment;
+        return new BoardTitle();
     }
 
     @Override
@@ -136,12 +132,9 @@ public class BoardTitle extends Fragment {
         String required = getString(R.string.required);
         nextButton.setOnClickListener(v ->{
             if(checkIfEmpty(required)){return;}
-            BoardBasicModel model = new BoardBasicModel();
-            model.setName(String.valueOf(nameEditText.getText()));
-            model.setDescription(String.valueOf(descEditText.getText()));
-            model.setVisibility(TextUtils.equals(visibilityText.getText(), visibilityOpt[0])?0:1);
-            boardFormViewModel.setBasicModel(model);
-            boardFormCommViewModel.putData(BoardForm.FORM2);
+            Bundle args = new Bundle();
+            args.putString(BoardFormConst.CHANGE_FRAGMENT, BoardFormConst.FORM2);
+            getParentFragmentManager().setFragmentResult(BoardFormConst.REQUEST, args);
         });
     }
 
@@ -166,8 +159,6 @@ public class BoardTitle extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         boardFormViewModel = new ViewModelProvider(requireActivity()).get(BoardFormViewModel.class);
-        boardFormCommViewModel = new ViewModelProvider(requireActivity()).get(BoardFormCommViewModel.class);
-
         boardFormViewModel.getBasicData().observe(getViewLifecycleOwner(), boardBasicModel -> {
             if(boardBasicModel == null) return;
             if(!TextUtils.isEmpty(boardBasicModel.getName())){
@@ -182,17 +173,28 @@ public class BoardTitle extends Fragment {
         });
     }
 
+    private void saveData(){
+        BoardBasicModel model = new BoardBasicModel();
+        model.setName(String.valueOf(nameEditText.getText()));
+        model.setVisibility(TextUtils.isEmpty(visibilityText.getText())?-1:(TextUtils.equals(visibilityText.getText(), visibilityOpt[0])?0:1));
+        boardFormViewModel.setBasicModel(model);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         nameEditText.addTextChangedListener(nameWatcher);
         descEditText.addTextChangedListener(descWatcher);
         visibilityText.addTextChangedListener(visibilityWatcher);
+        Bundle args = new Bundle();
+        args.putInt(BoardFormConst.CURRENT_FRAGMENT, 1);
+        getParentFragmentManager().setFragmentResult(BoardFormConst.REQUEST, args);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        saveData();
         nameEditText.removeTextChangedListener(nameWatcher);
         descEditText.removeTextChangedListener(descWatcher);
         visibilityText.removeTextChangedListener(visibilityWatcher);

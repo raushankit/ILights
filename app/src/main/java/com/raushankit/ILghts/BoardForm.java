@@ -2,23 +2,21 @@ package com.raushankit.ILghts;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ProgressBar;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.snackbar.Snackbar;
+import com.raushankit.ILghts.entity.BoardFormConst;
 import com.raushankit.ILghts.forms.board.BoardCredentials;
 import com.raushankit.ILghts.forms.board.BoardPinSelection;
 import com.raushankit.ILghts.forms.board.BoardTitle;
@@ -29,18 +27,11 @@ import com.raushankit.ILghts.viewModel.BoardFormCommViewModel;
 public class BoardForm extends AppCompatActivity {
     private static final String TAG = "BoardForm";
 
-    public static final String FORM1 = "basic_details";
-    public static final String FORM2 = "pin_details";
-    public static final String FORM3 = "credential_details";
-    public static final String FORM4 = "review_form";
-    public static final String ON_PROGRESS_BAR = "on_progress_bar";
-    public static final String OFF_PROGRESS_BAR = "off_progress_bar";
-
-    private String CURRENT_FRAGMENT = "empty";
-
     private ProgressBar progressBar;
     private MaterialToolbar toolbar;
     private FormFlowLine formFlowLine;
+    private boolean isBackPressedTwice = false;
+    private Runnable backPressRunnable;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -61,21 +52,22 @@ public class BoardForm extends AppCompatActivity {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_NO?AppCompatDelegate.MODE_NIGHT_YES:AppCompatDelegate.MODE_NIGHT_NO);
         });
         progressBar.setVisibility(View.GONE);
+        backPressRunnable = () -> isBackPressedTwice = false;
 
         BoardFormCommViewModel boardFormCommViewModel = new ViewModelProvider(this).get(BoardFormCommViewModel.class);
         boardFormCommViewModel.getData().observe(this, s -> {
             if(TextUtils.isEmpty(s))return;
             switch (s){
-                case OFF_PROGRESS_BAR:
+                case BoardFormConst.OFF_PROGRESS_BAR:
                     progressBar.setVisibility(View.GONE);
                     break;
-                case ON_PROGRESS_BAR:
+                case BoardFormConst.ON_PROGRESS_BAR:
                     progressBar.setVisibility(View.VISIBLE);
                     break;
-                case FORM1:
-                case FORM2:
-                case FORM3:
-                case FORM4:
+                case BoardFormConst.FORM1:
+                case BoardFormConst.FORM2:
+                case BoardFormConst.FORM3:
+                case BoardFormConst.FORM4:
                     switchFrags(s);
                     boardFormCommViewModel.putData(null);
                     break;
@@ -84,41 +76,58 @@ public class BoardForm extends AppCompatActivity {
             }
         });
 
+        getSupportFragmentManager().setFragmentResultListener(BoardFormConst.REQUEST, this, (requestKey, result) -> {
+            if(!TextUtils.equals(requestKey, BoardFormConst.REQUEST)) return;
+            if(result.containsKey(BoardFormConst.CHANGE_FRAGMENT)){
+                switchFrags(result.getString(BoardFormConst.CHANGE_FRAGMENT));
+            }
+            if(result.containsKey(BoardFormConst.CURRENT_FRAGMENT)){
+                formFlowLine.setActiveIndex(result.getInt(BoardFormConst.CURRENT_FRAGMENT));
+            }
+        });
+
 
         if(savedInstanceState == null){
-            switchFrags(FORM1);
+            switchFrags(BoardFormConst.FORM1);
         }
     }
 
     private void switchFrags(String key){
-        if(key == null || key.equals(CURRENT_FRAGMENT)) return;
+        if(key == null || key.equals("FORM" + formFlowLine.getActiveIndex())) return;
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         switch (key) {
-            case FORM1:
-                formFlowLine.setActiveIndex(1);
+            case BoardFormConst.FORM1:
                 ft.replace(R.id.board_form_frame, BoardTitle.newInstance())
                         .addToBackStack(null).commit();
-                CURRENT_FRAGMENT = key;
                 break;
-            case FORM2:
-                formFlowLine.setActiveIndex(2);
+            case BoardFormConst.FORM2:
                 ft.replace(R.id.board_form_frame, BoardPinSelection.newInstance())
                         .addToBackStack(null).commit();
-                CURRENT_FRAGMENT = key;
                 break;
-            case FORM3:
-                formFlowLine.setActiveIndex(3);
+            case BoardFormConst.FORM3:
                 ft.replace(R.id.board_form_frame, BoardCredentials.newInstance())
                         .addToBackStack(null).commit();
-                CURRENT_FRAGMENT = key;
                 break;
-            case FORM4:
-                formFlowLine.setActiveIndex(4);
+            case BoardFormConst.FORM4:
                 ft.replace(R.id.board_form_frame, BoardVerification.newInstance())
                         .addToBackStack(null).commit();
-                CURRENT_FRAGMENT = key;
                 break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(formFlowLine.getActiveIndex() == 1){
+            if(isBackPressedTwice){
+                setResult(RESULT_CANCELED);
+                finish();
+            }
+            isBackPressedTwice = true;
+            Snackbar.make(findViewById(android.R.id.content), R.string.twice_back_press_message, Snackbar.LENGTH_SHORT).show();
+            new Handler().postDelayed(backPressRunnable, 2000);
+        }else{
+            super.onBackPressed();
         }
     }
 }

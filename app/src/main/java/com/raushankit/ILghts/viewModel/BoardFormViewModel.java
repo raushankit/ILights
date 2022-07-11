@@ -34,12 +34,11 @@ public class BoardFormViewModel extends ViewModel {
     public void setBasicModel(BoardBasicModel model){
         handle.set(SUB1, model);
     }
-
     public void setPinModel(BoardPinsModel model){
         handle.set(SUB2, model);
     }
-
     public void setCredentialModel(BoardCredentialModel model){
         handle.set(SUB3, model);
     }
+
 }
