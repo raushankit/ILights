@@ -146,14 +146,19 @@ public class BoardPinSelection extends Fragment {
     private boolean checkValidity(){
         if(TextUtils.isEmpty(pickBoardSpinner.getText())){
             pickBoardLayout.setError(errorString);
-            return false;
+            return true;
         }
-        boolean flag = numberPicker.isAnyPinSelected();
-        if(!flag) pinNumberLayout.setError(pinErrorString);
+        if(TextUtils.isEmpty(pinNumber.getText())){
+            pinNumberLayout.setError(pinErrorString);
+            return true;
+        }
+        boolean flag = !numberPicker.isAnyPinSelected();
+        if(flag) pinNumberLayout.setError(pinErrorString);
         return flag;
     }
 
     private void onBoardTextChange(CharSequence charSequence){
+        numberPicker.clearStates();
         if(TextUtils.equals(charSequence, boardNames.get(0))){
             pinNumber.setText(R.string.esp8266_total_pin);
             pinNumber.setInputType(InputType.TYPE_NULL);

@@ -32,6 +32,7 @@
         <item name="android:windowLightStatusBar">false</item>
         <!-- Customize your theme here. -->
         <item name="toolbarColor">#009e60</item>
+        <item name="inactive_color">#515151</item>
         <item name="flowBackgroundColor">#19009e60</item>
     </style>
 </resources>

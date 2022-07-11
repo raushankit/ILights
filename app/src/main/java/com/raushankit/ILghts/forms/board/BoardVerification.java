@@ -6,13 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.raushankit.ILghts.R;
@@ -77,10 +80,21 @@ public class BoardVerification extends Fragment {
         LinearLayout subtitle1Layout = view.findViewById(R.id.board_form_verification_subtitle_details_layout);
         LinearLayout subtitle2Layout = view.findViewById(R.id.board_form_verification_subtitle_pins_layout);
         LinearLayout subtitle3Layout = view.findViewById(R.id.board_form_verification_subtitle_credentials_layout);
+        RelativeLayout navLayout = view.findViewById(R.id.board_form_verification_nav_button_layout);
+        MaterialButton prevButton = navLayout.findViewById(R.id.form_navigation_prev_button);
+        MaterialButton nextButton = navLayout.findViewById(R.id.form_navigation_next_button);
+        nextButton.setText(R.string.board_form_last_btn_text);
+        nextButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_check_24, requireActivity().getTheme()));
         expandOrShrink(subtitle1Layout, basicSubtitle, R.drawable.ic_looks_one_black_24dp);
         expandOrShrink(subtitle2Layout, pinSubtitle, R.drawable.ic_looks_two_black_24dp);
         numberPicker.setDisallowTouch(true);
         expandOrShrink(subtitle3Layout, credentialSubtitle, R.drawable.ic_looks_3_black_24dp);
+
+        prevButton.setOnClickListener(v -> getParentFragmentManager().popBackStackImmediate());
+
+        nextButton.setOnClickListener(v -> {
+            // TODO: 11-07-2022
+        });
     }
 
     private void expandOrShrink(LinearLayout layout, MaterialTextView textView, @DrawableRes int res){

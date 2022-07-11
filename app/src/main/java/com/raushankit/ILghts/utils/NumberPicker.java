@@ -285,6 +285,9 @@ public class NumberPicker extends View {
         invalidate();
     }
 
+    public void clearStates(){
+        isActive.replaceAll(bb -> Boolean.FALSE);
+    }
 
     public void turnOnPin(int pin){
         if(pin < 0 || pin >= numberOfPins){ return; }

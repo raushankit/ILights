@@ -89,6 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:textColor="@color/white"
+            app:selectedColor="?attr/colorPrimary"
             android:columnCount="6"
             android:visibility="visible"
             app:layout_constraintTop_toBottomOf="@id/board_form_pin_selection_number_input_layout"

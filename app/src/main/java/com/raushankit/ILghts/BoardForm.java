@@ -93,6 +93,7 @@ public class BoardForm extends AppCompatActivity {
     }
 
     private void switchFrags(String key){
+        Log.e(TAG, "switchFrags: key = " + key);
         if(key == null || key.equals("FORM" + formFlowLine.getActiveIndex())) return;
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
