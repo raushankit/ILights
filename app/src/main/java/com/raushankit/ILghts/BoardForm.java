@@ -1,6 +1,8 @@
 package com.raushankit.ILghts;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -12,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
@@ -21,8 +22,10 @@ import com.raushankit.ILghts.forms.board.BoardCredentials;
 import com.raushankit.ILghts.forms.board.BoardPinSelection;
 import com.raushankit.ILghts.forms.board.BoardTitle;
 import com.raushankit.ILghts.forms.board.BoardVerification;
+import com.raushankit.ILghts.model.board.BoardBasicModel;
+import com.raushankit.ILghts.model.board.BoardCredentialModel;
+import com.raushankit.ILghts.model.board.BoardPinsModel;
 import com.raushankit.ILghts.utils.FormFlowLine;
-import com.raushankit.ILghts.viewModel.BoardFormCommViewModel;
 
 public class BoardForm extends AppCompatActivity {
     private static final String TAG = "BoardForm";
@@ -32,6 +35,7 @@ public class BoardForm extends AppCompatActivity {
     private FormFlowLine formFlowLine;
     private boolean isBackPressedTwice = false;
     private Runnable backPressRunnable;
+    private Intent replyIntent;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -49,32 +53,12 @@ public class BoardForm extends AppCompatActivity {
         toolbar = findViewById(R.id.board_form_toolbar);
         formFlowLine = findViewById(R.id.board_form_flow_line);
         toolbar.setNavigationOnClickListener(v -> {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_NO?AppCompatDelegate.MODE_NIGHT_YES:AppCompatDelegate.MODE_NIGHT_NO);
+            setResult(RESULT_CANCELED);
+            finish();
         });
+        replyIntent = new Intent();
         progressBar.setVisibility(View.GONE);
         backPressRunnable = () -> isBackPressedTwice = false;
-
-        BoardFormCommViewModel boardFormCommViewModel = new ViewModelProvider(this).get(BoardFormCommViewModel.class);
-        boardFormCommViewModel.getData().observe(this, s -> {
-            if(TextUtils.isEmpty(s))return;
-            switch (s){
-                case BoardFormConst.OFF_PROGRESS_BAR:
-                    progressBar.setVisibility(View.GONE);
-                    break;
-                case BoardFormConst.ON_PROGRESS_BAR:
-                    progressBar.setVisibility(View.VISIBLE);
-                    break;
-                case BoardFormConst.FORM1:
-                case BoardFormConst.FORM2:
-                case BoardFormConst.FORM3:
-                case BoardFormConst.FORM4:
-                    switchFrags(s);
-                    boardFormCommViewModel.putData(null);
-                    break;
-                default:
-                    Log.w(TAG, "onCreate: unknown event type");
-            }
-        });
 
         getSupportFragmentManager().setFragmentResultListener(BoardFormConst.REQUEST, this, (requestKey, result) -> {
             if(!TextUtils.equals(requestKey, BoardFormConst.REQUEST)) return;
@@ -83,6 +67,26 @@ public class BoardForm extends AppCompatActivity {
             }
             if(result.containsKey(BoardFormConst.CURRENT_FRAGMENT)){
                 formFlowLine.setActiveIndex(result.getInt(BoardFormConst.CURRENT_FRAGMENT));
+            }
+            if(result.containsKey(BoardFormConst.PROGRESS_BAR)){
+                progressBar.setVisibility(result.getBoolean(BoardFormConst.PROGRESS_BAR)?View.VISIBLE:View.GONE);
+            }
+            int count = 0;
+            if(result.containsKey(BoardFormConst.FORM1_BUNDLE_KEY)){
+                count++;
+                replyIntent.putExtra(BoardFormConst.FORM1_BUNDLE_KEY, (BoardBasicModel)result.getParcelable(BoardFormConst.FORM1_BUNDLE_KEY));
+            }
+            if(result.containsKey(BoardFormConst.FORM2_BUNDLE_KEY)){
+                count++;
+                replyIntent.putExtra(BoardFormConst.FORM2_BUNDLE_KEY, (BoardPinsModel)result.getParcelable(BoardFormConst.FORM2_BUNDLE_KEY));
+            }
+            if(result.containsKey(BoardFormConst.FORM3_BUNDLE_KEY)){
+                count++;
+                replyIntent.putExtra(BoardFormConst.FORM3_BUNDLE_KEY, (BoardCredentialModel)result.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY));
+            }
+            if(count == 3){
+                setResult(Activity.RESULT_OK, replyIntent);
+                finish();
             }
         });
 
@@ -128,7 +132,11 @@ public class BoardForm extends AppCompatActivity {
             Snackbar.make(findViewById(android.R.id.content), R.string.twice_back_press_message, Snackbar.LENGTH_SHORT).show();
             new Handler().postDelayed(backPressRunnable, 2000);
         }else{
-            super.onBackPressed();
+            if(progressBar.getVisibility() == View.VISIBLE){
+                Snackbar.make(findViewById(android.R.id.content), R.string.please_wait, Snackbar.LENGTH_SHORT).show();
+            }else{
+                super.onBackPressed();
+            }
         }
     }
 }

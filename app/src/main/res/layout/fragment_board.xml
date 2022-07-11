@@ -16,7 +16,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:background="#f0f8ff"
+        android:background="@color/board_recyclerview_background"
         android:nestedScrollingEnabled="true"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
@@ -30,10 +30,10 @@
         android:layout_marginEnd="@dimen/_20sdp"
         android:layout_marginBottom="@dimen/_20sdp"
         android:text="@string/add_board"
-        app:iconTint="@color/on_primary_color"
-        android:textColor="@color/on_primary_color"
+        app:iconTint="?attr/colorOnPrimary"
+        android:textColor="?attr/colorOnPrimary"
         android:textAllCaps="true"
-        android:backgroundTint="@color/primary_toolbar_and_status_bar"
+        android:backgroundTint="?attr/colorPrimary"
         app:icon="@drawable/ic_baseline_add_24" />
 
 </RelativeLayout>

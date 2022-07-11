@@ -176,6 +176,7 @@ public class BoardTitle extends Fragment {
     private void saveData(){
         BoardBasicModel model = new BoardBasicModel();
         model.setName(String.valueOf(nameEditText.getText()));
+        model.setDescription(String.valueOf(descEditText.getText()));
         model.setVisibility(TextUtils.isEmpty(visibilityText.getText())?-1:(TextUtils.equals(visibilityText.getText(), visibilityOpt[0])?0:1));
         boardFormViewModel.setBasicModel(model);
     }

@@ -21,6 +21,7 @@
             android:fontFamily="@font/rubik_variable"
             android:text="@string/board_form_pin_selection_title"
             android:textSize="@dimen/_22sdp"
+            android:textColor="@color/board_form_title_texts"
             android:textStyle="bold"
             android:layout_marginStart="@dimen/_10sdp"
             app:layout_constraintStart_toStartOf="parent"

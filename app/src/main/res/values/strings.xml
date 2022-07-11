@@ -180,6 +180,7 @@
     <string name="board_form_credential_title_helper_text">The credentials here will be used to establish communication with the board. Choose a username and a strong Password.</string>
     <string name="board_form_credential_username_hint_text">Username</string>
     <string name="board_form_credential_password_hint_text">Password</string>
+    <string name="board_form_credential_username_suffix">@brd.in</string>
 
     <string name="board_form_verification_title">Review</string>
     <string name="board_form_verification_subtitle1">Basic details</string>

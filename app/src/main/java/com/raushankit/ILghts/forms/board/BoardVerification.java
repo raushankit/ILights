@@ -1,5 +1,6 @@
 package com.raushankit.ILghts.forms.board;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
+import com.raushankit.ILghts.BoardActivity;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.entity.BoardFormConst;
 import com.raushankit.ILghts.utils.NumberPicker;
@@ -37,7 +39,7 @@ public class BoardVerification extends Fragment {
     private TextInputEditText usernameText;
     private TextInputEditText passwordText;
     private NumberPicker numberPicker;
-
+    private Bundle result;
 
     public BoardVerification() {
         // Required empty public constructor
@@ -50,6 +52,7 @@ public class BoardVerification extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         visibilityOpt = getResources().getStringArray(R.array.board_form_visibility_options);
+        result = new Bundle();
     }
 
     @Override
@@ -93,7 +96,7 @@ public class BoardVerification extends Fragment {
         prevButton.setOnClickListener(v -> getParentFragmentManager().popBackStackImmediate());
 
         nextButton.setOnClickListener(v -> {
-            // TODO: 11-07-2022
+            getParentFragmentManager().setFragmentResult(BoardFormConst.REQUEST, result);
         });
     }
 
@@ -115,11 +118,12 @@ public class BoardVerification extends Fragment {
                 nameText.setText(boardBasicModel.getName());
             }
             if(!TextUtils.isEmpty(boardBasicModel.getDescription())){
-                descText.setText(boardBasicModel.getName());
+                descText.setText(boardBasicModel.getDescription());
             }
             if(boardBasicModel.getVisibility() != -1){
                 visibilityText.setText(visibilityOpt[boardBasicModel.getVisibility()]);
             }
+            result.putParcelable(BoardFormConst.FORM1_BUNDLE_KEY, boardBasicModel);
         });
         boardFormViewModel.getPinsData().observe(getViewLifecycleOwner(), boardPinsModel -> {
             if(boardPinsModel == null) return;
@@ -141,6 +145,7 @@ public class BoardVerification extends Fragment {
                 }
                 numberPicker.setNumberOfPins(boardPinsModel.getN(), arr);
             }
+            result.putParcelable(BoardFormConst.FORM2_BUNDLE_KEY, boardPinsModel);
         });
         boardFormViewModel.getCredentialsData().observe(getViewLifecycleOwner(), boardCredentialModel -> {
             if(boardCredentialModel == null) return;
@@ -150,6 +155,7 @@ public class BoardVerification extends Fragment {
             if(!TextUtils.isEmpty(boardCredentialModel.getPassword())){
                 passwordText.setText(boardCredentialModel.getPassword());
             }
+            result.putParcelable(BoardFormConst.FORM3_BUNDLE_KEY, boardCredentialModel);
         });
     }
 
