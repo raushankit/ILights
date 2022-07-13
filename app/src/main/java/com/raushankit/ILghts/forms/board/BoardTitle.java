@@ -26,7 +26,6 @@ import com.raushankit.ILghts.viewModel.BoardFormViewModel;
 
 
 public class BoardTitle extends Fragment {
-
     private static final String TAG = "BoardTitle";
 
     private BoardFormViewModel boardFormViewModel;

@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -31,11 +30,12 @@ public class BoardForm extends AppCompatActivity {
     private static final String TAG = "BoardForm";
 
     private ProgressBar progressBar;
-    private MaterialToolbar toolbar;
     private FormFlowLine formFlowLine;
     private boolean isBackPressedTwice = false;
     private Runnable backPressRunnable;
     private Intent replyIntent;
+    private String apiKey;
+    private String idToken;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -50,12 +50,9 @@ public class BoardForm extends AppCompatActivity {
         setContentView(R.layout.activity_board_form);
 
         progressBar = findViewById(R.id.board_form_progress_bar);
-        toolbar = findViewById(R.id.board_form_toolbar);
+        MaterialToolbar toolbar = findViewById(R.id.board_form_toolbar);
         formFlowLine = findViewById(R.id.board_form_flow_line);
-        toolbar.setNavigationOnClickListener(v -> {
-            setResult(RESULT_CANCELED);
-            finish();
-        });
+        toolbar.setNavigationOnClickListener(v -> setCancelResult());
         replyIntent = new Intent();
         progressBar.setVisibility(View.GONE);
         backPressRunnable = () -> isBackPressedTwice = false;
@@ -64,6 +61,12 @@ public class BoardForm extends AppCompatActivity {
             if(!TextUtils.equals(requestKey, BoardFormConst.REQUEST)) return;
             if(result.containsKey(BoardFormConst.CHANGE_FRAGMENT)){
                 switchFrags(result.getString(BoardFormConst.CHANGE_FRAGMENT));
+            }
+            if(result.containsKey(BoardFormConst.API_KEY)){
+                apiKey = result.getString(BoardFormConst.API_KEY);
+            }
+            if(result.containsKey(BoardFormConst.ID_TOKEN)){
+                idToken = result.getString(BoardFormConst.ID_TOKEN);
             }
             if(result.containsKey(BoardFormConst.CURRENT_FRAGMENT)){
                 formFlowLine.setActiveIndex(result.getInt(BoardFormConst.CURRENT_FRAGMENT));
@@ -90,14 +93,12 @@ public class BoardForm extends AppCompatActivity {
             }
         });
 
-
         if(savedInstanceState == null){
             switchFrags(BoardFormConst.FORM1);
         }
     }
 
     private void switchFrags(String key){
-        Log.e(TAG, "switchFrags: key = " + key);
         if(key == null || key.equals("FORM" + formFlowLine.getActiveIndex())) return;
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -121,18 +122,25 @@ public class BoardForm extends AppCompatActivity {
         }
     }
 
+    private void setCancelResult(){
+        replyIntent.putExtra(BoardFormConst.API_KEY, apiKey);
+        replyIntent.putExtra(BoardFormConst.ID_TOKEN, idToken);
+        setResult(RESULT_CANCELED, replyIntent);
+        finish();
+    }
+
     @Override
     public void onBackPressed() {
         if(formFlowLine.getActiveIndex() == 1){
             if(isBackPressedTwice){
-                setResult(RESULT_CANCELED);
-                finish();
+                setCancelResult();
             }
             isBackPressedTwice = true;
             Snackbar.make(findViewById(android.R.id.content), R.string.twice_back_press_message, Snackbar.LENGTH_SHORT).show();
             new Handler().postDelayed(backPressRunnable, 2000);
         }else{
             if(progressBar.getVisibility() == View.VISIBLE){
+                Log.d(TAG, "onBackPressed: doing work");
                 Snackbar.make(findViewById(android.R.id.content), R.string.please_wait, Snackbar.LENGTH_SHORT).show();
             }else{
                 super.onBackPressed();

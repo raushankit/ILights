@@ -18,9 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -31,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.entity.BoardFormConst;
 import com.raushankit.ILghts.model.board.BoardCredentialModel;
+import com.raushankit.ILghts.storage.VolleyRequest;
 import com.raushankit.ILghts.viewModel.BoardFormViewModel;
 
 import org.json.JSONException;
@@ -56,8 +55,8 @@ public class BoardCredentials extends Fragment {
     private MaterialButton nextButton;
     private String requiredString;
     private String usernameSuffix;
-    private String boardAuthId;
-    private RequestQueue requestQueue;
+    private BoardCredentialModel model;
+    private VolleyRequest requestQueue;
     private DatabaseReference db;
     private String apiKey;
 
@@ -72,8 +71,9 @@ public class BoardCredentials extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestQueue = Volley.newRequestQueue(requireActivity());
+        requestQueue = VolleyRequest.newInstance(requireActivity());
         db = FirebaseDatabase.getInstance().getReference("metadata/api_key/key");
+        model = new BoardCredentialModel();
     }
 
     @Override
@@ -136,7 +136,7 @@ public class BoardCredentials extends Fragment {
                 Log.i(TAG, "init: empty credentials");
                 return;
             }
-            if(TextUtils.isEmpty(boardAuthId)){
+            if(TextUtils.isEmpty(model.getId())){
                 sendProgressBarMessage(true);
                 if(TextUtils.isEmpty(apiKey)){
                     getApiKey();
@@ -152,10 +152,8 @@ public class BoardCredentials extends Fragment {
     }
 
     private void saveData(){
-        BoardCredentialModel model = new BoardCredentialModel();
         model.setUsername(String.valueOf(usernameText.getText()));
         model.setPassword(String.valueOf(passwordText.getText()));
-        model.setId(boardAuthId);
         boardFormViewModel.setCredentialModel(model);
     }
 
@@ -175,7 +173,7 @@ public class BoardCredentials extends Fragment {
             if(!TextUtils.isEmpty(boardCredentialModel.getId())){
                 usernameText.setInputType(InputType.TYPE_NULL);
                 passwordText.setInputType(InputType.TYPE_NULL);
-                boardAuthId = boardCredentialModel.getId();
+                model.setId(boardCredentialModel.getId());
             }else{
                 usernameText.setInputType(InputType.TYPE_CLASS_TEXT);
                 passwordText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -198,6 +196,9 @@ public class BoardCredentials extends Fragment {
             if(task.isSuccessful() && task.getResult() != null){
                 apiKey = String.valueOf(task.getResult().getValue());
                 sendRequest(apiKey);
+                Bundle args = new Bundle();
+                args.putString(BoardFormConst.API_KEY, apiKey);
+                getParentFragmentManager().setFragmentResult(BoardFormConst.REQUEST, args);
             }else{
                 if((task.getException() != null) && (task.getException().getMessage() != null)){
                     Snackbar.make(view, task.getException().getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();
@@ -210,7 +211,6 @@ public class BoardCredentials extends Fragment {
     }
 
     private void sendRequest(String apiKey){
-        Log.e(TAG, "sendRequest: apikey = " + apiKey);
         JSONObject js = new JSONObject();
         try{
            js.put("email", usernameText.getText() + usernameSuffix);
@@ -221,10 +221,13 @@ public class BoardCredentials extends Fragment {
         }
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, BASE_URL + apiKey, js, response -> {
             try{
-                boardAuthId = response.getString("localId");
+                model.setId(response.getString("localId"));
+                model.setRefreshToken(response.getString("refreshToken"));
+                model.setIdToken(response.getString("idToken"));
                 Bundle args = new Bundle();
                 args.putString(BoardFormConst.CHANGE_FRAGMENT, BoardFormConst.FORM4);
                 args.putBoolean(BoardFormConst.PROGRESS_BAR, false);
+                args.putString(BoardFormConst.ID_TOKEN, model.getIdToken());
                 getParentFragmentManager().setFragmentResult(BoardFormConst.REQUEST, args);
             } catch (JSONException e) {
                 Log.w(TAG, "onResponse: ", e);

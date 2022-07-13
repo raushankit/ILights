@@ -8,6 +8,8 @@ public class BoardFormConst {
     public static final String FORM2 = "FORM2";
     public static final String FORM3 = "FORM3";
     public static final String FORM4 = "FORM4";
+    public static final String API_KEY = "api_key";
+    public static final String ID_TOKEN = "id_token";
     public static final String PROGRESS_BAR = "progress_bar";
     public static final String FORM1_BUNDLE_KEY = "form1_bundle_key";
     public static final String FORM2_BUNDLE_KEY = "form2_bundle_key";

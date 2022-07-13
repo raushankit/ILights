@@ -79,7 +79,7 @@
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/drawable/splash_background.xml" value="0.2605" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/drawable/status_custom_backgroud.xml" value="0.2605" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout-land/fragment_login.xml" value="0.5395833333333333" />
-        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/activity_board.xml" value="0.25" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/activity_board.xml" value="0.33" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/activity_board_form.xml" value="0.33" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/activity_main.xml" value="0.3234375" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/activity_work.xml" value="0.3234375" />
@@ -101,6 +101,7 @@
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/settings_activity.xml" value="0.3234375" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/user_data.xml" value="0.3234375" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/menu/board_menu_items.xml" value="0.3234375" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/xml/root_preferences.xml" value="0.3234375" />
       </map>
     </option>
   </component>

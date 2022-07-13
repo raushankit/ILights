@@ -10,7 +10,11 @@ public enum SharedRefKeys {
     NOTIFY_UPDATE("notify-update"),
     SHOW_ANALYTICS_DIALOG("show-analytics-dialog"),
     PREV_SHOWN_ANALYTICS_DIALOG("prev_show_analytics_dialog"),
-    EMAIL_VERIFICATION("email-verification");
+    EMAIL_VERIFICATION("email-verification"),
+    BOARD_FORM_EMAIL("board_form_email"),
+    BOARD_FORM_PASSWORD("board_form_password"),
+    BOARD_FORM_ID_TOKEN("board_form_id_token"),
+    BOARD_FORM_REFRESH_TOKEN("board_form_refresh_token");
 
     SharedRefKeys(String key) {
     }

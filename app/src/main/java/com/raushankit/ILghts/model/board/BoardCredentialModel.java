@@ -7,6 +7,9 @@ import android.os.Parcelable;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Objects;
 
 @Keep
@@ -16,6 +19,8 @@ public class BoardCredentialModel implements Parcelable {
     private String id;
     private String username;
     private String password;
+    private String idToken;
+    private String refreshToken;
 
     public BoardCredentialModel() {}
 
@@ -72,6 +77,22 @@ public class BoardCredentialModel implements Parcelable {
         this.password = password;
     }
 
+    public String getIdToken() {
+        return idToken;
+    }
+
+    public void setIdToken(String idToken) {
+        this.idToken = idToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,13 +106,15 @@ public class BoardCredentialModel implements Parcelable {
         return Objects.hash(id, username, password);
     }
 
-    @NonNull
     @Override
+    @NonNull
     public String toString() {
         return "BoardCredentialModel{" +
                 "id='" + id + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", idToken='" + idToken + '\'' +
+                ", refreshToken='" + refreshToken + '\'' +
                 '}';
     }
 
@@ -105,5 +128,7 @@ public class BoardCredentialModel implements Parcelable {
         parcel.writeString(id);
         parcel.writeString(username);
         parcel.writeString(password);
+        parcel.writeString(idToken);
+        parcel.writeString(refreshToken);
     }
 }
