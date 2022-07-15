@@ -184,6 +184,10 @@ public class BoardCredentials extends Fragment {
     private void sendProgressBarMessage(boolean show){
         Bundle args = new Bundle();
         args.putBoolean(BoardFormConst.PROGRESS_BAR, show);
+        if(show){
+            args.putInt(BoardFormConst.PROGRESS_TITLE, R.string.board_form_verifying_credentials);
+            args.putInt(BoardFormConst.PROGRESS_BODY, R.string.please_wait);
+        }
         getParentFragmentManager().setFragmentResult(BoardFormConst.REQUEST, args);
         prevButton.setEnabled(!show);
         nextButton.setEnabled(!show);

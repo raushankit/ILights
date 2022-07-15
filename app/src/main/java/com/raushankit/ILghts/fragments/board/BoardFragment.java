@@ -14,7 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -42,8 +41,10 @@ public class BoardFragment extends Fragment {
     private static final String DELETE_URL = "https://identitytoolkit.googleapis.com/v1/accounts:delete?key=";
     private View view;
     private VolleyRequest requestQueue;
+
     private ExtendedFloatingActionButton fab;
     private ActivityResultLauncher<Intent> addBoardLauncher;
+    private String uid;
 
     public BoardFragment() {
     }
@@ -56,6 +57,10 @@ public class BoardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        Bundle args = getArguments();
+        if(args != null){
+            uid = args.getString("user_id");
+        }
         requestQueue = VolleyRequest.newInstance(requireActivity());
     }
 
@@ -105,7 +110,7 @@ public class BoardFragment extends Fragment {
 
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(requireActivity(), BoardForm.class);
-
+            intent.putExtra("user_id", uid);
             addBoardLauncher.launch(intent);
         });
 

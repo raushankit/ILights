@@ -8,8 +8,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,23 +23,43 @@ import android.widget.Toolbar;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.raushankit.ILghts.fragments.board.BoardFragment;
+import com.raushankit.ILghts.model.User;
+import com.raushankit.ILghts.viewModel.BoardCommViewModel;
+import com.raushankit.ILghts.viewModel.UserViewModel;
 
 public class BoardActivity extends AppCompatActivity {
     private static final String TAG = "BoardActivity";
+
+    private BoardCommViewModel boardCommViewModel;
+
     private MaterialToolbar toolbar;
+    private FirebaseAuth mAuth;
+    private User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.Theme_ILights_1);
         setContentView(R.layout.activity_board);
+        mAuth = FirebaseAuth.getInstance();
         init();
+        boardCommViewModel = new ViewModelProvider(this).get(BoardCommViewModel.class);
+        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.getUserData().observe(this, user -> {
+            mUser = user;
+            boardCommViewModel.setData(new Pair<>(mAuth.getUid(), user));
+        });
 
         if(savedInstanceState == null){
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.board_main_frame, BoardFragment.newInstance()).commit();
+            Fragment fragment = BoardFragment.newInstance();
+            Bundle args = new Bundle();
+            args.putString("user_id", mAuth.getUid());
+            fragment.setArguments(args);
+            ft.replace(R.id.board_main_frame, fragment).commit();
         }
     }
 

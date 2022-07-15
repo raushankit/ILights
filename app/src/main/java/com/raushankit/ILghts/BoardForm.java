@@ -1,41 +1,52 @@
 package com.raushankit.ILghts;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.raushankit.ILghts.dialogs.LoadingDialogFragment;
 import com.raushankit.ILghts.entity.BoardFormConst;
 import com.raushankit.ILghts.forms.board.BoardCredentials;
 import com.raushankit.ILghts.forms.board.BoardPinSelection;
 import com.raushankit.ILghts.forms.board.BoardTitle;
 import com.raushankit.ILghts.forms.board.BoardVerification;
+import com.raushankit.ILghts.model.User;
+import com.raushankit.ILghts.model.board.BoardAuthUser;
 import com.raushankit.ILghts.model.board.BoardBasicModel;
 import com.raushankit.ILghts.model.board.BoardCredentialModel;
 import com.raushankit.ILghts.model.board.BoardPinsModel;
 import com.raushankit.ILghts.utils.FormFlowLine;
+import com.raushankit.ILghts.viewModel.UserViewModel;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class BoardForm extends AppCompatActivity {
     private static final String TAG = "BoardForm";
-
-    private ProgressBar progressBar;
+    private static final int OWNER_LEVEL = 3;
+    // private ProgressBar progressBar;
     private FormFlowLine formFlowLine;
     private boolean isBackPressedTwice = false;
     private Runnable backPressRunnable;
     private Intent replyIntent;
+    private DatabaseReference db;
+    private LoadingDialogFragment loadingDialogFragment;
     private String apiKey;
     private String idToken;
+    private String uid;
+    private User user = new User();
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -48,13 +59,18 @@ public class BoardForm extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTheme(R.style.Theme_ILights_1);
         setContentView(R.layout.activity_board_form);
+        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.getUserData().observe(this, user1 -> user = user1);
+        db = FirebaseDatabase.getInstance().getReference();
+        getUserData();
 
-        progressBar = findViewById(R.id.board_form_progress_bar);
+        // progressBar = findViewById(R.id.board_form_progress_bar);
+        loadingDialogFragment = LoadingDialogFragment.newInstance();
         MaterialToolbar toolbar = findViewById(R.id.board_form_toolbar);
         formFlowLine = findViewById(R.id.board_form_flow_line);
         toolbar.setNavigationOnClickListener(v -> setCancelResult());
         replyIntent = new Intent();
-        progressBar.setVisibility(View.GONE);
+        // progressBar.setVisibility(View.GONE);
         backPressRunnable = () -> isBackPressedTwice = false;
 
         getSupportFragmentManager().setFragmentResultListener(BoardFormConst.REQUEST, this, (requestKey, result) -> {
@@ -72,30 +88,52 @@ public class BoardForm extends AppCompatActivity {
                 formFlowLine.setActiveIndex(result.getInt(BoardFormConst.CURRENT_FRAGMENT));
             }
             if(result.containsKey(BoardFormConst.PROGRESS_BAR)){
-                progressBar.setVisibility(result.getBoolean(BoardFormConst.PROGRESS_BAR)?View.VISIBLE:View.GONE);
+                if(result.getBoolean(BoardFormConst.PROGRESS_BAR)){
+                    loadingDialogFragment.setTitle(result.getInt(BoardFormConst.PROGRESS_TITLE));
+                    loadingDialogFragment.setMessage(result.getInt(BoardFormConst.PROGRESS_BODY));
+                    loadingDialogFragment.show(getSupportFragmentManager(), LoadingDialogFragment.TAG);
+                }else{
+                    loadingDialogFragment.dismiss();
+                }
             }
             int count = 0;
+            Bundle args = new Bundle();
             if(result.containsKey(BoardFormConst.FORM1_BUNDLE_KEY)){
                 count++;
-                replyIntent.putExtra(BoardFormConst.FORM1_BUNDLE_KEY, (BoardBasicModel)result.getParcelable(BoardFormConst.FORM1_BUNDLE_KEY));
+                args.putParcelable(BoardFormConst.FORM1_BUNDLE_KEY, result.getParcelable(BoardFormConst.FORM1_BUNDLE_KEY));
             }
             if(result.containsKey(BoardFormConst.FORM2_BUNDLE_KEY)){
                 count++;
-                replyIntent.putExtra(BoardFormConst.FORM2_BUNDLE_KEY, (BoardPinsModel)result.getParcelable(BoardFormConst.FORM2_BUNDLE_KEY));
+                args.putParcelable(BoardFormConst.FORM2_BUNDLE_KEY, result.getParcelable(BoardFormConst.FORM2_BUNDLE_KEY));
             }
             if(result.containsKey(BoardFormConst.FORM3_BUNDLE_KEY)){
                 count++;
-                replyIntent.putExtra(BoardFormConst.FORM3_BUNDLE_KEY, (BoardCredentialModel)result.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY));
+                args.putParcelable(BoardFormConst.FORM3_BUNDLE_KEY, result.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY));
             }
             if(count == 3){
-                setResult(Activity.RESULT_OK, replyIntent);
-                finish();
+                if(TextUtils.isEmpty(user.getName())){
+                    Snackbar.make(findViewById(android.R.id.content), R.string.board_form_user_retrieval_error, Snackbar.LENGTH_SHORT).show();
+                }else{
+                    loadingDialogFragment.setTitle(R.string.board_form_creation_title);
+                    loadingDialogFragment.setMessage(R.string.board_form_creation_body_auth);
+                    loadingDialogFragment.show(getSupportFragmentManager(), LoadingDialogFragment.TAG);
+                    create_auth(user.getName(), args);
+                }
             }
         });
 
         if(savedInstanceState == null){
             switchFrags(BoardFormConst.FORM1);
         }
+    }
+
+    private void getUserData(){
+        Intent intent = getIntent();
+        if(intent == null){
+            setCancelResult();
+            return;
+        }
+        uid = intent.getStringExtra("user_id");
     }
 
     private void switchFrags(String key){
@@ -129,6 +167,33 @@ public class BoardForm extends AppCompatActivity {
         finish();
     }
 
+    private void create_auth(String name, Bundle args){
+        DatabaseReference ref = db.child("board_auth").push();
+        BoardAuthUser user = new BoardAuthUser(name, OWNER_LEVEL);
+        ref.child(uid).setValue(user, (error, ref1) -> {
+            loadingDialogFragment.dismiss();
+            if(error == null){
+                loadingDialogFragment.setMessage(R.string.board_form_creation_body_main);
+                create_new_board(ref.getKey(), args);
+            }else{
+                loadingDialogFragment.dismiss();
+                Snackbar.make(findViewById(android.R.id.content), error.getMessage(), Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void create_new_board(String boardId, Bundle args){
+        BoardBasicModel basicModel = args.getParcelable(BoardFormConst.FORM1_BUNDLE_KEY);
+        BoardPinsModel pinsModel = args.getParcelable(BoardFormConst.FORM2_BUNDLE_KEY);
+        BoardCredentialModel credModel = args.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY);
+
+        Log.w(TAG, "create_new_board: id = " + boardId + " basic = " + basicModel + " cred = " + credModel + " pinsModel = " + pinsModel);
+
+        Map<String, Object> mp = new LinkedHashMap<>();
+        mp.put("user_boards/" + uid, boardId);
+
+    }
+
     @Override
     public void onBackPressed() {
         if(formFlowLine.getActiveIndex() == 1){
@@ -139,7 +204,7 @@ public class BoardForm extends AppCompatActivity {
             Snackbar.make(findViewById(android.R.id.content), R.string.twice_back_press_message, Snackbar.LENGTH_SHORT).show();
             new Handler().postDelayed(backPressRunnable, 2000);
         }else{
-            if(progressBar.getVisibility() == View.VISIBLE){
+            if(loadingDialogFragment.isVisible()){
                 Log.d(TAG, "onBackPressed: doing work");
                 Snackbar.make(findViewById(android.R.id.content), R.string.please_wait, Snackbar.LENGTH_SHORT).show();
             }else{
