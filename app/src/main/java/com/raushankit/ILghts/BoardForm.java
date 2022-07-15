@@ -16,6 +16,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.raushankit.ILghts.dialogs.LoadingDialogFragment;
 import com.raushankit.ILghts.entity.BoardFormConst;
 import com.raushankit.ILghts.forms.board.BoardCredentials;
@@ -25,6 +26,7 @@ import com.raushankit.ILghts.forms.board.BoardVerification;
 import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.model.board.BoardAuthUser;
 import com.raushankit.ILghts.model.board.BoardBasicModel;
+import com.raushankit.ILghts.model.board.BoardCredModel;
 import com.raushankit.ILghts.model.board.BoardCredentialModel;
 import com.raushankit.ILghts.model.board.BoardPinsModel;
 import com.raushankit.ILghts.utils.FormFlowLine;
@@ -36,7 +38,6 @@ import java.util.Map;
 public class BoardForm extends AppCompatActivity {
     private static final String TAG = "BoardForm";
     private static final int OWNER_LEVEL = 3;
-    // private ProgressBar progressBar;
     private FormFlowLine formFlowLine;
     private boolean isBackPressedTwice = false;
     private Runnable backPressRunnable;
@@ -46,6 +47,7 @@ public class BoardForm extends AppCompatActivity {
     private String apiKey;
     private String idToken;
     private String uid;
+    private String[] visibilityArray = new String[2];
     private User user = new User();
 
     @Override
@@ -63,6 +65,7 @@ public class BoardForm extends AppCompatActivity {
         userViewModel.getUserData().observe(this, user1 -> user = user1);
         db = FirebaseDatabase.getInstance().getReference();
         getUserData();
+        visibilityArray = getResources().getStringArray(R.array.board_form_visibility_options);
 
         // progressBar = findViewById(R.id.board_form_progress_bar);
         loadingDialogFragment = LoadingDialogFragment.newInstance();
@@ -171,7 +174,6 @@ public class BoardForm extends AppCompatActivity {
         DatabaseReference ref = db.child("board_auth").push();
         BoardAuthUser user = new BoardAuthUser(name, OWNER_LEVEL);
         ref.child(uid).setValue(user, (error, ref1) -> {
-            loadingDialogFragment.dismiss();
             if(error == null){
                 loadingDialogFragment.setMessage(R.string.board_form_creation_body_main);
                 create_new_board(ref.getKey(), args);
@@ -190,8 +192,29 @@ public class BoardForm extends AppCompatActivity {
         Log.w(TAG, "create_new_board: id = " + boardId + " basic = " + basicModel + " cred = " + credModel + " pinsModel = " + pinsModel);
 
         Map<String, Object> mp = new LinkedHashMap<>();
-        mp.put("user_boards/" + uid, boardId);
-
+        mp.put("user_boards/" + uid + "/" + boardId, OWNER_LEVEL);
+        mp.put("board_meta/" + boardId + "/title", basicModel.getName());
+        mp.put("board_meta/" + boardId + "/description", basicModel.getDescription());
+        mp.put("board_meta/" + boardId + "/visibility", visibilityArray[basicModel.getVisibility()]);
+        mp.put("board_meta/" + boardId + "/ownerId", uid);
+        mp.put("board_meta/" + boardId + "/ownerName", user.getName());
+        mp.put("board_meta/" + boardId + "/time", ServerValue.TIMESTAMP);
+        mp.put("board_cred/" + boardId, new BoardCredModel(credModel.getId(), credModel.getUsername(), credModel.getPassword()));
+        mp.put("board_details/" + boardId + "/heartBeat", ServerValue.TIMESTAMP);
+        mp.put("board_details/" + boardId + "/pins", pinsModel.getUsablePins());
+        if(basicModel.getVisibility() == 0){
+            mp.put("board_public/" + boardId, true);
+        }
+        db.updateChildren(mp, (error, ref) -> {
+            loadingDialogFragment.dismiss();
+            if(error == null){
+                replyIntent.putExtra(BoardFormConst.TITLE, basicModel.getName());
+                setResult(RESULT_OK, replyIntent);
+                finish();
+            }else{
+                Snackbar.make(findViewById(android.R.id.content), error.getMessage(), Snackbar.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

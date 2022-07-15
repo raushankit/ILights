@@ -17,14 +17,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.raushankit.ILghts.BoardForm;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.BoardItemAdapter;
 import com.raushankit.ILghts.entity.BoardFormConst;
 import com.raushankit.ILghts.model.BoardItem;
-import com.raushankit.ILghts.model.board.BoardBasicModel;
-import com.raushankit.ILghts.model.board.BoardCredentialModel;
-import com.raushankit.ILghts.model.board.BoardPinsModel;
 import com.raushankit.ILghts.storage.VolleyRequest;
 
 import org.json.JSONException;
@@ -37,7 +36,6 @@ import java.util.Map;
 
 public class BoardFragment extends Fragment {
     public static final String TAG = "BoardFragment";
-
     private static final String DELETE_URL = "https://identitytoolkit.googleapis.com/v1/accounts:delete?key=";
     private View view;
     private VolleyRequest requestQueue;
@@ -74,10 +72,7 @@ public class BoardFragment extends Fragment {
                 new ActivityResultContracts.StartActivityForResult(), result -> {
                     if(result.getResultCode() == Activity.RESULT_OK && result.getData() != null){
                         Intent receiveIntent = result.getData();
-                        BoardBasicModel m1 = receiveIntent.getParcelableExtra(BoardFormConst.FORM1_BUNDLE_KEY);
-                        BoardPinsModel m2 = receiveIntent.getParcelableExtra(BoardFormConst.FORM2_BUNDLE_KEY);
-                        BoardCredentialModel m3 = receiveIntent.getParcelableExtra(BoardFormConst.FORM3_BUNDLE_KEY);
-                        Log.w(TAG, "onCreateView: m1 = " + m1 + " m2 = " + m2 + " m3 = " + m3);
+                        Snackbar.make(view, getString(R.string.board_form_success_message, receiveIntent.getStringExtra(BoardFormConst.TITLE)), BaseTransientBottomBar.LENGTH_SHORT).show();
                     }
                     if(result.getResultCode() == Activity.RESULT_CANCELED && result.getData() != null){
                         Intent receiveIntent = result.getData();

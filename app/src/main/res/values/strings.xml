@@ -150,6 +150,7 @@
     <string name="edit">edit</string>
     <string name="add_board">Add Board</string>
     <string name="board_form_creation_title">Creating Board</string>
+    <string name="board_form_success_message">Created new Board %1$s.</string>
     <string name="board_form_creation_body_auth">Creating Authentication…</string>
     <string name="board_form_creation_body_main">Writing Board Data....</string>
     <string name="board_form_error">Failed to add board</string>
