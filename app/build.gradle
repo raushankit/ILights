@@ -35,7 +35,7 @@ android {
 }
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:30.1.0')
+    implementation platform('com.google.firebase:firebase-bom:30.3.0')
 
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'
@@ -55,12 +55,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
 
     def room_version = "2.4.2"
-
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-rxjava3:$room_version"
     testImplementation "androidx.room:room-testing:$room_version"
-    implementation "androidx.room:room-paging:2.5.0-alpha02"
+
+    def paging_version = "3.1.1"
+    implementation "androidx.paging:paging-runtime:$paging_version"
+    testImplementation "androidx.paging:paging-common:$paging_version"
+    implementation "androidx.paging:paging-rxjava3:$paging_version"
 
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation "androidx.datastore:datastore-preferences-rxjava3:1.0.0"

@@ -61,8 +61,8 @@ public class User {
     @Exclude
     public Map<String, Object> toMap() {
         Map<String, Object> mp = new LinkedHashMap<>();
-        mp.put("name", name.toLowerCase());
-        mp.put("email", email.toLowerCase());
+        mp.put("name", name.toLowerCase(Locale.getDefault()));
+        mp.put("email", email.toLowerCase(Locale.getDefault()));
         return mp;
     }
 

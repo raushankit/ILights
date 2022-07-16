@@ -9,7 +9,7 @@ public class StringUtils {
 
     public static String capitalize(String str) {
         if (str == null) return null;
-        String[] splits = str.toLowerCase().split(" ");
+        String[] splits = str.toLowerCase(Locale.getDefault()).split(" ");
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < splits.length; i++) {
             String eachWord = splits[i];

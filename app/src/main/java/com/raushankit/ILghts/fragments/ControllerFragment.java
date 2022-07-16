@@ -34,6 +34,7 @@ import com.raushankit.ILghts.viewModel.UserViewModel;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -87,7 +88,7 @@ public class ControllerFragment extends Fragment {
                     if (name.get() != null) {
                         Map<String, Object> mp = new LinkedHashMap<>();
                         mp.put("control/status/" + value.getPinNumber(), !value.isStatus());
-                        mp.put("control/update/" + value.getPinNumber(), PinData.toMap(name.get().toLowerCase(), Objects.requireNonNull(mAuth.getUid())));
+                        mp.put("control/update/" + value.getPinNumber(), PinData.toMap(name.get().toLowerCase(Locale.getDefault()), Objects.requireNonNull(mAuth.getUid())));
                         db.updateChildren(mp, (error, ref) -> {
                             if (error != null) {
                                 Snackbar.make(view, error.getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();

@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 
 import com.raushankit.ILghts.R;
 
+import java.util.Locale;
+
 public class ProfilePic extends View {
     private final Point dimens = new Point();
     private final Paint strokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -100,7 +102,7 @@ public class ProfilePic extends View {
         String text;
         String[] words = name.split(" ", -1);
         text = words[0].toUpperCase().charAt(0) +
-                (words.length > 1 ? words[words.length - 1].toUpperCase().substring(0, 1) : "");
+                (words.length > 1 ? words[words.length - 1].toUpperCase(Locale.getDefault()).substring(0, 1) : "");
         if (adjustText) adjustTextSize(text);
         Rect bounds = new Rect();
         textPaint.getTextBounds(text, 0, text.length(), bounds);

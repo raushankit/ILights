@@ -22,6 +22,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.R;
 
+import java.util.Locale;
+
 public class ChangeName extends Fragment {
 
     private static final String ARG_PARAM1 = "prev_name";
@@ -107,7 +109,7 @@ public class ChangeName extends Fragment {
                 return;
             }
             circularProgressBar.setVisibility(View.VISIBLE);
-            db.setValue(nameText.getText().toString().toLowerCase())
+            db.setValue(nameText.getText().toString().toLowerCase(Locale.getDefault()))
                     .addOnCompleteListener(task -> {
                         Bundle result = new Bundle();
                         result.putString("result", getString(task.isSuccessful() ? R.string.name_successfully_updated : R.string.failed_to_update_name));
@@ -127,7 +129,7 @@ public class ChangeName extends Fragment {
                     return false;
                 }
                 circularProgressBar.setVisibility(View.VISIBLE);
-                db.setValue(nameText.getText().toString().toLowerCase())
+                db.setValue(nameText.getText().toString().toLowerCase(Locale.getDefault()))
                         .addOnCompleteListener(task -> {
                             Bundle result = new Bundle();
                             result.putString("result", getString(task.isSuccessful() ? R.string.name_successfully_updated : R.string.failed_to_update_name));

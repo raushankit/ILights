@@ -192,18 +192,22 @@ public class BoardForm extends AppCompatActivity {
         Log.w(TAG, "create_new_board: id = " + boardId + " basic = " + basicModel + " cred = " + credModel + " pinsModel = " + pinsModel);
 
         Map<String, Object> mp = new LinkedHashMap<>();
-        mp.put("user_boards/" + uid + "/" + boardId, OWNER_LEVEL);
+        mp.put("user_boards/" + uid + "/boards/" + boardId, OWNER_LEVEL);
+        mp.put("user_boards/" + uid + "/num", ServerValue.increment(1));
         mp.put("board_meta/" + boardId + "/title", basicModel.getName());
         mp.put("board_meta/" + boardId + "/description", basicModel.getDescription());
         mp.put("board_meta/" + boardId + "/visibility", visibilityArray[basicModel.getVisibility()]);
         mp.put("board_meta/" + boardId + "/ownerId", uid);
         mp.put("board_meta/" + boardId + "/ownerName", user.getName());
         mp.put("board_meta/" + boardId + "/time", ServerValue.TIMESTAMP);
+        mp.put("board_meta/" + boardId + "/lastUpdated", ServerValue.TIMESTAMP);
         mp.put("board_cred/" + boardId, new BoardCredModel(credModel.getId(), credModel.getUsername(), credModel.getPassword()));
         mp.put("board_details/" + boardId + "/heartBeat", ServerValue.TIMESTAMP);
         mp.put("board_details/" + boardId + "/pins", pinsModel.getUsablePins());
         if(basicModel.getVisibility() == 0){
-            mp.put("board_public/" + boardId, true);
+            mp.put("board_public/" + boardId, ServerValue.TIMESTAMP);
+        }else{
+            mp.put("board_private/" + boardId, ServerValue.TIMESTAMP);
         }
         db.updateChildren(mp, (error, ref) -> {
             loadingDialogFragment.dismiss();
