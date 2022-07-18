@@ -2,20 +2,18 @@ package com.raushankit.ILghts.model.room;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.google.firebase.database.IgnoreExtraProperties;
-
 import java.util.Objects;
 
 @Keep
-@IgnoreExtraProperties
-@Entity(tableName = "board_table")
-public class BoardRoomData {
+@Entity(tableName = "board_user_table")
+public class BoardRoomUserData {
 
     @PrimaryKey
     @NonNull
@@ -40,11 +38,13 @@ public class BoardRoomData {
     @ColumnInfo(name = "last_updated")
     private Long lastUpdated;
 
-    @Ignore
-    public BoardRoomData(){
-    }
+    @ColumnInfo(name = "access_level")
+    private int accessLevel;
 
-    public BoardRoomData(@NonNull String boardId, BoardEditableData data, String visibility, String ownerId, String ownerName, Long time, Long lastUpdated) {
+    @Ignore
+    public BoardRoomUserData(){}
+
+    public BoardRoomUserData(@NonNull String boardId, BoardEditableData data, String visibility, String ownerId, String ownerName, Long time, Long lastUpdated, int accessLevel) {
         this.boardId = boardId;
         this.data = data;
         this.visibility = visibility;
@@ -52,6 +52,19 @@ public class BoardRoomData {
         this.ownerName = ownerName;
         this.time = time;
         this.lastUpdated = lastUpdated;
+        this.accessLevel = accessLevel;
+    }
+
+    @Ignore
+    public BoardRoomUserData(int accessLevel, BoardRoomData boardRoomData){
+        this.boardId = boardRoomData.getBoardId();
+        this.data = boardRoomData.getData();
+        this.visibility = boardRoomData.getVisibility();
+        this.ownerId = boardRoomData.getOwnerId();
+        this.ownerName = boardRoomData.getOwnerName();
+        this.time = boardRoomData.getTime();
+        this.lastUpdated = boardRoomData.getLastUpdated();
+        this.accessLevel = accessLevel;
     }
 
     @NonNull
@@ -111,23 +124,31 @@ public class BoardRoomData {
         this.lastUpdated = lastUpdated;
     }
 
+    public int getAccessLevel() {
+        return accessLevel;
+    }
+
+    public void setAccessLevel(int accessLevel) {
+        this.accessLevel = accessLevel;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BoardRoomData)) return false;
-        BoardRoomData that = (BoardRoomData) o;
-        return boardId.equals(that.boardId) && Objects.equals(data, that.data) && Objects.equals(visibility, that.visibility) && Objects.equals(ownerId, that.ownerId) && Objects.equals(ownerName, that.ownerName) && Objects.equals(time, that.time) && Objects.equals(lastUpdated, that.lastUpdated);
+        if (!(o instanceof BoardRoomUserData)) return false;
+        BoardRoomUserData that = (BoardRoomUserData) o;
+        return accessLevel == that.accessLevel && boardId.equals(that.boardId) && Objects.equals(data, that.data) && Objects.equals(visibility, that.visibility) && Objects.equals(ownerId, that.ownerId) && Objects.equals(ownerName, that.ownerName) && Objects.equals(time, that.time) && Objects.equals(lastUpdated, that.lastUpdated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(boardId, data, visibility, ownerId, ownerName, time, lastUpdated);
+        return Objects.hash(boardId, data, visibility, ownerId, ownerName, time, lastUpdated, accessLevel);
     }
 
-    @Override
     @NonNull
+    @Override
     public String toString() {
-        return "BoardRoomData{" +
+        return "BoardRoomUserData{" +
                 "boardId='" + boardId + '\'' +
                 ", data=" + data +
                 ", visibility='" + visibility + '\'' +
@@ -135,6 +156,20 @@ public class BoardRoomData {
                 ", ownerName='" + ownerName + '\'' +
                 ", time=" + time +
                 ", lastUpdated=" + lastUpdated +
+                ", accessLevel=" + accessLevel +
                 '}';
     }
+
+    @Ignore
+    public static final DiffUtil.ItemCallback<BoardRoomUserData> DIFF_CALLBACK = new DiffUtil.ItemCallback<BoardRoomUserData>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull BoardRoomUserData oldItem, @NonNull BoardRoomUserData newItem) {
+            return oldItem.getBoardId().equals(newItem.getBoardId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull BoardRoomUserData oldItem, @NonNull BoardRoomUserData newItem) {
+            return oldItem.equals(newItem);
+        }
+    };
 }

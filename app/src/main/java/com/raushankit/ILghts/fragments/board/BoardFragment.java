@@ -11,27 +11,29 @@ import android.view.ViewGroup;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.raushankit.ILghts.BoardForm;
 import com.raushankit.ILghts.R;
-import com.raushankit.ILghts.adapter.BoardItemAdapter;
+import com.raushankit.ILghts.adapter.BoardUserItemAdapter;
 import com.raushankit.ILghts.entity.BoardFormConst;
-import com.raushankit.ILghts.model.BoardItem;
 import com.raushankit.ILghts.storage.VolleyRequest;
+import com.raushankit.ILghts.viewModel.BoardDataViewModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BoardFragment extends Fragment {
@@ -40,7 +42,10 @@ public class BoardFragment extends Fragment {
     private View view;
     private VolleyRequest requestQueue;
 
+    private RecyclerView recyclerView;
+    private ShimmerFrameLayout shimmerFrameLayout;
     private ExtendedFloatingActionButton fab;
+    private BoardUserItemAdapter adapter;
     private ActivityResultLauncher<Intent> addBoardLauncher;
     private String uid;
 
@@ -82,15 +87,19 @@ public class BoardFragment extends Fragment {
                 }
         );
 
-        RecyclerView recyclerView = view.findViewById(R.id.board_fragment_recyclerview);
-        BoardItemAdapter adapter = new BoardItemAdapter();
+        recyclerView = view.findViewById(R.id.board_fragment_recyclerview);
+        adapter = new BoardUserItemAdapter();
+        shimmerFrameLayout = view.findViewById(R.id.board_fragment_shimmer_container);
+        recyclerView.setVisibility(View.GONE);
+        shimmerFrameLayout.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.startShimmer();
         recyclerView.setAdapter(adapter);
-        List<BoardItem> list = new ArrayList<>();
+        /*List<BoardRoomUserData> list = new ArrayList<>();
         int i = 1;
-        for(;i < 20;++i){
-            list.add(new BoardItem(String.valueOf(i), "name " + i,"abc@mail.com"+i));
+        for(;i < 10;++i){
+            list.add(new BoardRoomUserData(String.valueOf(i),"","","","","",0L,0L,0));
         }
-        adapter.submitList(list);
+        adapter.submitList(list);*/
 
         recyclerView.setOnScrollChangeListener((v,i1,i2,i3,i4)->{
             if(Math.abs(i4) > 25){
@@ -132,5 +141,21 @@ public class BoardFragment extends Fragment {
         };
 
         requestQueue.add(request);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        BoardDataViewModel boardDataViewModel = new ViewModelProvider(requireActivity())
+                .get(BoardDataViewModel.class);
+        boardDataViewModel.getData().observe(getViewLifecycleOwner(), dataList -> {
+            if (shimmerFrameLayout.isShimmerStarted()) {
+                shimmerFrameLayout.stopShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            }
+            Log.w(TAG, "onViewCreated: list = " + dataList);
+            adapter.submitList(dataList);
+        });
     }
 }

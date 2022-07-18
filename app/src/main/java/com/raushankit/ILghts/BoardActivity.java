@@ -1,28 +1,16 @@
 package com.raushankit.ILghts;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Toolbar;
-
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.raushankit.ILghts.fragments.board.BoardFragment;
 import com.raushankit.ILghts.model.User;
@@ -51,6 +39,7 @@ public class BoardActivity extends AppCompatActivity {
             mUser = user;
             boardCommViewModel.setData(new Pair<>(mAuth.getUid(), user));
         });
+
 
         if(savedInstanceState == null){
             FragmentManager fm = getSupportFragmentManager();

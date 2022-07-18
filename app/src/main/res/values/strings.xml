@@ -156,6 +156,7 @@
     <string name="board_form_error">Failed to add board</string>
     <string name="board_form_user_retrieval_error">Failed to retrieve data. Check your internet connection.</string>
     <string name="board_list_item_details">%1$s\n\nCreated By: %2$s \nCreated on: %3$s</string>
+    <string name="board_list_item_board_id">BoardID: <u>%1$s</u></string>
     <string name="board_list_item_uid">UID <b>:</b> GvjyhTVytGTVbyuVYJVcfgyvCGF</string>
     <string name="board_form_title_frag_title">Enter details</string>
     <string name="board_form_title_hint">Enter name…</string>

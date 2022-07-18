@@ -2,58 +2,26 @@ package com.raushankit.ILghts;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Html;
-import android.text.SpannableStringBuilder;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.URLSpan;
-import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
-import com.airbnb.lottie.LottieAnimationView;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.install.model.ActivityResult;
-import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.raushankit.ILghts.dialogs.AlertDialogFragment;
 import com.raushankit.ILghts.dialogs.ConsentDialogFragment;
 import com.raushankit.ILghts.dialogs.WebViewDialogFragment;
-import com.raushankit.ILghts.entity.PageKeys;
-import com.raushankit.ILghts.entity.SharedRefKeys;
-import com.raushankit.ILghts.entity.UpdateType;
-import com.raushankit.ILghts.model.Role;
-import com.raushankit.ILghts.observer.UpdateTypeLiveData;
 import com.raushankit.ILghts.storage.SharedRepo;
-import com.raushankit.ILghts.utils.AnalyticsParam;
-import com.raushankit.ILghts.utils.UserUpdates;
 import com.raushankit.ILghts.viewModel.SplashViewModel;
-import com.raushankit.ILghts.viewModel.UserViewModel;
-
-import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";

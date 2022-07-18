@@ -194,8 +194,8 @@ public class BoardForm extends AppCompatActivity {
         Map<String, Object> mp = new LinkedHashMap<>();
         mp.put("user_boards/" + uid + "/boards/" + boardId, OWNER_LEVEL);
         mp.put("user_boards/" + uid + "/num", ServerValue.increment(1));
-        mp.put("board_meta/" + boardId + "/title", basicModel.getName());
-        mp.put("board_meta/" + boardId + "/description", basicModel.getDescription());
+        mp.put("board_meta/" + boardId + "/data/title", basicModel.getName());
+        mp.put("board_meta/" + boardId + "/data/description", basicModel.getDescription());
         mp.put("board_meta/" + boardId + "/visibility", visibilityArray[basicModel.getVisibility()]);
         mp.put("board_meta/" + boardId + "/ownerId", uid);
         mp.put("board_meta/" + boardId + "/ownerName", user.getName());
