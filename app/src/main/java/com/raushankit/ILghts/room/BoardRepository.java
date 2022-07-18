@@ -319,12 +319,11 @@ public class BoardRepository {
         }
 
         public void removeListeners() {
-            if (isRemovalPending) {
-                db.removeEventListener(listener);
-                Log.d(TAG, "forced removeListeners: removed listeners");
-                mHandler.removeCallbacks(this);
-                isRemovalPending = false;
-            }
+            if (!isRemovalPending) { return; }
+            db.removeEventListener(listener);
+            Log.d(TAG, "forced removeListeners: removed listeners");
+            mHandler.removeCallbacks(this);
+            isRemovalPending = false;
         }
 
         @Override

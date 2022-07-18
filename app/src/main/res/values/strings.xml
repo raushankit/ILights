@@ -246,5 +246,6 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="send_statistics">Send Statistics</string>
     <string name="send_statistics_summary">Automatically send usage statistics to help us improve the user experience and application.</string>
+    <string name="request_public_boards">Get access to more boards</string>
 
 </resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:orientation="vertical"
+    android:animateLayoutChanges="true"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_board_access_public_boards"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:gravity="center_horizontal"
+        android:contentDescription="@string/board"
+        android:text="@string/request_public_boards"
+        android:tint="@color/white"
+        android:layout_gravity="end"
+        android:visibility="visible"
+        app:icon="@drawable/ic_baseline_developer_board_24"/>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_board_add_new_board"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_board"
+        android:layout_marginBottom="@dimen/_12sdp"
+        app:icon="@drawable/ic_baseline_add_24"
+        android:contentDescription="@string/board"
+        android:tint="@color/white"
+        android:layout_gravity="end"
+        android:visibility="visible"
+        app:srcCompat="@drawable/ic_baseline_person_add_alt_24" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_board_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:backgroundTint="?attr/colorPrimary"
+        android:contentDescription="@string/board"
+        app:tint="@color/white"
+        app:srcCompat="@drawable/ic_baseline_add_24" />
+
+</LinearLayout>

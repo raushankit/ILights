@@ -1,6 +1,9 @@
 package com.raushankit.ILghts.fragments.board;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -20,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.raushankit.ILghts.BoardForm;
@@ -28,11 +30,13 @@ import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.BoardUserItemAdapter;
 import com.raushankit.ILghts.entity.BoardFormConst;
 import com.raushankit.ILghts.storage.VolleyRequest;
+import com.raushankit.ILghts.utils.BoardFabLayout;
 import com.raushankit.ILghts.viewModel.BoardDataViewModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +48,6 @@ public class BoardFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ShimmerFrameLayout shimmerFrameLayout;
-    private ExtendedFloatingActionButton fab;
     private BoardUserItemAdapter adapter;
     private ActivityResultLauncher<Intent> addBoardLauncher;
     private String uid;
@@ -72,7 +75,7 @@ public class BoardFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_board, container, false);
-        fab = view.findViewById(R.id.board_fragment_fab);
+        BoardFabLayout boardFabLayout = new BoardFabLayout(view.findViewById(R.id.board_fab_button_layout), new WeakReference<>(requireContext()));
         addBoardLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
                     if(result.getResultCode() == Activity.RESULT_OK && result.getData() != null){
@@ -86,36 +89,43 @@ public class BoardFragment extends Fragment {
                     }
                 }
         );
-
         recyclerView = view.findViewById(R.id.board_fragment_recyclerview);
-        adapter = new BoardUserItemAdapter();
+        adapter = new BoardUserItemAdapter((type, data) -> {
+            switch (type){
+                case COPY_ID:
+                    copyToClipBoard(data.getBoardId());
+                    break;
+                case GO_TO_BOARD:
+                case SHOW_OPTIONS:
+                    Log.i(TAG, "onCreateView: " + type + " -> " + data);
+                    break;
+                default:
+                    Log.i(TAG, "onCreateView: unknown event");
+            }
+        });
         shimmerFrameLayout = view.findViewById(R.id.board_fragment_shimmer_container);
         recyclerView.setVisibility(View.GONE);
         shimmerFrameLayout.setVisibility(View.VISIBLE);
         shimmerFrameLayout.startShimmer();
         recyclerView.setAdapter(adapter);
-        /*List<BoardRoomUserData> list = new ArrayList<>();
-        int i = 1;
-        for(;i < 10;++i){
-            list.add(new BoardRoomUserData(String.valueOf(i),"","","","","",0L,0L,0));
-        }
-        adapter.submitList(list);*/
-
         recyclerView.setOnScrollChangeListener((v,i1,i2,i3,i4)->{
             if(Math.abs(i4) > 25){
-                if(i4 < 0 && fab.isExtended()){
-                    fab.shrink();
-                }
-                if(i4 > 0 && !fab.isExtended()){
-                    fab.extend();
-                }
+                boardFabLayout.closeOptions();
             }
         });
-
-        fab.setOnClickListener(v -> {
-            Intent intent = new Intent(requireActivity(), BoardForm.class);
-            intent.putExtra("user_id", uid);
-            addBoardLauncher.launch(intent);
+        boardFabLayout.setOnClickListener(whichButton -> {
+            boardFabLayout.closeOptions();
+            switch (whichButton){
+                case ADD_NEW_BOARD:
+                    Intent intent = new Intent(requireActivity(), BoardForm.class);
+                    intent.putExtra("user_id", uid);
+                    addBoardLauncher.launch(intent);
+                    break;
+                case GET_PUBLIC_BOARDS:
+                    break;
+                default:
+                    Log.w(TAG, "onCreateView: unknown click item");
+            }
         });
 
         return view;
@@ -139,7 +149,6 @@ public class BoardFragment extends Fragment {
                 return headers;
             }
         };
-
         requestQueue.add(request);
     }
 
@@ -158,4 +167,11 @@ public class BoardFragment extends Fragment {
             adapter.submitList(dataList);
         });
     }
+
+    private void copyToClipBoard(@NonNull String text){
+        ClipboardManager clipboardManager = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData data = ClipData.newPlainText("board_id", text);
+        clipboardManager.setPrimaryClip(data);
+    }
+
 }

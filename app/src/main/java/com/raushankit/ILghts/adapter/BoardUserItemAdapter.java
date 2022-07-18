@@ -22,10 +22,12 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
     private static final String TAG = "BoardUserItemAdapter";
     private String detailsString;
     private String boardIdString;
+    private final WhichIconClickedListener listener;
     private final String []accessArray = {"", "user", "editor", "owner"};
 
-    public BoardUserItemAdapter() {
+    public BoardUserItemAdapter(@NonNull WhichIconClickedListener listener) {
         super(BoardRoomUserData.DIFF_CALLBACK);
+        this.listener = listener;
     }
 
     @NonNull
@@ -49,8 +51,6 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
         private final TextView uidText;
         private final TextView description;
         private final ImageView copyIdBtn;
-        private final ImageView goToBoard;
-        private final FrameLayout showOptionsBtn;
 
         public BoardUserItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -60,14 +60,13 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
             tagVisibility = itemView.findViewById(R.id.board_list_item_visibility_tag_text);
             tagUserLevel = itemView.findViewById(R.id.board_list_item_access_tag_text);
             copyIdBtn = itemView.findViewById(R.id.board_list_item_copy_button);
-            goToBoard = itemView.findViewById(R.id.board_list_item_switch_button);
-            showOptionsBtn = itemView.findViewById(R.id.board_list_item_ellipsis_menu);
+            ImageView goToBoard = itemView.findViewById(R.id.board_list_item_switch_button);
+            FrameLayout showOptionsBtn = itemView.findViewById(R.id.board_list_item_ellipsis_menu);
             TextView statusTag = itemView.findViewById(R.id.board_list_item_status_tag_text);
             statusTag.setVisibility(View.GONE);
             tagVisibility.setVisibility(View.VISIBLE);
             tagUserLevel.setVisibility(View.VISIBLE);
             uidText = itemView.findViewById(R.id.board_list_item_uid_text);
-            Log.e(TAG, "BoardUserItemViewHolder: boardUserItem constructor");
             cardView.setOnClickListener(this);
             copyIdBtn.setOnClickListener(this);
             goToBoard.setOnClickListener(this);
@@ -80,24 +79,44 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
             description.setText(String.format(detailsString, item.getData().getDescription(),
                     item.getOwnerName(), StringUtils.formattedTime(item.getTime())));
             tagVisibility.setText(item.getVisibility());
-            tagUserLevel.setText(accessArray[item.getAccessLevel()]);
+            tagUserLevel.setText(accessArray[Math.min(3, Math.max(0, item.getAccessLevel()))]);
             uidText.setText(String.format(boardIdString, item.getBoardId()));
-            copyIdBtn.setVisibility(item.getAccessLevel() >= 3?View.VISIBLE:View.GONE);
+            copyIdBtn.setVisibility(item.getAccessLevel() >= 3 ?View.VISIBLE :View.GONE);
         }
 
         @Override
         public void onClick(View view) {
+            BoardRoomUserData item = getCurrentList().get(getBindingAdapterPosition());
             if(view.getId() == R.id.board_list_top_card_view){
-
+                listener.onButtonCLick(ClickType.GO_TO_BOARD, item);
+            }else if(view.getId() == R.id.board_list_item_copy_button){
+                listener.onButtonCLick(ClickType.COPY_ID, item);
+            }else if(view.getId() == R.id.board_list_item_switch_button){
+                listener.onButtonCLick(ClickType.GO_TO_BOARD, item);
+            }else if(view.getId() == R.id.board_list_item_ellipsis_menu){
+                listener.onButtonCLick(ClickType.SHOW_OPTIONS, item);
+            }else{
+                Log.i(TAG, "onClick: unknown");
             }
         }
 
         @Override
         public boolean onLongClick(View view) {
+            BoardRoomUserData item = getCurrentList().get(getBindingAdapterPosition());
             if(view.getId() == R.id.board_list_top_card_view){
-                Log.d("cardview","cardView is checked: " + getCurrentList().get(getBindingAdapterPosition()));
+                listener.onButtonCLick(ClickType.SHOW_OPTIONS, item);
+            }else{
+                Log.i(TAG, "onLongClick: unknown");
             }
             return true;
         }
+    }
+
+    public enum ClickType {
+        COPY_ID, GO_TO_BOARD, SHOW_OPTIONS
+    }
+
+    public interface WhichIconClickedListener {
+        void onButtonCLick(ClickType type, BoardRoomUserData data);
     }
 }

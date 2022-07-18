@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:inputType="textPersonName|textCapWords"
+                android:inputType="textCapWords"
                 android:maxLength="40" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -80,7 +80,7 @@
                 android:id="@+id/board_form_title_frag_description_input_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textMultiLine|textCapSentences"
+                android:inputType="textMultiLine|textCapSentences|textAutoCorrect"
                 android:maxLength="200"/>
 
         </com.google.android.material.textfield.TextInputLayout>

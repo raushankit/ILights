@@ -64,7 +64,7 @@ public class ManageUsersViewModel extends ViewModel {
         liveDataSet.add(mps);
         data.addSource(mps, stringUserMap -> {
             if (stringUserMap != null) {
-                stringUserMap.forEach(mp::put);
+                mp.putAll(stringUserMap);
                 data.setValue(mp);
                 messageData.setValue(PagingLoader.LOADED);
             } else {

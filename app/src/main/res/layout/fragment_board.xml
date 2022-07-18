@@ -43,19 +43,14 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/board_fragment_fab"
+    <include
+        android:id="@+id/board_fab_button_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        layout="@layout/board_fab_options"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="@dimen/_20sdp"
         android:layout_marginBottom="@dimen/_20sdp"
-        android:text="@string/add_board"
-        app:iconTint="?attr/colorOnPrimary"
-        android:textColor="?attr/colorOnPrimary"
-        android:textAllCaps="true"
-        android:backgroundTint="?attr/colorPrimary"
-        app:icon="@drawable/ic_baseline_add_24" />
+        android:layout_marginEnd="@dimen/_20sdp"/>
 
 </RelativeLayout>
