@@ -24,7 +24,6 @@ import com.raushankit.ILghts.forms.board.BoardPinSelection;
 import com.raushankit.ILghts.forms.board.BoardTitle;
 import com.raushankit.ILghts.forms.board.BoardVerification;
 import com.raushankit.ILghts.model.User;
-import com.raushankit.ILghts.model.board.BoardAuthUser;
 import com.raushankit.ILghts.model.board.BoardBasicModel;
 import com.raushankit.ILghts.model.board.BoardCredModel;
 import com.raushankit.ILghts.model.board.BoardCredentialModel;
@@ -32,6 +31,7 @@ import com.raushankit.ILghts.model.board.BoardPinsModel;
 import com.raushankit.ILghts.utils.FormFlowLine;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -120,7 +120,7 @@ public class BoardForm extends AppCompatActivity {
                     loadingDialogFragment.setTitle(R.string.board_form_creation_title);
                     loadingDialogFragment.setMessage(R.string.board_form_creation_body_auth);
                     loadingDialogFragment.show(getSupportFragmentManager(), LoadingDialogFragment.TAG);
-                    create_auth(user.getName(), args);
+                    create_auth(user, args);
                 }
             }
         });
@@ -170,10 +170,14 @@ public class BoardForm extends AppCompatActivity {
         finish();
     }
 
-    private void create_auth(String name, Bundle args){
+    private void create_auth(User userAuth, Bundle args){
         DatabaseReference ref = db.child("board_auth").push();
-        BoardAuthUser user = new BoardAuthUser(name, OWNER_LEVEL);
-        ref.child(uid).setValue(user, (error, ref1) -> {
+        Map<String, Object> mp = new HashMap<>();
+        mp.put("name", userAuth.getName());
+        mp.put("email", userAuth.getEmail());
+        mp.put("level", OWNER_LEVEL);
+        mp.put("creationTime", ServerValue.TIMESTAMP);
+        ref.child(uid).updateChildren(mp, (error, ref1) -> {
             if(error == null){
                 loadingDialogFragment.setMessage(R.string.board_form_creation_body_main);
                 create_new_board(ref.getKey(), args);

@@ -28,6 +28,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.raushankit.ILghts.BoardForm;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.BoardUserItemAdapter;
+import com.raushankit.ILghts.dialogs.BoardBottomSheetFragment;
 import com.raushankit.ILghts.entity.BoardFormConst;
 import com.raushankit.ILghts.storage.VolleyRequest;
 import com.raushankit.ILghts.utils.BoardFabLayout;
@@ -96,8 +97,11 @@ public class BoardFragment extends Fragment {
                     copyToClipBoard(data.getBoardId());
                     break;
                 case GO_TO_BOARD:
+                    Log.i(TAG, "onCreateView:" + type + " -> " + data);
+                    break;
                 case SHOW_OPTIONS:
-                    Log.i(TAG, "onCreateView: " + type + " -> " + data);
+                    BoardBottomSheetFragment fragment = BoardBottomSheetFragment.newInstance(data);
+                    fragment.show(getChildFragmentManager(), type.name());
                     break;
                 default:
                     Log.i(TAG, "onCreateView: unknown event");

@@ -71,6 +71,10 @@ dependencies {
     testImplementation "androidx.paging:paging-common:$paging_version"
     implementation "androidx.paging:paging-rxjava3:$paging_version"
 
+    def uber_auto_dispose_version = "2.1.1"
+    implementation "com.uber.autodispose2:autodispose-android:$uber_auto_dispose_version"
+    implementation "com.uber.autodispose2:autodispose-androidx-lifecycle:$uber_auto_dispose_version"
+
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation "androidx.datastore:datastore-preferences-rxjava3:1.0.0"
 

@@ -40,5 +40,6 @@
 
     <color name="board_form_title_texts">#cecece</color>
     <color name="board_form_subtitle_texts">#bebebe</color>
+    <color name="board_bottom_sheet_text_color">#eeeeee</color>
     <color name="board_recyclerview_background">#333333</color>
 </resources>

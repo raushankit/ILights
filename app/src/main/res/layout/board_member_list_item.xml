@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/board_member_list_item_name"
+        android:layout_width="match_parent"
+        android:text="@string/edit"
+        android:background="#3200FF00"
+        android:layout_marginBottom="@dimen/_50sdp"
+        android:gravity="center_horizontal"
+        android:textSize="@dimen/_15sdp"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

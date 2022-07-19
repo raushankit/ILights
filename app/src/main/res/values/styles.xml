@@ -41,4 +41,20 @@
         <item name="cornerSizeBottomRight">0dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
+
+    <!-- custom bottom sheet dialog -->
+    <style name="RoundBottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/RoundBottomSheetDialogSheet</item>
+    </style>
+    <style name="RoundBottomSheetDialogSheet" parent="Widget.MaterialComponents.BottomSheet">
+        <item name="shapeAppearanceOverlay">@style/RoundBottomShapeAppearanceBottomSheetDialog</item>
+    </style>
+
+    <style name="RoundBottomShapeAppearanceBottomSheetDialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">@dimen/_14sdp</item>
+        <item name="cornerSizeTopLeft">@dimen/_14sdp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
 </resources>

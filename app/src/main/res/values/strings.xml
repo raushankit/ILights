@@ -203,6 +203,19 @@
     <string name="board_form_verification_subtitle3_password_hint">password</string>
     <string name="board_form_last_btn_text">Create Board</string>
 
+    <!-- board bottom sheet -->
+    <string name="frag_bottom_sheet_board_options_uid_text">ID: <b>%1$s</b></string>
+    <string name="copy_board_id">Copy Board ID</string>
+    <string name="edit_details">Edit Details</string>
+    <string name="show_credentials">Show Credentials</string>
+    <string name="add_users">Add Users</string>
+    <string name="edit_board_users">Edit Users</string>
+    <string name="request_higher_access">Request Editor Level Access</string>
+    <string name="delete_board">Delete Board</string>
+    <string name="leave_board">Leave Board</string>
+    <string name="go_to_switches">Go to Switches</string>
+    <string name="approve_requests">Approve Requests</string>
+
     <!-- Settings page -->
     <string name="text_box_placeholder">Random Text</string>
     <string name="access_level_place_holder">Access Level: %1$s</string>

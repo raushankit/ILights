@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.raushankit.ILghts.fragments.board.BoardEditMemberFragment;
 import com.raushankit.ILghts.fragments.board.BoardFragment;
 import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.viewModel.BoardCommViewModel;
@@ -44,7 +45,7 @@ public class BoardActivity extends AppCompatActivity {
         if(savedInstanceState == null){
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
-            Fragment fragment = BoardFragment.newInstance();
+            Fragment fragment = BoardEditMemberFragment.newInstance();
             Bundle args = new Bundle();
             args.putString("user_id", mAuth.getUid());
             fragment.setArguments(args);

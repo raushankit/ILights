@@ -1,5 +1,8 @@
 package com.raushankit.ILghts.model.room;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -9,11 +12,13 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.Objects;
 
 @Keep
 @Entity(tableName = "board_user_table")
-public class BoardRoomUserData {
+public class BoardRoomUserData implements Parcelable {
 
     @PrimaryKey
     @NonNull
@@ -66,6 +71,40 @@ public class BoardRoomUserData {
         this.lastUpdated = boardRoomData.getLastUpdated();
         this.accessLevel = accessLevel;
     }
+
+    @Ignore
+    protected BoardRoomUserData(Parcel in) {
+        boardId = in.readString();
+        data = in.readParcelable(BoardEditableData.class.getClassLoader());
+        visibility = in.readString();
+        ownerId = in.readString();
+        ownerName = in.readString();
+        if (in.readByte() == 0) {
+            time = null;
+        } else {
+            time = in.readLong();
+        }
+        if (in.readByte() == 0) {
+            lastUpdated = null;
+        } else {
+            lastUpdated = in.readLong();
+        }
+        accessLevel = in.readInt();
+    }
+
+    @Exclude
+    @Ignore
+    public static final Creator<BoardRoomUserData> CREATOR = new Creator<BoardRoomUserData>() {
+        @Override
+        public BoardRoomUserData createFromParcel(Parcel in) {
+            return new BoardRoomUserData(in);
+        }
+
+        @Override
+        public BoardRoomUserData[] newArray(int size) {
+            return new BoardRoomUserData[size];
+        }
+    };
 
     @NonNull
     public String getBoardId() {
@@ -161,6 +200,7 @@ public class BoardRoomUserData {
     }
 
     @Ignore
+    @Exclude
     public static final DiffUtil.ItemCallback<BoardRoomUserData> DIFF_CALLBACK = new DiffUtil.ItemCallback<BoardRoomUserData>() {
         @Override
         public boolean areItemsTheSame(@NonNull BoardRoomUserData oldItem, @NonNull BoardRoomUserData newItem) {
@@ -172,4 +212,35 @@ public class BoardRoomUserData {
             return oldItem.equals(newItem);
         }
     };
+
+    @Ignore
+    @Exclude
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Ignore
+    @Exclude
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(boardId);
+        parcel.writeParcelable(data, i);
+        parcel.writeString(visibility);
+        parcel.writeString(ownerId);
+        parcel.writeString(ownerName);
+        if (time == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeLong(time);
+        }
+        if (lastUpdated == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeLong(lastUpdated);
+        }
+        parcel.writeInt(accessLevel);
+    }
 }
