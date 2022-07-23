@@ -10,13 +10,43 @@
         android:id="@+id/board_fragment_edit_member_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
+        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:background="@color/board_recyclerview_background"
         android:nestedScrollingEnabled="true"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/board_fragment_edit_member_shimmer_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:animateLayoutChanges="true"
+        android:animationCache="true"
+        app:shimmer_repeat_mode="restart">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <include layout="@layout/board_member_list_item_shimmer"/>
+            <include layout="@layout/board_member_list_item_shimmer"/>
+            <include layout="@layout/board_member_list_item_shimmer"/>
+            <include layout="@layout/board_member_list_item_shimmer"/>
+            <include layout="@layout/board_member_list_item_shimmer"/>
+            <include layout="@layout/board_member_list_item_shimmer"/>
+            <include layout="@layout/board_member_list_item_shimmer"/>
+            <include layout="@layout/board_member_list_item_shimmer"/>
+            <include layout="@layout/board_member_list_item_shimmer"/>
+            <include layout="@layout/board_member_list_item_shimmer"/>
+            <include layout="@layout/board_member_list_item_shimmer"/>
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
 </RelativeLayout>

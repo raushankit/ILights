@@ -59,7 +59,7 @@ public abstract class BoardDao {
     @Query("UPDATE board_user_table SET access_level = :level WHERE id = :id")
     abstract void updateUserBoardLevelById(String id, int level);
 
-    @Query("SELECT * FROM board_user_table ORDER BY access_level DESC")
+    @Query("SELECT * FROM board_user_table ORDER BY access_level, title DESC")
     abstract LiveData<List<BoardRoomUserData>> getUserBoards();
 
 

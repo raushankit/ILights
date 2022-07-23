@@ -1,5 +1,7 @@
 package com.raushankit.ILghts.viewModel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
@@ -41,4 +43,9 @@ public class BoardFormViewModel extends ViewModel {
         handle.set(SUB3, model);
     }
 
+    @Override
+    protected void onCleared() {
+        Log.w("BoardFormViewModel", "onCleared: ");
+        super.onCleared();
+    }
 }

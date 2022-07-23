@@ -1,26 +1,29 @@
 package com.raushankit.ILghts;
 
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.util.Pair;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.raushankit.ILghts.entity.BoardConst;
 import com.raushankit.ILghts.fragments.board.BoardEditMemberFragment;
 import com.raushankit.ILghts.fragments.board.BoardFragment;
 import com.raushankit.ILghts.model.User;
+import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.viewModel.BoardCommViewModel;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
 public class BoardActivity extends AppCompatActivity {
     private static final String TAG = "BoardActivity";
-
+    public static final String FRAG_REQUEST_KEY = "request_key";
     private BoardCommViewModel boardCommViewModel;
 
     private MaterialToolbar toolbar;
@@ -40,16 +43,38 @@ public class BoardActivity extends AppCompatActivity {
             mUser = user;
             boardCommViewModel.setData(new Pair<>(mAuth.getUid(), user));
         });
-
+        getSupportFragmentManager().setFragmentResultListener(FRAG_REQUEST_KEY, this,
+                (requestKey, result) -> {
+                    if(!TextUtils.equals(requestKey, FRAG_REQUEST_KEY)){return;}
+                    switchFrag(result);
+                });
 
         if(savedInstanceState == null){
-            FragmentManager fm = getSupportFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            Fragment fragment = BoardEditMemberFragment.newInstance();
-            Bundle args = new Bundle();
-            args.putString("user_id", mAuth.getUid());
-            fragment.setArguments(args);
-            ft.replace(R.id.board_main_frame, fragment).commit();
+            switchFrag(new Bundle());
+        }
+    }
+
+    private void switchFrag(Bundle result){
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        String key = result.getString(BoardConst.WHICH_FRAG);
+        key = key == null? BoardConst.FRAG_BOARD: key;
+        switch (key){
+            case BoardConst.FRAG_BOARD:
+                ft.replace(R.id.board_main_frame,
+                        BoardFragment.newInstance(mAuth.getUid()))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case BoardConst.FRAG_EDIT_MEMBER:
+                BoardRoomUserData data = result.getParcelable(BoardConst.BOARD_DATA);
+                ft.replace(R.id.board_main_frame,
+                                BoardEditMemberFragment.newInstance(data))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            default:
+                Log.i(TAG, "switchFrag: some other key " + key);
         }
     }
 

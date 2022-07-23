@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="@dimen/_5sdp"
+    xmlns:tools="http://schemas.android.com/tools">
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/loading_details_header_footer_error_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:gravity="center"
+        tools:text="Failed to Load Data"/>
+
+    <ProgressBar
+        android:id="@+id/loading_details_header_footer_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/loading_details_header_footer_retry_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/retry"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_8sdp" />
+
+</LinearLayout>

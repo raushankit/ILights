@@ -25,6 +25,6 @@ public class BoardMemberViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new BoardMemberViewModel(mApplication, boardId, creationTime);
+        return (T) new BoardMemberViewModel(mApplication, boardId);
     }
 }

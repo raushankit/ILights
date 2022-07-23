@@ -1,5 +1,6 @@
 package com.raushankit.ILghts.dialogs;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -82,29 +83,29 @@ public class BoardBottomSheetFragment extends BottomSheetDialogFragment implemen
         int id = view.getId();
         if(listener == null) return;
         if(id == R.id.frag_bottom_sheet_board_options_copy_id_button){
-            listener.onCLick(WhichButton.COPY_ID);
+            listener.onCLick(WhichButton.COPY_ID, data);
         } else if(id == R.id.frag_bottom_sheet_board_options_edit_details_button){
-            listener.onCLick(WhichButton.EDIT_DETAILS);
+            listener.onCLick(WhichButton.EDIT_DETAILS, data);
         }
         else if(id == R.id.frag_bottom_sheet_board_options_see_cred_button){
-            listener.onCLick(WhichButton.SHOW_CREDENTIALS);
+            listener.onCLick(WhichButton.SHOW_CREDENTIALS, data);
         }
         else if(id == R.id.frag_bottom_sheet_board_options_add_members_button){
-            listener.onCLick(WhichButton.ADD_MEMBERS);
+            listener.onCLick(WhichButton.ADD_MEMBERS, data);
         }
         else if(id == R.id.frag_bottom_sheet_board_options_edit_members_button){
-            listener.onCLick(WhichButton.EDIT_MEMBERS);
+            listener.onCLick(WhichButton.EDIT_MEMBERS, data);
         }
         else if(id == R.id.frag_bottom_sheet_board_options_go_to_board_button){
-            listener.onCLick(WhichButton.GO_TO_BOARD);
+            listener.onCLick(WhichButton.GO_TO_BOARD, data);
         }
         else if(id == R.id.frag_bottom_sheet_board_options_approve_request_button){
-            listener.onCLick(data.getAccessLevel() == 1? WhichButton.GET_HIGHER_ACCESS: WhichButton.APPROVE_REQUESTS);
+            listener.onCLick(data.getAccessLevel() == 1? WhichButton.GET_HIGHER_ACCESS: WhichButton.APPROVE_REQUESTS, data);
         }
         else if(id == R.id.frag_bottom_sheet_board_options_delete_board_button){
-            listener.onCLick(WhichButton.DELETE_BOARD);
+            listener.onCLick(WhichButton.DELETE_BOARD, data);
         } else if(id == R.id.frag_bottom_sheet_board_options_leave_board_button){
-            listener.onCLick(WhichButton.LEAVE_BOARD);
+            listener.onCLick(WhichButton.LEAVE_BOARD, data);
         } else{
             Log.i(TAG, "onClick: unknown type");
         }
@@ -127,7 +128,7 @@ public class BoardBottomSheetFragment extends BottomSheetDialogFragment implemen
     private void getData(){
         Bundle args = getArguments();
         if(args == null){
-            if(listener != null) listener.onCLick(WhichButton.NO_ARGS);
+            if(listener != null) listener.onCLick(WhichButton.NO_ARGS, null);
             dismiss();
             return;
         }
@@ -135,7 +136,7 @@ public class BoardBottomSheetFragment extends BottomSheetDialogFragment implemen
     }
 
     public interface WhichButtonCLickedListener {
-        void onCLick(WhichButton whichButton);
+        void onCLick(WhichButton whichButton, BoardRoomUserData details);
     }
 
     public enum WhichButton {

@@ -29,6 +29,7 @@ import com.raushankit.ILghts.BoardForm;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.BoardUserItemAdapter;
 import com.raushankit.ILghts.dialogs.BoardBottomSheetFragment;
+import com.raushankit.ILghts.entity.BoardConst;
 import com.raushankit.ILghts.entity.BoardFormConst;
 import com.raushankit.ILghts.storage.VolleyRequest;
 import com.raushankit.ILghts.utils.BoardFabLayout;
@@ -52,12 +53,33 @@ public class BoardFragment extends Fragment {
     private BoardUserItemAdapter adapter;
     private ActivityResultLauncher<Intent> addBoardLauncher;
     private String uid;
+    private final BoardBottomSheetFragment.WhichButtonCLickedListener listener;
 
     public BoardFragment() {
+        listener = (whichButton, details) -> {
+            Bundle args = new Bundle();
+            switch (whichButton){
+                case COPY_ID:
+                    copyToClipBoard(details.getBoardId());
+                    break;
+                case EDIT_MEMBERS:
+                    args.putString(BoardConst.WHICH_FRAG, BoardConst.FRAG_EDIT_MEMBER);
+                    args.putParcelable(BoardConst.BOARD_DATA, details);
+                    getParentFragmentManager()
+                            .setFragmentResult(BoardConst.REQUEST_KEY, args);
+                    break;
+                default:
+                    Log.i(TAG, "BoardFragment: another type option" + whichButton);
+            }
+        };
     }
 
-    public static BoardFragment newInstance() {
-        return new BoardFragment();
+    public static BoardFragment newInstance(String userId) {
+        BoardFragment fragment = new BoardFragment();
+        Bundle args = new Bundle();
+        args.putString(BoardConst.USER_ID, userId);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -66,7 +88,7 @@ public class BoardFragment extends Fragment {
         setHasOptionsMenu(true);
         Bundle args = getArguments();
         if(args != null){
-            uid = args.getString("user_id");
+            uid = args.getString(BoardConst.USER_ID);
         }
         requestQueue = VolleyRequest.newInstance(requireActivity());
     }
@@ -101,6 +123,7 @@ public class BoardFragment extends Fragment {
                     break;
                 case SHOW_OPTIONS:
                     BoardBottomSheetFragment fragment = BoardBottomSheetFragment.newInstance(data);
+                    fragment.addOnClickListener(listener);
                     fragment.show(getChildFragmentManager(), type.name());
                     break;
                 default:
@@ -176,6 +199,13 @@ public class BoardFragment extends Fragment {
         ClipboardManager clipboardManager = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData data = ClipData.newPlainText("board_id", text);
         clipboardManager.setPrimaryClip(data);
+        Snackbar.make(view, R.string.copied_board_id, BaseTransientBottomBar.LENGTH_SHORT)
+                .show();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        view = null;
+    }
 }

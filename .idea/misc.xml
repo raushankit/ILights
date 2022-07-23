@@ -62,6 +62,7 @@
         <entry key="..\:/Users/raush/OneDrive/Desktop/Shivam_project/ILights/app/src/main/res/xml/root_preferences.xml" value="0.33958333333333335" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/drawable/board_form_verification_subtitles_layout.xml" value="0.2605" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/drawable/board_list_item_tags_background.xml" value="0.2605" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/drawable/board_member_list_item_button.xml" value="0.259" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/drawable/ic_arrow_back_ios_48px.xml" value="0.2605" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/drawable/ic_arrow_forward_ios_48px.xml" value="0.2605" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/drawable/ic_baseline_board_list_tag_status.xml" value="0.2605" />
@@ -82,19 +83,23 @@
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/drawable/splash_background.xml" value="0.2605" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/drawable/status_custom_backgroud.xml" value="0.2605" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout-land/fragment_login.xml" value="0.5395833333333333" />
-        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/activity_board.xml" value="0.33" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/activity_board.xml" value="0.18" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/activity_board_form.xml" value="0.33" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/activity_board_options.xml" value="0.2" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/activity_main.xml" value="0.3234375" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/activity_work.xml" value="0.3234375" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/add_pin_item_shimmer.xml" value="0.28356164383561644" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/board_fab_options.xml" value="0.22" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/board_list_item.xml" value="0.33" />
-        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/board_member_list_item.xml" value="0.2677083333333333" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/board_member_list_item.xml" value="0.33" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/board_member_list_item_shimmer.xml" value="0.25" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/content_board_options.xml" value="0.13059360730593608" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/form_navigation_buttons.xml" value="0.3234375" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/frag_board_shimmer_item.xml" value="0.3234375" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/frag_bottom_sheet_board_options.xml" value="0.33" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/frag_bottom_sheet_board_options_button.xml" value="0.242578125" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/frag_controller_shimmer_item.xml" value="0.3234375" />
-        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/fragment_alert_dialog.xml" value="0.3234375" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/fragment_alert_dialog.xml" value="0.1" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/fragment_board.xml" value="0.33" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/fragment_board_credentials.xml" value="0.33" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/fragment_board_edit_member.xml" value="0.2" />
@@ -105,8 +110,10 @@
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/fragment_change_name.xml" value="0.3234375" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/fragment_controller.xml" value="0.3234375" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/fragment_edit_pin_item.xml" value="0.3234375" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/fragment_first.xml" value="0.2677083333333333" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/fragment_login.xml" value="0.3234375" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/fragment_sign_up.xml" value="0.3234375" />
+        <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/loading_details_header_footer.xml" value="0.28356164383561644" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/pin_list_items.xml" value="0.3234375" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/settings_activity.xml" value="0.3234375" />
         <entry key="..\:/Users/raush/OneDrive/Desktop/Sv_project/ILights/app/src/main/res/layout/user_data.xml" value="0.3234375" />

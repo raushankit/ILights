@@ -65,7 +65,7 @@ public class BoardItemAdapter extends ListAdapter<BoardItem, BoardItemAdapter.Bo
         @Override
         public boolean onLongClick(View view) {
             if(view.getId() == R.id.board_list_top_card_view){
-                Log.d("cardview","cardView is checked: " + getCurrentList().get(getAdapterPosition()));
+                Log.d("cardview","cardView is checked: " + getCurrentList().get(getBindingAdapterPosition()));
             }
             return true;
         }

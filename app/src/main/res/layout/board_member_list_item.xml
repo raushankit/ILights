@@ -1,15 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/board_member_list_item_name"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/_4sdp"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/_5sdp"
+    android:elevation="@dimen/_5sdp"
+    android:theme="@style/Theme.ILights.1"
+    app:cardPreventCornerOverlap="true">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:text="@string/edit"
-        android:background="#3200FF00"
-        android:layout_marginBottom="@dimen/_50sdp"
-        android:gravity="center_horizontal"
-        android:textSize="@dimen/_15sdp"
-        android:layout_height="wrap_content"/>
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_5sdp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/board_member_list_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_10sdp"
+            android:text="@string/title"
+            android:textColor="@color/board_bottom_sheet_text_color"
+            android:textSize="@dimen/_16sdp" />
+        <TextView
+            android:id="@+id/board_member_list_item_email"
+            android:layout_width="wrap_content"
+            android:text="@string/email_hint"
+            android:textSize="@dimen/_8sdp"
+            android:layout_below="@id/board_member_list_item_name"
+            android:paddingStart="@dimen/_12sdp"
+            android:paddingEnd="@dimen/_1sdp"
+            android:textColor="?attr/colorPrimary"
+            android:fontFamily="sans-serif"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/board_member_list_item_access_level_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/board_member_list_item_email"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:fontFamily="@font/rubik_variable"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_1sdp"
+            android:text="@string/access_level"
+            android:textAllCaps="true"
+            android:textSize="@dimen/_8sdp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/board_member_list_item_level_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/board_member_list_item_access_level_header"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:fontFamily="sans-serif"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_4sdp"
+            android:text="@string/owner"
+            android:textColor="@color/board_bottom_sheet_text_color"
+            android:textSize="@dimen/_13sdp" />
+
+        <RatingBar
+            android:id="@+id/board_member_list_item_rating_bar"
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/board_member_list_item_level_text"
+            android:layout_toEndOf="@id/board_member_list_item_level_text"
+            android:numStars="3"
+            android:progress="0"
+            android:progressTint="?attr/colorPrimary"
+            android:stepSize="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/board_member_list_item_delete_button"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/delete"
+            android:textAllCaps="false"
+            android:textColor="@color/error"
+            android:textSize="@dimen/_9sdp"
+            app:icon="@drawable/ic_baseline_delete_24"
+            app:iconSize="@dimen/_10sdp"
+            app:iconTint="@color/error"
+            app:strokeWidth="0dp"
+            tools:ignore="RelativeOverlap" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/board_member_list_item_promote_button"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_baseline_edit_24"
+            app:iconSize="@dimen/_10sdp"
+            android:insetBottom="0dp"
+            android:insetTop="0dp"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"
+            android:textSize="@dimen/_9sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/board_member_list_item_delete_button"
+            android:textAllCaps="false"
+            android:text="@string/access_level_place_holder"
+            app:strokeWidth="0dp"
+            tools:ignore="RelativeOverlap" />
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>
