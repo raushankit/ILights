@@ -79,22 +79,32 @@ public class BoardEditMemberFragment extends Fragment {
         ShimmerFrameLayout shimmerFrameLayout = view.findViewById(R.id.board_fragment_edit_member_shimmer_container);
         shimmerFrameLayout.startShimmer();
         adapter = new BoardMemberAdapter();
+
         PublishSubject<CombinedLoadStates> subject = PublishSubject.create();
-        subject.distinctUntilChanged(CombinedLoadStates::getPrepend)
-                .filter(combinedLoadStates -> combinedLoadStates.getPrepend() instanceof LoadState.NotLoading)
-                .map(combinedLoadStates -> combinedLoadStates.getPrepend().getEndOfPaginationReached())
+        subject.distinctUntilChanged((combinedLoadStates, combinedLoadStates2) -> combinedLoadStates.getPrepend() == combinedLoadStates2.getPrepend()
+                && combinedLoadStates.getSource().getPrepend() == combinedLoadStates2.getSource().getPrepend())
+                .filter(combinedLoadStates -> combinedLoadStates.getPrepend() instanceof LoadState.NotLoading
+                        || combinedLoadStates.getSource().getPrepend() instanceof LoadState.NotLoading)
+                .map(combinedLoadStates -> {
+                    boolean isFirstTime = savedInstanceState == null;
+                    return (isFirstTime && combinedLoadStates.getPrepend().getEndOfPaginationReached())
+                            || (!isFirstTime && combinedLoadStates.getSource().getPrepend().getEndOfPaginationReached());
+
+                })
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(aBoolean -> {
-                    if(aBoolean){
+                    if(aBoolean && shimmerFrameLayout.getVisibility() == View.VISIBLE){
                         shimmerFrameLayout.stopShimmer();
                         shimmerFrameLayout.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
-                    }else{
+                    }
+                    if(!aBoolean && shimmerFrameLayout.getVisibility() == View.GONE){
                         shimmerFrameLayout.stopShimmer();
                         shimmerFrameLayout.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
                     }
                 });
+
         adapter.addLoadStateListener(loadState -> {
             subject.onNext(loadState);
             return null;
