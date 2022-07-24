@@ -34,6 +34,8 @@ public class BoardCredentialViewer extends Fragment {
     private MaterialAutoCompleteTextView usernameText;
     private MaterialAutoCompleteTextView passwordText;
 
+    private String usernamePlaceHolder;
+
     public BoardCredentialViewer() {
         // Required empty public constructor
     }
@@ -70,7 +72,7 @@ public class BoardCredentialViewer extends Fragment {
         passwordText = view.findViewById(R.id.frag_board_credential_viewer_password_input);
         shimmerFrameLayout = view.findViewById(R.id.frag_board_credential_viewer_shimmer_container);
         shimmerFrameLayout.startShimmer();
-
+        usernamePlaceHolder = "%s" + getString(R.string.board_form_credential_username_suffix);
         RelativeLayout navLayout = view.findViewById(R.id.frag_board_credential_viewer_nav_button_layout);
         MaterialButton prevButton = navLayout.findViewById(R.id.form_navigation_prev_button);
         MaterialButton nextButton = navLayout.findViewById(R.id.form_navigation_next_button);
@@ -109,7 +111,7 @@ public class BoardCredentialViewer extends Fragment {
                             usernameLayout.setVisibility(View.VISIBLE);
                             passwordLayout.setVisibility(View.VISIBLE);
                         }
-                        usernameText.setText(boardCredModel.getUserName());
+                        usernameText.setText(String.format(usernamePlaceHolder,boardCredModel.getUserName()));
                         passwordText.setText(boardCredModel.getPassword());
                         titleLayout.setHelperText(getString(R.string.board_cred_usage_text, "UID: " + boardCredModel.getId()));
                     }
