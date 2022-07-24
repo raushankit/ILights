@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.raushankit.ILghts.entity.ListenerType;
+import com.raushankit.ILghts.model.board.FavBoard;
 import com.raushankit.ILghts.model.room.BoardEditableData;
 import com.raushankit.ILghts.model.room.BoardRoomData;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
@@ -55,6 +56,10 @@ public class BoardRepository {
             }
         }
         return INSTANCE;
+    }
+
+    public void setFavBoard(FavBoard board){
+        boardFetcher.insertFavBoard(board);
     }
 
     public LiveData<List<BoardRoomUserData>> getData() {

@@ -1,4 +1,5 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/board_list_top_card_view"
     app:cardPreventCornerOverlap="true"
@@ -16,11 +17,29 @@
         android:layout_height="match_parent"
         android:padding="@dimen/_8sdp">
 
+        <ImageView
+            android:id="@+id/board_list_item_like_button"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:src="@drawable/heart_on"
+            android:focusable="true"
+            android:clickable="true"
+            app:tint="@color/board_list_item_title_text"
+            android:foreground="?attr/selectableItemBackground"
+            app:layout_constraintBottom_toBottomOf="@+id/board_list_item_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
         <TextView
             android:id="@+id/board_list_item_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/add_board"
+            android:ellipsize="end"
+            app:layout_constraintWidth_percent="0.7"
             android:textStyle="bold"
             android:textColor="@color/board_list_item_title_text"
             app:layout_constraintStart_toStartOf="parent"

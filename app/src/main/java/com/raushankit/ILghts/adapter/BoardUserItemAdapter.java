@@ -1,5 +1,6 @@
 package com.raushankit.ILghts.adapter;
 
+import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,8 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
     private static final String TAG = "BoardUserItemAdapter";
     private String detailsString;
     private String boardIdString;
+    private int activeColor;
+    private int inactiveColor;
     private final WhichIconClickedListener listener;
     private final String []accessArray = {"", "user", "editor", "owner"};
 
@@ -35,6 +38,8 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
     public BoardUserItemAdapter.BoardUserItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         detailsString = parent.getContext().getString(R.string.board_list_item_details);
         boardIdString = parent.getContext().getString(R.string.board_list_item_board_id);
+        activeColor = parent.getContext().getColor(R.color.scarlet_red);
+        inactiveColor = parent.getContext().getColor(R.color.board_list_item_title_text);
         return new BoardUserItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.board_list_item, parent, false));
     }
 
@@ -45,6 +50,7 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
 
     class BoardUserItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
+        private final ImageView likeButton;
         private final TextView title;
         private final TextView tagVisibility;
         private final TextView tagUserLevel;
@@ -55,6 +61,7 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
         public BoardUserItemViewHolder(@NonNull View itemView) {
             super(itemView);
             MaterialCardView cardView = itemView.findViewById(R.id.board_list_top_card_view);
+            likeButton = itemView.findViewById(R.id.board_list_item_like_button);
             title = itemView.findViewById(R.id.board_list_item_title);
             description = itemView.findViewById(R.id.board_list_item_description);
             tagVisibility = itemView.findViewById(R.id.board_list_item_visibility_tag_text);
@@ -67,6 +74,7 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
             tagVisibility.setVisibility(View.VISIBLE);
             tagUserLevel.setVisibility(View.VISIBLE);
             uidText = itemView.findViewById(R.id.board_list_item_uid_text);
+            likeButton.setOnClickListener(this);
             cardView.setOnClickListener(this);
             copyIdBtn.setOnClickListener(this);
             goToBoard.setOnClickListener(this);
@@ -75,6 +83,7 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
         }
 
         void bind(@NonNull BoardRoomUserData item){
+            likeButton.setColorFilter(item.isFav()? activeColor: inactiveColor, PorterDuff.Mode.MULTIPLY);
             title.setText(item.getData().getTitle());
             description.setText(String.format(detailsString, item.getData().getDescription(),
                     item.getOwnerName(), StringUtils.formattedTime(item.getTime())));
@@ -95,6 +104,8 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
                 listener.onButtonCLick(ClickType.GO_TO_BOARD, item);
             }else if(view.getId() == R.id.board_list_item_ellipsis_menu){
                 listener.onButtonCLick(ClickType.SHOW_OPTIONS, item);
+            }else if(view.getId() == R.id.board_list_item_like_button) {
+                listener.onButtonCLick(ClickType.LIKE_BOARD, item);
             }else{
                 Log.i(TAG, "onClick: unknown");
             }
@@ -113,7 +124,7 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
     }
 
     public enum ClickType {
-        COPY_ID, GO_TO_BOARD, SHOW_OPTIONS
+        COPY_ID, GO_TO_BOARD, SHOW_OPTIONS, LIKE_BOARD
     }
 
     public interface WhichIconClickedListener {

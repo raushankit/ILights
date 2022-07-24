@@ -8,6 +8,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.raushankit.ILghts.model.board.BoardAuthUser;
+import com.raushankit.ILghts.model.board.FavBoard;
 import com.raushankit.ILghts.model.room.BoardRoomData;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 
@@ -17,10 +18,12 @@ import java.util.concurrent.Executors;
 @Database(entities = {
         BoardRoomData.class,
         BoardRoomUserData.class,
-        BoardAuthUser.class
+        BoardAuthUser.class,
+        FavBoard.class
         },
-        autoMigrations = { @AutoMigration(from = 1, to = 2)},
-        version = 2, exportSchema = true)
+        autoMigrations = { @AutoMigration(from = 1, to = 2),
+                            @AutoMigration(from = 2, to = 3)},
+        version = 3, exportSchema = true)
 public abstract class BoardRoomDatabase extends RoomDatabase {
 
     public abstract BoardDao boardDao();

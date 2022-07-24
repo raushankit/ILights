@@ -10,6 +10,7 @@ import androidx.lifecycle.MediatorLiveData;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.raushankit.ILghts.model.board.FavBoard;
 import com.raushankit.ILghts.model.room.BoardRoomData;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.room.BoardRepository;
@@ -32,6 +33,10 @@ public class BoardDataViewModel extends AndroidViewModel {
 
     public LiveData<List<BoardRoomUserData>> getData(){
         return boardRoomUsersLivedata;
+    }
+
+    public void setFavouriteBoard(@NonNull String boardId, boolean val){
+        mRepo.setFavBoard(new FavBoard(boardId, val));
     }
 
     @Override

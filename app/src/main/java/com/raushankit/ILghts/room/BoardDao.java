@@ -6,9 +6,8 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
-import androidx.room.Update;
 
-import com.airbnb.lottie.L;
+import com.raushankit.ILghts.model.board.FavBoard;
 import com.raushankit.ILghts.model.room.BoardEditableData;
 import com.raushankit.ILghts.model.room.BoardRoomData;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
@@ -59,11 +58,20 @@ public abstract class BoardDao {
     @Query("UPDATE board_user_table SET access_level = :level WHERE id = :id")
     abstract void updateUserBoardLevelById(String id, int level);
 
-    @Query("SELECT * FROM board_user_table ORDER BY access_level, title DESC")
+    @Query("SELECT board_user_table.*, favourite_boards.favourite " +
+            "FROM board_user_table LEFT JOIN favourite_boards " +
+            "ON board_user_table.id=favourite_boards.id " +
+            "ORDER BY favourite_boards.favourite DESC, " +
+            "board_user_table.access_level DESC, " +
+            "board_user_table.title ASC")
     abstract LiveData<List<BoardRoomUserData>> getUserBoards();
 
-
     //
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract void insert(FavBoard data);
+
+    @Query("DELETE FROM favourite_boards")
+    abstract void deleteAllFavBoards();
 
     @Transaction
     void insertRemoteData(int level, BoardRoomData roomData){

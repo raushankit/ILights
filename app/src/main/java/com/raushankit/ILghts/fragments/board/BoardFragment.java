@@ -49,6 +49,7 @@ public class BoardFragment extends Fragment {
     private VolleyRequest requestQueue;
 
     private RecyclerView recyclerView;
+    private BoardDataViewModel boardDataViewModel;
     private ShimmerFrameLayout shimmerFrameLayout;
     private BoardUserItemAdapter adapter;
     private ActivityResultLauncher<Intent> addBoardLauncher;
@@ -90,6 +91,8 @@ public class BoardFragment extends Fragment {
         if(args != null){
             uid = args.getString(BoardConst.USER_ID);
         }
+        boardDataViewModel = new ViewModelProvider(requireActivity())
+                .get(BoardDataViewModel.class);
         requestQueue = VolleyRequest.newInstance(requireActivity());
     }
 
@@ -125,6 +128,9 @@ public class BoardFragment extends Fragment {
                     BoardBottomSheetFragment fragment = BoardBottomSheetFragment.newInstance(data);
                     fragment.addOnClickListener(listener);
                     fragment.show(getChildFragmentManager(), type.name());
+                    break;
+                case LIKE_BOARD:
+                    boardDataViewModel.setFavouriteBoard(data.getBoardId(), !data.isFav());
                     break;
                 default:
                     Log.i(TAG, "onCreateView: unknown event");
@@ -182,8 +188,6 @@ public class BoardFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        BoardDataViewModel boardDataViewModel = new ViewModelProvider(requireActivity())
-                .get(BoardDataViewModel.class);
         boardDataViewModel.getData().observe(getViewLifecycleOwner(), dataList -> {
             if (shimmerFrameLayout.isShimmerStarted()) {
                 shimmerFrameLayout.stopShimmer();

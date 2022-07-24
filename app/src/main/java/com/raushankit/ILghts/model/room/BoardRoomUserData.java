@@ -16,6 +16,7 @@ import com.google.firebase.database.Exclude;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 @Keep
 @Entity(tableName = "board_user_table")
 public class BoardRoomUserData implements Parcelable {
@@ -24,6 +25,9 @@ public class BoardRoomUserData implements Parcelable {
     @NonNull
     @ColumnInfo(name = "id")
     private String boardId;
+
+    @ColumnInfo(name = "favourite", defaultValue = "false")
+    private boolean fav;
 
     @Embedded
     private BoardEditableData data;
@@ -49,8 +53,9 @@ public class BoardRoomUserData implements Parcelable {
     @Ignore
     public BoardRoomUserData(){}
 
-    public BoardRoomUserData(@NonNull String boardId, BoardEditableData data, String visibility, String ownerId, String ownerName, Long time, Long lastUpdated, int accessLevel) {
+    public BoardRoomUserData(@NonNull String boardId, boolean fav,  BoardEditableData data, String visibility, String ownerId, String ownerName, Long time, Long lastUpdated, int accessLevel) {
         this.boardId = boardId;
+        this.fav = fav;
         this.data = data;
         this.visibility = visibility;
         this.ownerId = ownerId;
@@ -63,6 +68,7 @@ public class BoardRoomUserData implements Parcelable {
     @Ignore
     public BoardRoomUserData(int accessLevel, BoardRoomData boardRoomData){
         this.boardId = boardRoomData.getBoardId();
+        this.fav = false;
         this.data = boardRoomData.getData();
         this.visibility = boardRoomData.getVisibility();
         this.ownerId = boardRoomData.getOwnerId();
@@ -75,6 +81,7 @@ public class BoardRoomUserData implements Parcelable {
     @Ignore
     protected BoardRoomUserData(Parcel in) {
         boardId = in.readString();
+        fav = in.readByte() != 0;
         data = in.readParcelable(BoardEditableData.class.getClassLoader());
         visibility = in.readString();
         ownerId = in.readString();
@@ -92,8 +99,8 @@ public class BoardRoomUserData implements Parcelable {
         accessLevel = in.readInt();
     }
 
-    @Exclude
     @Ignore
+    @Exclude
     public static final Creator<BoardRoomUserData> CREATOR = new Creator<BoardRoomUserData>() {
         @Override
         public BoardRoomUserData createFromParcel(Parcel in) {
@@ -171,17 +178,25 @@ public class BoardRoomUserData implements Parcelable {
         this.accessLevel = accessLevel;
     }
 
+    public boolean isFav() {
+        return fav;
+    }
+
+    public void setFav(boolean fav) {
+        this.fav = fav;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof BoardRoomUserData)) return false;
         BoardRoomUserData that = (BoardRoomUserData) o;
-        return accessLevel == that.accessLevel && boardId.equals(that.boardId) && Objects.equals(data, that.data) && Objects.equals(visibility, that.visibility) && Objects.equals(ownerId, that.ownerId) && Objects.equals(ownerName, that.ownerName) && Objects.equals(time, that.time) && Objects.equals(lastUpdated, that.lastUpdated);
+        return fav == that.fav && accessLevel == that.accessLevel && boardId.equals(that.boardId) && Objects.equals(data, that.data) && Objects.equals(visibility, that.visibility) && Objects.equals(ownerId, that.ownerId) && Objects.equals(ownerName, that.ownerName) && Objects.equals(time, that.time) && Objects.equals(lastUpdated, that.lastUpdated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(boardId, data, visibility, ownerId, ownerName, time, lastUpdated, accessLevel);
+        return Objects.hash(boardId, fav, data, visibility, ownerId, ownerName, time, lastUpdated, accessLevel);
     }
 
     @NonNull
@@ -189,6 +204,7 @@ public class BoardRoomUserData implements Parcelable {
     public String toString() {
         return "BoardRoomUserData{" +
                 "boardId='" + boardId + '\'' +
+                ", fav=" + fav +
                 ", data=" + data +
                 ", visibility='" + visibility + '\'' +
                 ", ownerId='" + ownerId + '\'' +
@@ -213,18 +229,16 @@ public class BoardRoomUserData implements Parcelable {
         }
     };
 
-    @Ignore
-    @Exclude
+
     @Override
     public int describeContents() {
         return 0;
     }
 
-    @Ignore
-    @Exclude
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(boardId);
+        parcel.writeByte((byte) (fav ? 1 : 0));
         parcel.writeParcelable(data, i);
         parcel.writeString(visibility);
         parcel.writeString(ownerId);
