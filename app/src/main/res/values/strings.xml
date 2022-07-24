@@ -271,4 +271,6 @@
     <string name="promote_board_user_body_text">Promoting user will give him EDITOR level access.</string>
     <string name="demote_board_user_body_text">Demoting user will remove his EDITOR level access.</string>
     <string name="delete_board_user_body">Deleting user will remove him from this board.</string>
+    <string name="details_updated_successfully">Details updated.</string>
+    <string name="failed_to_update_details">Failed to update details.</string>
 </resources>

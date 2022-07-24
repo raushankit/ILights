@@ -12,8 +12,11 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.raushankit.ILghts.entity.BoardConst;
+import com.raushankit.ILghts.fragments.board.BoardEditDetails;
 import com.raushankit.ILghts.fragments.board.BoardEditMemberFragment;
 import com.raushankit.ILghts.fragments.board.BoardFragment;
 import com.raushankit.ILghts.model.User;
@@ -46,7 +49,15 @@ public class BoardActivity extends AppCompatActivity {
         getSupportFragmentManager().setFragmentResultListener(FRAG_REQUEST_KEY, this,
                 (requestKey, result) -> {
                     if(!TextUtils.equals(requestKey, FRAG_REQUEST_KEY)){return;}
-                    switchFrag(result);
+                    if(result.containsKey(BoardConst.WHICH_FRAG)){
+                        switchFrag(result);
+                    }
+                    else if(result.containsKey(BoardConst.SHOW_SNACK_BAR)){
+                        Snackbar.make(findViewById(android.R.id.content),
+                                result.getInt(BoardConst.SNACK_MESSAGE), BaseTransientBottomBar.LENGTH_SHORT)
+                                .show();
+                        getSupportFragmentManager().popBackStackImmediate();
+                    }
                 });
 
         if(savedInstanceState == null){
@@ -70,6 +81,12 @@ public class BoardActivity extends AppCompatActivity {
                 BoardRoomUserData data = result.getParcelable(BoardConst.BOARD_DATA);
                 ft.replace(R.id.board_main_frame,
                                 BoardEditMemberFragment.newInstance(data))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case BoardConst.FRAG_EDIT_DETAILS:
+                ft.replace(R.id.board_main_frame,
+                                BoardEditDetails.newInstance(result.getParcelable(BoardConst.BOARD_DATA)))
                         .addToBackStack(null)
                         .commit();
                 break;

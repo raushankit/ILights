@@ -69,6 +69,12 @@ public class BoardFragment extends Fragment {
                     getParentFragmentManager()
                             .setFragmentResult(BoardConst.REQUEST_KEY, args);
                     break;
+                case EDIT_DETAILS:
+                    args.putString(BoardConst.WHICH_FRAG, BoardConst.FRAG_EDIT_DETAILS);
+                    args.putParcelable(BoardConst.BOARD_DATA, details);
+                    getParentFragmentManager()
+                            .setFragmentResult(BoardConst.REQUEST_KEY, args);
+                    break;
                 default:
                     Log.i(TAG, "BoardFragment: another type option" + whichButton);
             }

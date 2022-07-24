@@ -83,7 +83,7 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
         }
 
         void bind(@NonNull BoardRoomUserData item){
-            likeButton.setColorFilter(item.isFav()? activeColor: inactiveColor, PorterDuff.Mode.MULTIPLY);
+            likeButton.setColorFilter(item.isFav()? activeColor: inactiveColor, PorterDuff.Mode.SRC_ATOP);
             title.setText(item.getData().getTitle());
             description.setText(String.format(detailsString, item.getData().getDescription(),
                     item.getOwnerName(), StringUtils.formattedTime(item.getTime())));
