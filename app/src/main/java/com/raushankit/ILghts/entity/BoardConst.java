@@ -6,6 +6,8 @@ public class BoardConst {
     public static final String FRAG_BOARD = "fragment_board";
     public static final String FRAG_EDIT_MEMBER = "fragment_edit_member";
     public static final String FRAG_EDIT_DETAILS = "fragment_edit_details";
+    public static final String FRAG_CRED_DETAILS = "fragment_credential_details";
+
 
     public static final String USER_ID = "user_id";
     public static final String BOARD_DATA = "board_data";

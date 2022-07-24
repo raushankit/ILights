@@ -273,4 +273,6 @@
     <string name="delete_board_user_body">Deleting user will remove him from this board.</string>
     <string name="details_updated_successfully">Details updated.</string>
     <string name="failed_to_update_details">Failed to update details.</string>
+    <string name="failed_to_get_board_cred">Failed to get credentials</string>
+    <string name="board_cred_usage_text">Use this <b>username</b> and <b>password</b> to connect the board to perform the network operations like reading the switch states and sending data from the board.\n\n<b>%1$s</b></string>
 </resources>

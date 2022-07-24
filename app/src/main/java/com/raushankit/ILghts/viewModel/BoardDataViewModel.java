@@ -6,24 +6,22 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.LiveDataReactiveStreams;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.raushankit.ILghts.model.board.BoardCredModel;
 import com.raushankit.ILghts.model.board.FavBoard;
-import com.raushankit.ILghts.model.room.BoardRoomData;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.room.BoardRepository;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class BoardDataViewModel extends AndroidViewModel {
     private static final String TAG = "BoardDataViewModel";
     private final BoardRepository mRepo;
     private final LiveData<List<BoardRoomUserData>> boardRoomUsersLivedata;
+    private final MutableLiveData<String> boardIdLiveData = new MutableLiveData<>();
 
     public BoardDataViewModel(@NonNull Application application) {
         super(application);
@@ -37,6 +35,17 @@ public class BoardDataViewModel extends AndroidViewModel {
 
     public void setFavouriteBoard(@NonNull String boardId, boolean val){
         mRepo.setFavBoard(new FavBoard(boardId, val));
+    }
+
+    public void getCredentials(String boardId){
+        boardIdLiveData.setValue(boardId);
+    }
+
+    public LiveData<BoardCredModel> getCredentialLiveData(){
+        return Transformations
+                .switchMap(boardIdLiveData, (input -> LiveDataReactiveStreams
+                        .fromPublisher(mRepo.getCredentialData(input)
+                                .toFlowable())));
     }
 
     @Override

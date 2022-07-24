@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.raushankit.ILghts.entity.ListenerType;
+import com.raushankit.ILghts.model.board.BoardCredModel;
 import com.raushankit.ILghts.model.board.FavBoard;
 import com.raushankit.ILghts.model.room.BoardEditableData;
 import com.raushankit.ILghts.model.room.BoardRoomData;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.reactivex.rxjava3.core.Single;
 import kotlin.Triple;
 
 public class BoardRepository {
@@ -60,6 +62,10 @@ public class BoardRepository {
 
     public void setFavBoard(FavBoard board){
         boardFetcher.insertFavBoard(board);
+    }
+
+    public Single<BoardCredModel> getCredentialData(@NonNull String boardId){
+        return boardFetcher.getBoardAuthResult(boardId);
     }
 
     public LiveData<List<BoardRoomUserData>> getData() {

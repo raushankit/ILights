@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.raushankit.ILghts.entity.BoardConst;
+import com.raushankit.ILghts.fragments.board.BoardCredentialViewer;
 import com.raushankit.ILghts.fragments.board.BoardEditDetails;
 import com.raushankit.ILghts.fragments.board.BoardEditMemberFragment;
 import com.raushankit.ILghts.fragments.board.BoardFragment;
@@ -53,9 +54,11 @@ public class BoardActivity extends AppCompatActivity {
                         switchFrag(result);
                     }
                     else if(result.containsKey(BoardConst.SHOW_SNACK_BAR)){
-                        Snackbar.make(findViewById(android.R.id.content),
-                                result.getInt(BoardConst.SNACK_MESSAGE), BaseTransientBottomBar.LENGTH_SHORT)
-                                .show();
+                        if(result.containsKey(BoardConst.SNACK_MESSAGE)){
+                            Snackbar.make(findViewById(android.R.id.content),
+                                            result.getInt(BoardConst.SNACK_MESSAGE), BaseTransientBottomBar.LENGTH_SHORT)
+                                    .show();
+                        }
                         getSupportFragmentManager().popBackStackImmediate();
                     }
                 });
@@ -87,6 +90,12 @@ public class BoardActivity extends AppCompatActivity {
             case BoardConst.FRAG_EDIT_DETAILS:
                 ft.replace(R.id.board_main_frame,
                                 BoardEditDetails.newInstance(result.getParcelable(BoardConst.BOARD_DATA)))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case BoardConst.FRAG_CRED_DETAILS:
+                ft.replace(R.id.board_main_frame,
+                                BoardCredentialViewer.newInstance(result.getParcelable(BoardConst.BOARD_DATA)))
                         .addToBackStack(null)
                         .commit();
                 break;

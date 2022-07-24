@@ -17,6 +17,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.raushankit.ILghts.entity.ListenerType;
+import com.raushankit.ILghts.model.board.BoardAuthUser;
+import com.raushankit.ILghts.model.board.BoardCredModel;
 import com.raushankit.ILghts.model.board.FavBoard;
 import com.raushankit.ILghts.model.room.BoardEditableData;
 import com.raushankit.ILghts.model.room.BoardRoomData;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.reactivex.rxjava3.core.Single;
 import kotlin.Triple;
 
 class BoardDataFetcher{
@@ -119,6 +122,22 @@ class BoardDataFetcher{
         BoardRoomDatabase.databaseExecutor
                 .execute(() -> boardDao.insert(board));
     }
+
+    Single<BoardCredModel> getBoardAuthResult(@NonNull String boardId){
+        return Single.create(emitter -> {
+            db.child("board_cred")
+                    .child(boardId)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            emitter.onSuccess(task.getResult().getValue(BoardCredModel.class));
+                        }else{
+                            emitter.onSuccess(new BoardCredModel());
+                        }
+                    });
+        });
+    }
+
 
     private void addListenerForUpdate(@NonNull String id){
         if(oldMp.containsKey(id)){
