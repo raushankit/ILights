@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/search_users"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/m_search"
+        android:icon="@drawable/ic_baseline_search_24"
+        app:actionLayout="@layout/board_search_users_view_layout"
+        app:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/search_users" />
+</menu>

@@ -41,5 +41,10 @@
     <color name="board_form_title_texts">#cecece</color>
     <color name="board_form_subtitle_texts">#bebebe</color>
     <color name="board_bottom_sheet_text_color">#eeeeee</color>
-    <color name="board_recyclerview_background">#333333</color>
+    <color name="board_recyclerview_background">#1F1F1F</color>
+    <color name="list_item_background">#0d0d0d</color>
+
+    <color name="divider_color">#1FFFFFFF</color>
+    <color name="active_icon_color">@android:color/white</color>
+    <color name="cards_and_dialogs_color">#424242</color>
 </resources>

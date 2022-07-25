@@ -1,5 +1,6 @@
 package com.raushankit.ILghts.adapter;
 
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +28,7 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
     private int activeColor;
     private int inactiveColor;
     private final WhichIconClickedListener listener;
+    @ColorInt int cardBackGroundColor;
     private final String []accessArray = {"", "user", "editor", "owner"};
 
     public BoardUserItemAdapter(@NonNull WhichIconClickedListener listener) {
@@ -40,6 +43,7 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
         boardIdString = parent.getContext().getString(R.string.board_list_item_board_id);
         activeColor = parent.getContext().getColor(R.color.scarlet_red);
         inactiveColor = parent.getContext().getColor(R.color.board_list_item_title_text);
+        cardBackGroundColor = parent.getContext().getColor(R.color.list_item_background);
         return new BoardUserItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.board_list_item, parent, false));
     }
 
@@ -66,6 +70,7 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
             description = itemView.findViewById(R.id.board_list_item_description);
             tagVisibility = itemView.findViewById(R.id.board_list_item_visibility_tag_text);
             tagUserLevel = itemView.findViewById(R.id.board_list_item_access_tag_text);
+            cardView.setBackgroundColor(cardBackGroundColor);
             copyIdBtn = itemView.findViewById(R.id.board_list_item_copy_button);
             ImageView goToBoard = itemView.findViewById(R.id.board_list_item_switch_button);
             FrameLayout showOptionsBtn = itemView.findViewById(R.id.board_list_item_ellipsis_menu);

@@ -1,5 +1,6 @@
 package com.raushankit.ILghts;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -66,6 +67,11 @@ public class BoardActivity extends AppCompatActivity {
         if(savedInstanceState == null){
             switchFrag(new Bundle());
         }
+    }
+
+    @Override
+    public Resources.Theme getTheme() {
+        return super.getTheme();
     }
 
     private void switchFrag(Bundle result){

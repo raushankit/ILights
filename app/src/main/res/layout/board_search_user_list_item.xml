@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/board_search_user_list_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/_5sdp"
+    android:elevation="@dimen/_5sdp"
+    android:background="@color/list_item_background"
+    app:cardPreventCornerOverlap="true">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_8sdp"
+        android:orientation="vertical">
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/board_search_user_list_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:checked="true"
+            android:buttonTint="?attr/colorPrimary"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="top" />
+
+        <TextView
+            android:id="@+id/board_search_user_list_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_10sdp"
+            android:layout_toEndOf="@id/board_search_user_list_check_box"
+            android:text="@string/title"
+            android:textColor="@color/board_bottom_sheet_text_color"
+            android:textSize="@dimen/_16sdp" />
+
+        <TextView
+            android:id="@+id/board_search_user_list_item_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/board_search_user_list_item_name"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_toEndOf="@id/board_search_user_list_check_box"
+            android:fontFamily="sans-serif"
+            android:paddingStart="@dimen/_12sdp"
+            android:paddingEnd="@dimen/_1sdp"
+            android:text="@string/email_hint"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="@dimen/_10sdp" />
+        
+        
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

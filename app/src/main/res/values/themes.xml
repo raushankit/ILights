@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.ILights" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -28,11 +28,31 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" >#008b54</item>
+        <item name="android:statusBarColor">#009e60</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="actionModeStyle">@style/Theme.ILights.1.ActionModeStyle</item>
         <!-- Customize your theme here. -->
         <item name="toolbarColor">#009e60</item>
         <item name="inactive_color">#515151</item>
         <item name="flowBackgroundColor">#19009e60</item>
+        <item name="actionModeStatusBarColor">@color/gray33</item>
+
     </style>
+
+    <style name="Theme.ILights.1.ActionModeStyle" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/gray33</item>
+        <item name="titleTextStyle">@style/Theme.ILights.1.ActionModeTitleStyle</item>
+        <item name="closeItemLayout">@layout/cab_close_icon</item>
+    </style>
+
+    <style name="Theme.ILights.1.ActionModeTitleStyle">
+        <item name="android:textColor">#fff</item>
+        <item name="android:textSize">@dimen/_15sdp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>
