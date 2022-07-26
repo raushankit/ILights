@@ -56,6 +56,7 @@ public class BoardFragment extends Fragment {
     private ShimmerFrameLayout shimmerFrameLayout;
     private BoardUserItemAdapter adapter;
     private ActivityResultLauncher<Intent> addBoardLauncher;
+    private ActivityResultLauncher<Intent> addBoardUsersLauncher;
     private String uid;
     private final BoardBottomSheetFragment.WhichButtonCLickedListener listener;
 
@@ -83,6 +84,11 @@ public class BoardFragment extends Fragment {
                     args.putParcelable(BoardConst.BOARD_DATA, details);
                     getParentFragmentManager()
                             .setFragmentResult(BoardConst.REQUEST_KEY, args);
+                    break;
+                case ADD_MEMBERS:
+                    Intent intent = new Intent(requireActivity(), BoardForm.class);
+                    intent.putExtra("BOARD_ID", details.getBoardId());
+                    addBoardUsersLauncher.launch(intent);
                     break;
                 default:
                     Log.i(TAG, "BoardFragment: another type option" + whichButton);
@@ -118,6 +124,19 @@ public class BoardFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_board, container, false);
         BoardFabLayout boardFabLayout = new BoardFabLayout(view.findViewById(R.id.board_fab_button_layout), new WeakReference<>(requireContext()));
         addBoardLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if(result.getResultCode() == Activity.RESULT_OK && result.getData() != null){
+                        Intent receiveIntent = result.getData();
+                        Snackbar.make(view, getString(R.string.board_form_success_message, receiveIntent.getStringExtra(BoardFormConst.TITLE)), BaseTransientBottomBar.LENGTH_SHORT).show();
+                    }
+                    if(result.getResultCode() == Activity.RESULT_CANCELED && result.getData() != null){
+                        Intent receiveIntent = result.getData();
+                        deleteBoardCredentials(receiveIntent.getStringExtra(BoardFormConst.API_KEY),
+                                receiveIntent.getStringExtra(BoardFormConst.ID_TOKEN));
+                    }
+                }
+        );
+        addBoardUsersLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
                     if(result.getResultCode() == Activity.RESULT_OK && result.getData() != null){
                         Intent receiveIntent = result.getData();

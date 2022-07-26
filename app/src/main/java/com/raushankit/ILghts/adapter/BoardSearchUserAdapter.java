@@ -25,7 +25,7 @@ public class BoardSearchUserAdapter extends ListAdapter<BoardSearchUserModel, Bo
     private static final String TAG = "BoardSearchUserAdapter";
     private final Map<String, BoardSearchUserModel> selectedUsers = new HashMap<>();
     private final CallBack<Integer> callBack;
-    @ColorInt private int selectedColor;
+    @ColorInt private final int selectedColor;
     @ColorInt private int cardBackgroundColor;
 
     public BoardSearchUserAdapter(@ColorInt int selectedColor, @NonNull CallBack<Integer> callBack) {
@@ -47,7 +47,8 @@ public class BoardSearchUserAdapter extends ListAdapter<BoardSearchUserModel, Bo
 
     @Override
     public void onBindViewHolder(@NonNull BoardSearchUserViewHolder holder, int position) {
-        holder.bind(getItem(position));
+        BoardSearchUserModel item = getItem(position);
+        holder.bind(item, position == 0? item.isMember(): (!getItem(position - 1).isMember() && item.isMember()));
     }
 
     public Map<String, BoardSearchUserModel> getSelectedUsers(){
@@ -64,6 +65,7 @@ public class BoardSearchUserAdapter extends ListAdapter<BoardSearchUserModel, Bo
     class BoardSearchUserViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
         private final TextView name;
         private final TextView email;
+        private final TextView sectionHeader;
         private final MaterialCheckBox checkBox;
         private final MaterialCardView cardView;
 
@@ -71,20 +73,29 @@ public class BoardSearchUserAdapter extends ListAdapter<BoardSearchUserModel, Bo
             super(itemView);
             cardView = itemView.findViewById(R.id.board_search_user_list_parent);
             name = itemView.findViewById(R.id.board_search_user_list_item_name);
+            sectionHeader = itemView.findViewById(R.id.board_search_user_section_header);
             email = itemView.findViewById(R.id.board_search_user_list_item_email);
             checkBox = itemView.findViewById(R.id.board_search_user_list_check_box);
         }
 
-        public void bind(BoardSearchUserModel item) {
+        public void bind(BoardSearchUserModel item, boolean enable) {
             if(item == null) return;
             checkBox.setOnCheckedChangeListener(null);
+            cardView.setOnClickListener(null);
+            sectionHeader.setVisibility(enable? View.VISIBLE: View.GONE);
             boolean selected = selectedUsers.containsKey(item.getUserId());
             cardView.setBackgroundColor(selected? selectedColor: cardBackgroundColor);
             checkBox.setChecked(selected);
             name.setText(item.getName());
             email.setText(item.getEmail());
-            checkBox.setOnCheckedChangeListener(this);
-            cardView.setOnClickListener(this);
+            if(!item.isMember()){
+                checkBox.setEnabled(true);
+                checkBox.setOnCheckedChangeListener(this);
+                cardView.setOnClickListener(this);
+            }else{
+                checkBox.setEnabled(false);
+                checkBox.setChecked(true);
+            }
         }
 
         @Override

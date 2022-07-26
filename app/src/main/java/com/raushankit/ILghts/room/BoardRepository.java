@@ -7,12 +7,16 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.model.board.BoardCredModel;
+import com.raushankit.ILghts.model.board.BoardSearchUserModel;
 import com.raushankit.ILghts.model.board.FavBoard;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 
 public class BoardRepository {
@@ -21,13 +25,16 @@ public class BoardRepository {
     private static final int REMOVAL_DELAY = 4000;
     private static volatile BoardRepository INSTANCE;
     private final BoardDataFetcher boardFetcher;
+    private final BoardSearchUserFetcher boardSearchUserFetcher;
 
     private BoardRepository(Application application) {
         Log.d(TAG, "BoardRepository: private constructor");
-        BoardRoomDatabase db = BoardRoomDatabase.getDatabase(application);
+        BoardRoomDatabase roomDatabase = BoardRoomDatabase.getDatabase(application);
         String userId = FirebaseAuth.getInstance().getUid();
         assert userId != null;
-        boardFetcher = new BoardDataFetcher(db, userId);
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+        boardFetcher = new BoardDataFetcher(db, roomDatabase, userId);
+        boardSearchUserFetcher = new BoardSearchUserFetcher(db);
     }
 
     public static BoardRepository getInstance(Application application) {
@@ -48,6 +55,10 @@ public class BoardRepository {
 
     public Single<BoardCredModel> getCredentialData(@NonNull String boardId){
         return boardFetcher.getBoardAuthResult(boardId);
+    }
+
+    public Single<List<BoardSearchUserModel>> getSearchableUsersByQuery(@NonNull String boardId, @NonNull String query){
+        return boardSearchUserFetcher.getSearchableUsersByQuery(boardId, query);
     }
 
     public LiveData<List<BoardRoomUserData>> getData() {

@@ -74,15 +74,13 @@
             android:layout_marginTop="@dimen/_5sdp"
             app:lottie_repeatMode="restart"
             app:lottie_repeatCount="@integer/material_motion_duration_long_2"
-            app:lottie_rawRes="@raw/no_data_found" />
+            app:lottie_rawRes="@raw/searching_users" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/board_search_user_list"
         android:layout_width="match_parent"
         android:visibility="gone"
-        android:paddingStart="@dimen/_3sdp"
-        android:paddingEnd="@dimen/_3sdp"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"

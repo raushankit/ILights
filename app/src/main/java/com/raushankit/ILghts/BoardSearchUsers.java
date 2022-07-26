@@ -2,9 +2,11 @@ package com.raushankit.ILghts;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -15,11 +17,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,43 +31,61 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.color.MaterialColors;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.raushankit.ILghts.adapter.BoardSearchUserAdapter;
+import com.raushankit.ILghts.factory.BoardSearchViewModelFactory;
 import com.raushankit.ILghts.model.board.BoardSearchUserModel;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.raushankit.ILghts.viewModel.BoardSearchViewModel;
 
 public class BoardSearchUsers extends AppCompatActivity {
     private static final String TAG = "BoardSearchUsers";
 
+    private static final int MIN_WORDS = 4;
     private ActionMode actionMode;
     private MaterialToolbar toolbar;
     private MenuItem itemSearch;
     private ShimmerFrameLayout shimmerFrameLayout;
     private LinearLayout messageLayout;
+    private RecyclerView recyclerView;
     private LottieAnimationView lottieAnimationView;
     private BoardSearchUserAdapter adapter;
+    private BoardSearchViewModel viewModel;
+    private Snackbar snackbar;
+    private String queryStr;
+    private String boardId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.Theme_ILights_1);
         setContentView(R.layout.activity_board_search_users);
+        setBoardId();
+        viewModel = new ViewModelProvider(this, new BoardSearchViewModelFactory(getApplication(), boardId))
+                .get(BoardSearchViewModel.class);
         toolbar = findViewById(R.id.board_search_user_toolbar);
         shimmerFrameLayout = findViewById(R.id.board_search_user_shimmer_container);
         messageLayout = findViewById(R.id.board_search_user_error_view);
         lottieAnimationView = findViewById(R.id.board_search_user_error_lottie);
-        RecyclerView recyclerView = findViewById(R.id.board_search_user_list);
+        recyclerView = findViewById(R.id.board_search_user_list);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         Log.w(TAG, "onCreate: ");
         setSupportActionBar(toolbar);
+
+        snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_network_detected), BaseTransientBottomBar.LENGTH_LONG);
+        TextView snackText = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+        snackText.setMaxLines(5);
 
         toolbar.setNavigationOnClickListener(view -> {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_NO?AppCompatDelegate.MODE_NIGHT_YES:AppCompatDelegate.MODE_NIGHT_NO);
         });
 
-        recyclerView.setVisibility(View.VISIBLE);
-        messageLayout.setVisibility(View.GONE);
+        snackbar.setAction(R.string.retry, view -> {
+            viewModel.setQuery(queryStr);
+        });
+
+        recyclerView.setVisibility(View.GONE);
+        messageLayout.setVisibility(View.VISIBLE);
         adapter = new BoardSearchUserAdapter(MaterialColors.getColor(this, R.attr.flowBackgroundColor, Color.BLACK), value -> {
             if(value > 0){
                 if(actionMode != null) {
@@ -76,11 +98,51 @@ public class BoardSearchUsers extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(adapter);
-        List<BoardSearchUserModel> list = new ArrayList<>();
+        /*List<BoardSearchUserModel> list = new ArrayList<>();
         for(int i = 0;i < 100;++i){
             list.add(new BoardSearchUserModel(String.valueOf(i), "name " + i, "email " + i));
         }
-        adapter.submitList(list);
+        adapter.submitList(list);*/
+        viewModel.getUsers().observe(this, list -> {
+            Log.w(TAG, "onCreate: list = " + list);
+            if(list.size() == 0){
+                shimmerFrameLayout.stopShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
+                messageLayout.setVisibility(View.VISIBLE);
+                lottieAnimationView.setAnimation(R.raw.no_data_found);
+                lottieAnimationView.playAnimation();
+            }else {
+                BoardSearchUserModel item = list.get(0);
+                if(item.getUserId().equals("ERROR")){
+                    shimmerFrameLayout.stopShimmer();
+                    shimmerFrameLayout.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.GONE);
+                    messageLayout.setVisibility(View.GONE);
+                    if(TextUtils.isEmpty(item.getName())){
+                        snackText.setText(R.string.unknown_error);
+                    }else{
+                        snackText.setText(item.getName());
+                    }
+                    snackbar.show();
+                }else{
+                    shimmerFrameLayout.stopShimmer();
+                    shimmerFrameLayout.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    messageLayout.setVisibility(View.GONE);
+                    adapter.submitList(list);
+                }
+            }
+        });
+    }
+
+    private void setBoardId() {
+        Intent intent = getIntent();
+        if(intent == null){
+            finish();
+        }else{
+            boardId = intent.getStringExtra("BOARD_ID");
+        }
     }
 
     @Override
@@ -94,10 +156,21 @@ public class BoardSearchUsers extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.w(TAG, "onQueryTextSubmit() called with: query = [" + query + "]");
+                if(!TextUtils.isEmpty(query) && query.length() < MIN_WORDS){
+                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.search_short_query_error, MIN_WORDS),
+                            BaseTransientBottomBar.LENGTH_SHORT).show();
+                    return false;
+                }
+                if(query.equals(queryStr)){return false; }
+                viewModel.setQuery(query);
                 searchView.clearFocus();
                 searchView.onActionViewCollapsed();
                 itemSearch.collapseActionView();
+                shimmerFrameLayout.startShimmer();
+                shimmerFrameLayout.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+                messageLayout.setVisibility(View.GONE);
+                queryStr = query;
                 return true;
             }
 

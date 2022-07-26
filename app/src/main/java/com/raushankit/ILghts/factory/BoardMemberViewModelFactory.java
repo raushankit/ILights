@@ -1,5 +1,6 @@
 package com.raushankit.ILghts.factory;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ public class BoardMemberViewModelFactory implements ViewModelProvider.Factory {
     }
 
 
+    @SuppressLint("UnsafeOptInUsageWarning")
     @SuppressWarnings("unchecked")
     @NonNull
     @Override

@@ -11,15 +11,30 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_8sdp"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/board_search_user_section_header"
+            android:layout_width="match_parent"
+            android:layout_alignParentTop="true"
+            android:textStyle="bold"
+            android:text="@string/board_search_user_section_header"
+            android:textSize="@dimen/_13sdp"
+            android:paddingStart="@dimen/_15sdp"
+            android:paddingEnd="0dp"
+            android:visibility="visible"
+            android:background="@color/board_form_subtitle_texts"
+            android:textColor="?attr/colorOnPrimary"
+            android:layout_height="wrap_content"/>
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/board_search_user_list_check_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_8sdp"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
+            android:layout_below="@id/board_search_user_section_header"
             android:checked="true"
             android:buttonTint="?attr/colorPrimary"
             android:clickable="true"
@@ -33,7 +48,9 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:paddingStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:paddingEnd="@dimen/_10sdp"
+            android:layout_below="@id/board_search_user_section_header"
             android:layout_toEndOf="@id/board_search_user_list_check_box"
             android:text="@string/title"
             android:textColor="@color/board_bottom_sheet_text_color"
@@ -50,6 +67,7 @@
             android:paddingStart="@dimen/_12sdp"
             android:paddingEnd="@dimen/_1sdp"
             android:text="@string/email_hint"
+            android:layout_marginBottom="@dimen/_8sdp"
             android:textColor="?attr/colorPrimary"
             android:textSize="@dimen/_10sdp" />
         

@@ -17,7 +17,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.raushankit.ILghts.entity.ListenerType;
-import com.raushankit.ILghts.model.board.BoardAuthUser;
 import com.raushankit.ILghts.model.board.BoardCredModel;
 import com.raushankit.ILghts.model.board.FavBoard;
 import com.raushankit.ILghts.model.room.BoardEditableData;
@@ -44,10 +43,9 @@ class BoardDataFetcher{
     private final Map<String, BoardUpdateLiveData> mp = new HashMap<>();
     private final Map<String, BoardUpdateLiveData> oldMp = new HashMap<>();
 
-    BoardDataFetcher(final BoardRoomDatabase roomDb, final String userId){
+    BoardDataFetcher(final DatabaseReference db, final BoardRoomDatabase roomDb, final String userId){
         boardDao = roomDb.boardDao();
-        db = FirebaseDatabase.getInstance()
-                .getReference();
+        this.db = db;
         handler = new Handler(Looper.getMainLooper());
         userBoardLiveData = new UserBoardLiveData(userId);
         userBoardsList = boardDao.getUserBoards();
@@ -137,7 +135,6 @@ class BoardDataFetcher{
                     });
         });
     }
-
 
     private void addListenerForUpdate(@NonNull String id){
         if(oldMp.containsKey(id)){

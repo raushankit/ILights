@@ -279,4 +279,7 @@
     <string name="action_status">Status</string>
     <string name="action_settings">Settings</string>
     <string name="board_search_user_helper_text">Search users by their names</string>
+    <string name="add_users_as_editor">Add users as Editor</string>
+    <string name="search_short_query_error">Search text must be at least %1$d words</string>
+    <string name="board_search_user_section_header">Members</string>
 </resources>
