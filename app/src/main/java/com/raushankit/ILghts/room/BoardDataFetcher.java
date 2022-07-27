@@ -14,7 +14,6 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.raushankit.ILghts.entity.ListenerType;
 import com.raushankit.ILghts.model.board.BoardCredModel;
@@ -26,14 +25,13 @@ import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.reactivex.rxjava3.core.Single;
 import kotlin.Triple;
 
 class BoardDataFetcher{
     private static final String TAG = "BoardDataFetcher";
-    private static final int REMOVAL_DELAY = 4000;
+    private static final int REMOVAL_DELAY = 2000;
     private final MediatorLiveData<List<BoardRoomUserData>> userBoardData = new MediatorLiveData<>();
     private final DatabaseReference db;
     private final BoardDao boardDao;
@@ -58,7 +56,7 @@ class BoardDataFetcher{
             Log.d(TAG, "getData: remote data = " + stringIntegerPair);
             fetchDataSingleTime(stringIntegerPair.component1(), stringIntegerPair.component2(), stringIntegerPair.component3());
         });
-        userBoardData.addSource(boardDao.getUserBoards(), dataList -> {
+        userBoardData.addSource(userBoardsList, dataList -> {
             if(userBoardLiveData.isDataReceived){
                 userBoardData.setValue(dataList);
             }else{
@@ -178,7 +176,6 @@ class BoardDataFetcher{
     public void forceCleanBoardUserList() {
         userBoardData.removeSource(userBoardLiveData);
         userBoardData.removeSource(userBoardsList);
-        userBoardLiveData.removeListeners();
         mp.forEach((k,v) -> {
             userBoardData.removeSource(v);
             v.removeListeners();
@@ -190,8 +187,7 @@ class BoardDataFetcher{
         return userBoardData;
     }
 
-    class UserBoardLiveData extends LiveData<Triple<ListenerType,String,Integer>> implements Runnable{
-        private static final String TAG = "UserBoardLiveData";
+    class UserBoardLiveData extends LiveData<Triple<ListenerType,String,Integer>> {
         private boolean isDataReceived;
         private final DatabaseReference userDb;
 
@@ -224,7 +220,6 @@ class BoardDataFetcher{
                 Log.w(TAG, "onCancelled: error", error.toException());
             }
         };
-        private final AtomicBoolean isRemovalPending = new AtomicBoolean(false);
 
         public UserBoardLiveData(@NonNull String userId) {
             userDb = db.child("user_boards")
@@ -235,34 +230,13 @@ class BoardDataFetcher{
 
         @Override
         protected void onActive() {
-            Log.d(TAG, "onActive: ");
-            if (isRemovalPending.get()) {
-                handler.removeCallbacks(this);
-            } else {
-                userDb.addChildEventListener(listener);
-            }
-            isRemovalPending.set(false);
+            Log.d(TAG, "onActive: UserBoardLiveData");
+            userDb.addChildEventListener(listener);
         }
 
         @Override
         protected void onInactive() {
-            Log.d(TAG, "onInactive: ");
-            handler.postDelayed(this, REMOVAL_DELAY);
-            isRemovalPending.set(true);
-        }
-
-        public void removeListeners() {
-            if (isRemovalPending.get()) {
-                userDb.removeEventListener(listener);
-                isDataReceived = false;
-                Log.d(TAG, "forced removeListeners: removed listeners");
-                handler.removeCallbacks(this);
-                isRemovalPending.set(false);
-            }
-        }
-
-        @Override
-        public void run() {
+            Log.d(TAG, "onInactive: UserBoardLiveData");
             userDb.removeEventListener(listener);
             deleteAllUserBoards();
             oldMp.forEach((k,v) -> {
@@ -272,14 +246,11 @@ class BoardDataFetcher{
             oldMp.clear();
             oldMp.putAll(mp);
             mp.clear();
-            isRemovalPending.set(false);
             isDataReceived = false;
-            Log.d(TAG, "run: removing listeners for BoardEntityLiveData old mp = " + oldMp);
         }
     }
 
     class BoardUpdateLiveData extends LiveData<Pair<String, BoardEditableData>> implements Runnable{
-        private static final String TAG = "BoardUpdateLiveData";
         private final DatabaseReference remoteDb;
         private final ValueEventListener listener = new ValueEventListener() {
             @Override
@@ -295,6 +266,7 @@ class BoardDataFetcher{
         private boolean isRemovalPending = false;
 
         public BoardUpdateLiveData(@NonNull String id) {
+            Log.i(TAG, "BoardUpdateLiveData() called with: id = [" + id + "]");
             remoteDb = db.child("board_meta")
                     .child(id)
                     .child("data");
@@ -302,6 +274,7 @@ class BoardDataFetcher{
 
         @Override
         protected void onActive() {
+            Log.i(TAG, "onActive() called BoardUpdateLiveData");
             if (isRemovalPending) {
                 handler.removeCallbacks(this);
             } else {
@@ -312,6 +285,7 @@ class BoardDataFetcher{
 
         @Override
         protected void onInactive() {
+            Log.i(TAG, "onInactive() called BoardUpdateLiveData");
             handler.postDelayed(this, REMOVAL_DELAY);
             isRemovalPending = true;
         }
@@ -319,7 +293,7 @@ class BoardDataFetcher{
         public void removeListeners() {
             if (!isRemovalPending) { return; }
             remoteDb.removeEventListener(listener);
-            Log.d(TAG, "forced removeListeners: removed listeners");
+            Log.d(TAG, "forced removeListeners: removed listeners BoardUpdateLiveData");
             handler.removeCallbacks(this);
             isRemovalPending = false;
         }
@@ -328,7 +302,7 @@ class BoardDataFetcher{
         public void run() {
             remoteDb.removeEventListener(listener);
             isRemovalPending = false;
-            Log.d(TAG, "run: removing listeners");
+            Log.d(TAG, "run: removing listeners BoardUpdateLiveData");
         }
     }
 

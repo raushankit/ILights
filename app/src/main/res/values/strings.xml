@@ -285,4 +285,16 @@
     <string name="more_boards">More Boards</string>
     <string name="notifications">Notifications</string>
     <string name="requests">Requests</string>
+    <string name="accept">Accept</string>
+    <string name="reject">Reject</string>
+    <string name="add_users_successful">Successfully added users to board</string>
+    <string name="adding_users">Adding Users</string>
+
+    <string name="database_error_disconnected">The operation had to be aborted due to a network disconnect</string>
+    <string name="database_error_max_retries">Too many retries</string>
+    <string name="database_error_network_error">The operation could not be performed due to a network error.</string>
+    <string name="database_error_permission_denied">This client does not have permission to perform this operation</string>
+    <string name="database_error_unavailable">The service is unavailable</string>
+    <string name="database_error_unknown_error">An unknown error occurred.</string>
+
 </resources>

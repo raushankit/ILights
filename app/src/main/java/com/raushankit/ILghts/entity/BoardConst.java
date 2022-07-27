@@ -11,6 +11,7 @@ public class BoardConst {
 
 
     public static final String USER_ID = "user_id";
+    public static final String USER_NAME = "user_name";
     public static final String BOARD_DATA = "board_data";
     public static final String SHOW_SNACK_BAR = "show_snack_bar";
     public static final String SNACK_MESSAGE = "snack_message";

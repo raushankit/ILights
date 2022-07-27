@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/_5sdp"
+    android:elevation="@dimen/_5sdp"
+    android:theme="@style/Theme.ILights.1"
+    app:cardPreventCornerOverlap="true">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/board_notification_list_item_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:padding="@dimen/_10sdp"
+            android:text="@string/title"
+            android:textColor="@color/board_bottom_sheet_text_color"
+            android:textSize="@dimen/_12sdp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/board_notification_list_item_reject_button"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/board_notification_list_item_title"
+            android:layout_alignParentStart="true"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/reject"
+            android:visibility="visible"
+            android:textAllCaps="false"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="@dimen/_11sdp"
+            app:iconTint="@color/error"
+            app:strokeWidth="0dp"
+            tools:ignore="RelativeOverlap" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/board_notification_list_item_accept_button"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:insetBottom="0dp"
+            android:insetTop="0dp"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"
+            android:textSize="@dimen/_11sdp"
+            android:layout_toEndOf="@id/board_notification_list_item_reject_button"
+            android:layout_below="@id/board_notification_list_item_title"
+            android:textAllCaps="false"
+            android:text="@string/accept"
+            android:visibility="visible"
+            app:strokeWidth="0dp"
+            tools:ignore="RelativeOverlap" />
+        <TextView
+            android:id="@+id/board_notification_list_item_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:layout_toEndOf="@id/board_notification_list_item_accept_button"
+            android:layout_alignParentEnd="true"
+            android:paddingEnd="@dimen/_8sdp"
+            android:paddingStart="0dp"
+            android:layout_below="@id/board_notification_list_item_title"
+            android:text="@string/title"
+            android:gravity="end"
+            android:textSize="@dimen/_9sdp" />
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

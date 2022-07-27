@@ -32,6 +32,7 @@ import com.raushankit.ILghts.fragments.board.BoardCredentialViewer;
 import com.raushankit.ILghts.fragments.board.BoardEditDetails;
 import com.raushankit.ILghts.fragments.board.BoardEditMemberFragment;
 import com.raushankit.ILghts.fragments.board.BoardFragment;
+import com.raushankit.ILghts.fragments.board.NotificationFragment;
 import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.storage.VolleyRequest;
@@ -43,6 +44,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class BoardActivity extends AppCompatActivity {
     private static final String TAG = "BoardActivity";
@@ -55,7 +57,6 @@ public class BoardActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private MaterialToolbar toolbar;
     private FirebaseAuth mAuth;
-    private User mUser;
 
     private ActivityResultLauncher<Intent> addBoardLauncher;
 
@@ -68,10 +69,6 @@ public class BoardActivity extends AppCompatActivity {
         requestQueue = VolleyRequest.newInstance(this);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         boardCommViewModel = new ViewModelProvider(this).get(BoardCommViewModel.class);
-        userViewModel.getUserData().observe(this, user -> {
-            mUser = user;
-            boardCommViewModel.setData(new Pair<>(mAuth.getUid(), user));
-        });
         init();
         getSupportFragmentManager()
                 .setFragmentResultListener(FRAG_REQUEST_KEY, this,
@@ -202,10 +199,13 @@ public class BoardActivity extends AppCompatActivity {
                 // return true;
             }
             else if(id == itemNotification.getItemId()){
-                // TODO: 27-07-2022
-                // return true
-            }else {
-                return false;
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.board_main_frame,
+                                NotificationFragment.newInstance(Objects.requireNonNull(mAuth.getUid())))
+                        .addToBackStack(null)
+                        .commit();
+                return true;
             }
             return false;
         });

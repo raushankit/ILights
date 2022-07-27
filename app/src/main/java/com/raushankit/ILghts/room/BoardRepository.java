@@ -13,16 +13,17 @@ import com.raushankit.ILghts.model.board.BoardCredModel;
 import com.raushankit.ILghts.model.board.BoardSearchUserModel;
 import com.raushankit.ILghts.model.board.FavBoard;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
+import com.raushankit.ILghts.utils.callbacks.CallBack;
 
 import java.util.List;
+import java.util.Map;
 
-import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class BoardRepository {
-
     private static final String TAG = "BoardRepository";
-    private static final int REMOVAL_DELAY = 4000;
+
     private static volatile BoardRepository INSTANCE;
     private final BoardDataFetcher boardFetcher;
     private final BoardSearchUserFetcher boardSearchUserFetcher;
@@ -59,6 +60,10 @@ public class BoardRepository {
 
     public Single<List<BoardSearchUserModel>> getSearchableUsersByQuery(@NonNull String boardId, @NonNull String query){
         return boardSearchUserFetcher.getSearchableUsersByQuery(boardId, query);
+    }
+
+    public Single<Integer> addUsersToBoard(Map<String, Object> mp){
+        return boardSearchUserFetcher.putUsersInBoard(mp);
     }
 
     public LiveData<List<BoardRoomUserData>> getData() {

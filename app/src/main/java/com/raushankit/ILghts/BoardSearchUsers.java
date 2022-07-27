@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -33,10 +32,21 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.ServerValue;
 import com.raushankit.ILghts.adapter.BoardSearchUserAdapter;
+import com.raushankit.ILghts.dialogs.LoadingDialogFragment;
+import com.raushankit.ILghts.entity.NotificationType;
 import com.raushankit.ILghts.factory.BoardSearchViewModelFactory;
 import com.raushankit.ILghts.model.board.BoardSearchUserModel;
+import com.raushankit.ILghts.model.room.BoardRoomUserData;
+import com.raushankit.ILghts.utils.StringUtils;
 import com.raushankit.ILghts.viewModel.BoardSearchViewModel;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 
 public class BoardSearchUsers extends AppCompatActivity {
     private static final String TAG = "BoardSearchUsers";
@@ -44,6 +54,7 @@ public class BoardSearchUsers extends AppCompatActivity {
     private static final int MIN_WORDS = 4;
     private ActionMode actionMode;
     private MaterialToolbar toolbar;
+    private LoadingDialogFragment loadingDialogFragment;
     private MenuItem itemSearch;
     private ShimmerFrameLayout shimmerFrameLayout;
     private LinearLayout messageLayout;
@@ -53,7 +64,8 @@ public class BoardSearchUsers extends AppCompatActivity {
     private BoardSearchViewModel viewModel;
     private Snackbar snackbar;
     private String queryStr;
-    private String boardId;
+    private BoardRoomUserData data;
+    private List<BoardSearchUserModel> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +73,12 @@ public class BoardSearchUsers extends AppCompatActivity {
         setTheme(R.style.Theme_ILights_1);
         setContentView(R.layout.activity_board_search_users);
         setBoardId();
-        viewModel = new ViewModelProvider(this, new BoardSearchViewModelFactory(getApplication(), boardId))
+        viewModel = new ViewModelProvider(this, new BoardSearchViewModelFactory(getApplication(), data.getBoardId()))
                 .get(BoardSearchViewModel.class);
+        loadingDialogFragment = LoadingDialogFragment
+                .newInstance();
+        loadingDialogFragment.setTitle(R.string.adding_users);
+        loadingDialogFragment.setMessage(R.string.please_wait);
         toolbar = findViewById(R.id.board_search_user_toolbar);
         shimmerFrameLayout = findViewById(R.id.board_search_user_shimmer_container);
         messageLayout = findViewById(R.id.board_search_user_error_view);
@@ -72,15 +88,19 @@ public class BoardSearchUsers extends AppCompatActivity {
         Log.w(TAG, "onCreate: ");
         setSupportActionBar(toolbar);
 
-        snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_network_detected), BaseTransientBottomBar.LENGTH_LONG);
+        snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_network_detected), BaseTransientBottomBar.LENGTH_INDEFINITE);
         TextView snackText = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
         snackText.setMaxLines(5);
 
-        toolbar.setNavigationOnClickListener(view -> {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_NO?AppCompatDelegate.MODE_NIGHT_YES:AppCompatDelegate.MODE_NIGHT_NO);
-        });
+        toolbar.setNavigationOnClickListener(view -> finish());
 
-        snackbar.setAction(R.string.retry, view -> viewModel.setQuery(queryStr));
+        snackbar.setAction(R.string.retry, view -> {
+            shimmerFrameLayout.startShimmer();
+            shimmerFrameLayout.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+            messageLayout.setVisibility(View.GONE);
+            viewModel.setQuery(queryStr);
+        });
 
         recyclerView.setVisibility(View.GONE);
         messageLayout.setVisibility(View.VISIBLE);
@@ -96,11 +116,17 @@ public class BoardSearchUsers extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(adapter);
-        /*List<BoardSearchUserModel> list = new ArrayList<>();
-        for(int i = 0;i < 100;++i){
-            list.add(new BoardSearchUserModel(String.valueOf(i), "name " + i, "email " + i));
-        }
-        adapter.submitList(list);*/
+        viewModel.getUpdateLiveData()
+                        .observe(this, s -> {
+                            loadingDialogFragment.dismiss();
+                            if(s < 0){
+                                Snackbar.make(findViewById(android.R.id.content), StringUtils.getDataBaseErrorMessageFromCode(s), BaseTransientBottomBar.LENGTH_LONG)
+                                        .show();
+                            }else{
+                                adapter.submitList(list);
+                                actionMode.finish();
+                            }
+                        });
         viewModel.getUsers().observe(this, list -> {
             Log.w(TAG, "onCreate: list = " + list);
             if(list.size() == 0){
@@ -134,12 +160,48 @@ public class BoardSearchUsers extends AppCompatActivity {
         });
     }
 
+    private void addUsers(int level){
+        loadingDialogFragment.show(getSupportFragmentManager(), LoadingDialogFragment.TAG);
+        list = adapter.getCurrentList();
+        Map<String, BoardSearchUserModel> selectedUsers = adapter.getSelectedUsers();
+        Map<String, Object> mp = new HashMap<>();
+        StringBuilder builder = new StringBuilder("You added ");
+        list.forEach(it -> {
+            if(selectedUsers.containsKey(it.getUserId())){
+                it.setMember(true);
+                String key = "board_auth/" + data.getBoardId() + "/" + it.getUserId();
+                mp.put(key + "/name", it.getName().toLowerCase(Locale.getDefault()));
+                mp.put(key + "/email", it.getEmail());
+                mp.put(key + "/level", level);
+                mp.put(key + "/creationTime", ServerValue.TIMESTAMP);
+                mp.put("user_boards/" + it.getUserId() + "/boards/" + data.getBoardId(), level);
+                mp.put("user_boards/" + it.getUserId() + "/num", ServerValue.increment(1));
+                key = "user_notif/" + it.getUserId() + "/" + UUID.randomUUID().toString();
+                mp.put(key + "/body", "You were added to " + data.getData().getTitle() +
+                        " by " + data.getOwnerName());
+                mp.put(key + "/time", ServerValue.TIMESTAMP);
+                mp.put(key + "/type", NotificationType.TEXT);
+                builder.append(StringUtils.capitalize(it.getName())).append(", ");
+            }
+        });
+        builder.setLength(builder.length() - 2);
+        builder.append(" as ")
+                .append(level == 1? "USER": "EDITOR")
+                .append(" to board ")
+                .append(data.getData().getTitle());
+        String key = "user_notif/" + data.getOwnerId() + "/" + UUID.randomUUID().toString();
+        mp.put(key + "/body", builder.toString());
+        mp.put(key + "/time", ServerValue.TIMESTAMP);
+        mp.put(key + "/type", NotificationType.TEXT);
+        viewModel.addUsers(mp);
+    }
+
     private void setBoardId() {
         Intent intent = getIntent();
         if(intent == null){
             finish();
         }else{
-            boardId = intent.getStringExtra("BOARD_ID");
+            data = intent.getParcelableExtra("BOARD");
         }
     }
 
@@ -160,6 +222,7 @@ public class BoardSearchUsers extends AppCompatActivity {
                     return false;
                 }
                 if(query.equals(queryStr)){return false; }
+                query = query.toLowerCase(Locale.getDefault());
                 viewModel.setQuery(query);
                 searchView.clearFocus();
                 searchView.onActionViewCollapsed();
@@ -244,6 +307,14 @@ public class BoardSearchUsers extends AppCompatActivity {
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            int id = item.getItemId();
+            if(id == R.id.board_add_user_action_mode_user){
+                addUsers(1);
+                return true;
+            }else if(id == R.id.board_add_user_action_mode_editor){
+                addUsers(2);
+                return true;
+            }
             return false;
         }
 

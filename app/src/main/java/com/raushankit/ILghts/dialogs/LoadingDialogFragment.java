@@ -42,12 +42,12 @@ public class LoadingDialogFragment extends DialogFragment {
         try {
             titleView.setText(title);
         } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
+            titleView.setText(R.string.loading);
         }
         try {
             messageView.setText(message);
         } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
+            messageView.setText(R.string.please_wait);
         }
         return view;
     }

@@ -16,6 +16,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.model.board.BoardSearchUserModel;
+import com.raushankit.ILghts.utils.StringUtils;
 import com.raushankit.ILghts.utils.callbacks.CallBack;
 
 import java.util.HashMap;
@@ -86,7 +87,7 @@ public class BoardSearchUserAdapter extends ListAdapter<BoardSearchUserModel, Bo
             boolean selected = selectedUsers.containsKey(item.getUserId());
             cardView.setBackgroundColor(selected? selectedColor: cardBackgroundColor);
             checkBox.setChecked(selected);
-            name.setText(item.getName());
+            name.setText(StringUtils.capitalize(item.getName()));
             email.setText(item.getEmail());
             if(!item.isMember()){
                 checkBox.setEnabled(true);

@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.raushankit.ILghts.dialogs.LoadingDialogFragment;
 import com.raushankit.ILghts.entity.BoardFormConst;
+import com.raushankit.ILghts.entity.NotificationType;
 import com.raushankit.ILghts.forms.board.BoardCredentials;
 import com.raushankit.ILghts.forms.board.BoardPinSelection;
 import com.raushankit.ILghts.forms.board.BoardTitle;
@@ -33,7 +34,9 @@ import com.raushankit.ILghts.viewModel.UserViewModel;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 public class BoardForm extends AppCompatActivity {
     private static final String TAG = "BoardForm";
@@ -173,7 +176,7 @@ public class BoardForm extends AppCompatActivity {
     private void create_auth(User userAuth, Bundle args){
         DatabaseReference ref = db.child("board_auth").push();
         Map<String, Object> mp = new HashMap<>();
-        mp.put("name", userAuth.getName());
+        mp.put("name", userAuth.getName().toLowerCase(Locale.getDefault()));
         mp.put("email", userAuth.getEmail());
         mp.put("level", OWNER_LEVEL);
         mp.put("creationTime", ServerValue.TIMESTAMP);
@@ -208,6 +211,10 @@ public class BoardForm extends AppCompatActivity {
         mp.put("board_cred/" + boardId, new BoardCredModel(credModel.getId(), credModel.getUsername(), credModel.getPassword()));
         mp.put("board_details/" + boardId + "/heartBeat", ServerValue.TIMESTAMP);
         mp.put("board_details/" + boardId + "/pins", pinsModel.getUsablePins());
+        String key = "user_notif/" + uid + "/" + UUID.randomUUID().toString();
+        mp.put(key + "/body", "You created board " + basicModel.getName());
+        mp.put(key + "/time", ServerValue.TIMESTAMP);
+        mp.put(key + "/type", NotificationType.TEXT);
         if(basicModel.getVisibility() == 0){
             mp.put("board_public/" + boardId, ServerValue.TIMESTAMP);
         }else{

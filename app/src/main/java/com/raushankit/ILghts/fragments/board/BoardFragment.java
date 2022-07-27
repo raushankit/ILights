@@ -29,7 +29,6 @@ import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.BoardUserItemAdapter;
 import com.raushankit.ILghts.dialogs.BoardBottomSheetFragment;
 import com.raushankit.ILghts.entity.BoardConst;
-import com.raushankit.ILghts.entity.BoardFormConst;
 import com.raushankit.ILghts.viewModel.BoardDataViewModel;
 
 import java.util.Objects;
@@ -42,7 +41,7 @@ public class BoardFragment extends Fragment {
     private ShimmerFrameLayout shimmerFrameLayout;
     private BoardUserItemAdapter adapter;
     private ActivityResultLauncher<Intent> addBoardUsersLauncher;
-    private String uid;
+    private String userId;
     private final BoardBottomSheetFragment.WhichButtonCLickedListener listener;
 
     public BoardFragment() {
@@ -72,7 +71,7 @@ public class BoardFragment extends Fragment {
                     break;
                 case ADD_MEMBERS:
                     Intent intent = new Intent(requireActivity(), BoardSearchUsers.class);
-                    intent.putExtra("BOARD_ID", details.getBoardId());
+                    intent.putExtra("BOARD", details);
                     addBoardUsersLauncher.launch(intent);
                     break;
                 default:
@@ -95,7 +94,7 @@ public class BoardFragment extends Fragment {
         setHasOptionsMenu(true);
         Bundle args = getArguments();
         if(args != null){
-            uid = args.getString(BoardConst.USER_ID);
+            userId = args.getString(BoardConst.USER_ID);
         }
         boardDataViewModel = new ViewModelProvider(requireActivity())
                 .get(BoardDataViewModel.class);
@@ -106,15 +105,11 @@ public class BoardFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_board, container, false);
-        // BoardFabLayout boardFabLayout = new BoardFabLayout(view.findViewById(R.id.board_fab_button_layout), new WeakReference<>(requireContext()));
         addBoardUsersLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
-                    if(result.getResultCode() == Activity.RESULT_OK && result.getData() != null){
-                        Intent receiveIntent = result.getData();
-                        Snackbar.make(view, getString(R.string.board_form_success_message, receiveIntent.getStringExtra(BoardFormConst.TITLE)), BaseTransientBottomBar.LENGTH_SHORT).show();
-                    }
-                    if(result.getResultCode() == Activity.RESULT_CANCELED && result.getData() != null){
-                        Intent receiveIntent = result.getData();
+                    if(result.getResultCode() == Activity.RESULT_OK){
+                        Snackbar.make(view, R.string.add_users_successful, BaseTransientBottomBar.LENGTH_SHORT)
+                                .show();
                     }
                 }
         );

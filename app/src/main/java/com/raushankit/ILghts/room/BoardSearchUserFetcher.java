@@ -4,12 +4,14 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.raushankit.ILghts.model.board.BoardSearchUserModel;
 import com.raushankit.ILghts.response.BoardSearchResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import io.reactivex.rxjava3.core.Single;
@@ -20,6 +22,17 @@ public class BoardSearchUserFetcher {
 
     public BoardSearchUserFetcher(@NonNull DatabaseReference db){
         this.db = db;
+    }
+
+    public Single<Integer> putUsersInBoard(Map<String, Object> mp){
+        return Single.create(emitter -> db.updateChildren(mp, (error, ref) -> {
+            if(error == null){
+                emitter.onSuccess(1);
+            }else{
+                emitter.onSuccess(error.getCode());
+
+            }
+        }));
     }
 
     public Single<List<BoardSearchUserModel>> getSearchableUsersByQuery(@NonNull String boardId, @NonNull String query){

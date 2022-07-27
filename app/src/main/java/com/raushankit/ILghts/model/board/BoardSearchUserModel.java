@@ -70,7 +70,7 @@ public class BoardSearchUserModel {
         if (this == o) return true;
         if (!(o instanceof BoardSearchUserModel)) return false;
         BoardSearchUserModel that = (BoardSearchUserModel) o;
-        return Objects.equals(userId, that.userId) && Objects.equals(name, that.name) && Objects.equals(email, that.email);
+        return Objects.equals(userId, that.userId) && Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(member, that.member);
     }
 
     @Override
