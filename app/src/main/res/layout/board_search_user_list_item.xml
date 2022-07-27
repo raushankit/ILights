@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/_5sdp"
     android:elevation="@dimen/_5sdp"
-    android:background="@color/list_item_background"
+    android:background="@color/cards_and_dialogs_color"
     app:cardPreventCornerOverlap="true">
     <RelativeLayout
         android:layout_width="match_parent"

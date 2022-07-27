@@ -26,8 +26,24 @@
         android:id="@+id/board_main_frame"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/board_main_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/board_main_toolbar" />
+        app:layout_constraintBottom_toTopOf="@+id/board_activity_bottom_navigation" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/board_activity_bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="@dimen/_8sdp"
+        android:visibility="gone"
+        android:background="@color/list_item_background"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="?attr/colorPrimary"
+        app:itemTextColor="?attr/colorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/board_frag_bottom_navigation"
+        android:layout_alignParentBottom="true"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

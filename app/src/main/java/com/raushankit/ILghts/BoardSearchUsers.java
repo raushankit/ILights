@@ -80,9 +80,7 @@ public class BoardSearchUsers extends AppCompatActivity {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_NO?AppCompatDelegate.MODE_NIGHT_YES:AppCompatDelegate.MODE_NIGHT_NO);
         });
 
-        snackbar.setAction(R.string.retry, view -> {
-            viewModel.setQuery(queryStr);
-        });
+        snackbar.setAction(R.string.retry, view -> viewModel.setQuery(queryStr));
 
         recyclerView.setVisibility(View.GONE);
         messageLayout.setVisibility(View.VISIBLE);
@@ -233,7 +231,7 @@ public class BoardSearchUsers extends AppCompatActivity {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             mode.getMenuInflater()
-                    .inflate(R.menu.board_menu_items, menu);
+                    .inflate(R.menu.board_add_user_action_mode, menu);
             mode.setTitle("1 Selected ");
             setStatusBarColor(MaterialColors.getColor(BoardSearchUsers.this, R.attr.actionModeStatusBarColor, Color.WHITE));
             return true;

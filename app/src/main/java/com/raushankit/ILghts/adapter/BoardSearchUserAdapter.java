@@ -38,7 +38,7 @@ public class BoardSearchUserAdapter extends ListAdapter<BoardSearchUserModel, Bo
     @Override
     public BoardSearchUserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         cardBackgroundColor = parent.getContext()
-                .getColor(R.color.list_item_background);
+                .getColor(R.color.cards_and_dialogs_color);
         return new BoardSearchUserViewHolder(
                 LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.board_search_user_list_item, parent, false)

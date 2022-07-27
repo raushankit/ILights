@@ -6,7 +6,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,40 +21,26 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Request;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.raushankit.ILghts.BoardForm;
+import com.raushankit.ILghts.BoardSearchUsers;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.BoardUserItemAdapter;
 import com.raushankit.ILghts.dialogs.BoardBottomSheetFragment;
 import com.raushankit.ILghts.entity.BoardConst;
 import com.raushankit.ILghts.entity.BoardFormConst;
-import com.raushankit.ILghts.storage.VolleyRequest;
-import com.raushankit.ILghts.utils.BoardFabLayout;
 import com.raushankit.ILghts.viewModel.BoardDataViewModel;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class BoardFragment extends Fragment {
     public static final String TAG = "BoardFragment";
-    private static final String DELETE_URL = "https://identitytoolkit.googleapis.com/v1/accounts:delete?key=";
     private View view;
-    private VolleyRequest requestQueue;
-
     private RecyclerView recyclerView;
     private BoardDataViewModel boardDataViewModel;
     private ShimmerFrameLayout shimmerFrameLayout;
     private BoardUserItemAdapter adapter;
-    private ActivityResultLauncher<Intent> addBoardLauncher;
     private ActivityResultLauncher<Intent> addBoardUsersLauncher;
     private String uid;
     private final BoardBottomSheetFragment.WhichButtonCLickedListener listener;
@@ -86,7 +71,7 @@ public class BoardFragment extends Fragment {
                             .setFragmentResult(BoardConst.REQUEST_KEY, args);
                     break;
                 case ADD_MEMBERS:
-                    Intent intent = new Intent(requireActivity(), BoardForm.class);
+                    Intent intent = new Intent(requireActivity(), BoardSearchUsers.class);
                     intent.putExtra("BOARD_ID", details.getBoardId());
                     addBoardUsersLauncher.launch(intent);
                     break;
@@ -114,7 +99,6 @@ public class BoardFragment extends Fragment {
         }
         boardDataViewModel = new ViewModelProvider(requireActivity())
                 .get(BoardDataViewModel.class);
-        requestQueue = VolleyRequest.newInstance(requireActivity());
     }
 
     @Override
@@ -122,20 +106,7 @@ public class BoardFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_board, container, false);
-        BoardFabLayout boardFabLayout = new BoardFabLayout(view.findViewById(R.id.board_fab_button_layout), new WeakReference<>(requireContext()));
-        addBoardLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result -> {
-                    if(result.getResultCode() == Activity.RESULT_OK && result.getData() != null){
-                        Intent receiveIntent = result.getData();
-                        Snackbar.make(view, getString(R.string.board_form_success_message, receiveIntent.getStringExtra(BoardFormConst.TITLE)), BaseTransientBottomBar.LENGTH_SHORT).show();
-                    }
-                    if(result.getResultCode() == Activity.RESULT_CANCELED && result.getData() != null){
-                        Intent receiveIntent = result.getData();
-                        deleteBoardCredentials(receiveIntent.getStringExtra(BoardFormConst.API_KEY),
-                                receiveIntent.getStringExtra(BoardFormConst.ID_TOKEN));
-                    }
-                }
-        );
+        // BoardFabLayout boardFabLayout = new BoardFabLayout(view.findViewById(R.id.board_fab_button_layout), new WeakReference<>(requireContext()));
         addBoardUsersLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
                     if(result.getResultCode() == Activity.RESULT_OK && result.getData() != null){
@@ -144,8 +115,6 @@ public class BoardFragment extends Fragment {
                     }
                     if(result.getResultCode() == Activity.RESULT_CANCELED && result.getData() != null){
                         Intent receiveIntent = result.getData();
-                        deleteBoardCredentials(receiveIntent.getStringExtra(BoardFormConst.API_KEY),
-                                receiveIntent.getStringExtra(BoardFormConst.ID_TOKEN));
                     }
                 }
         );
@@ -178,7 +147,7 @@ public class BoardFragment extends Fragment {
         shimmerFrameLayout.setVisibility(View.VISIBLE);
         shimmerFrameLayout.startShimmer();
         recyclerView.setAdapter(adapter);
-        recyclerView.setOnScrollChangeListener((v,i1,i2,i3,i4)->{
+        /*recyclerView.setOnScrollChangeListener((v,i1,i2,i3,i4)->{
             if(Math.abs(i4) > 25){
                 boardFabLayout.closeOptions();
             }
@@ -196,30 +165,9 @@ public class BoardFragment extends Fragment {
                 default:
                     Log.w(TAG, "onCreateView: unknown click item");
             }
-        });
+        });*/
 
         return view;
-    }
-
-    private void deleteBoardCredentials(String apiKey, String idToken){
-        if(TextUtils.isEmpty(apiKey) || TextUtils.isEmpty(idToken)){
-            return;
-        }
-        JSONObject js = new JSONObject();
-        try{
-            js.put("idToken", idToken);
-        }catch (JSONException e){
-            Log.w(TAG, "sendRequest: ", e);
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, DELETE_URL + apiKey, js, response -> Log.i(TAG, "deleteBoardCredentials: deleted credentials"), error -> Log.i(TAG, "deleteBoardCredentials: error deleting credentials")){
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-        requestQueue.add(request);
     }
 
     @Override

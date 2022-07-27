@@ -1,6 +1,5 @@
 package com.raushankit.ILghts.dialogs;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -59,13 +58,12 @@ public class BoardBottomSheetFragment extends BottomSheetDialogFragment implemen
         addMembers.setVisibility(level >= 3? View.VISIBLE: View.GONE);
         editMembers.setVisibility(level >= 3? View.VISIBLE: View.GONE);
         goToBoardBtn.setVisibility(level >= 0? View.VISIBLE: View.GONE);
-        approveReqButton.setVisibility(level >= 3? View.VISIBLE: View.GONE);
+        approveReqButton.setVisibility(level == 1? View.VISIBLE: View.GONE);
         deleteBoardBtn.setVisibility(level >= 3? View.VISIBLE: View.GONE);
         leaveBoardBtn.setVisibility(level <= 2? View.VISIBLE: View.GONE);
 
         userId.setText(getString(R.string.frag_bottom_sheet_board_options_uid_text, data.getBoardId()));
         title.setText(data.getData().getTitle());
-        approveReqButton.setText(data.getAccessLevel() == 1? R.string.request_higher_access: R.string.approve_requests);
 
         copyIdBtn.setOnClickListener(this);
         editDetails.setOnClickListener(this);
@@ -100,7 +98,7 @@ public class BoardBottomSheetFragment extends BottomSheetDialogFragment implemen
             listener.onCLick(WhichButton.GO_TO_BOARD, data);
         }
         else if(id == R.id.frag_bottom_sheet_board_options_approve_request_button){
-            listener.onCLick(data.getAccessLevel() == 1? WhichButton.GET_HIGHER_ACCESS: WhichButton.APPROVE_REQUESTS, data);
+            listener.onCLick(WhichButton.GET_HIGHER_ACCESS, data);
         }
         else if(id == R.id.frag_bottom_sheet_board_options_delete_board_button){
             listener.onCLick(WhichButton.DELETE_BOARD, data);
@@ -140,6 +138,6 @@ public class BoardBottomSheetFragment extends BottomSheetDialogFragment implemen
     }
 
     public enum WhichButton {
-        COPY_ID, EDIT_DETAILS, SHOW_CREDENTIALS,ADD_MEMBERS, EDIT_MEMBERS, GO_TO_BOARD, APPROVE_REQUESTS, GET_HIGHER_ACCESS, DELETE_BOARD, LEAVE_BOARD, NO_ARGS
+        COPY_ID, EDIT_DETAILS, SHOW_CREDENTIALS,ADD_MEMBERS, EDIT_MEMBERS, GO_TO_BOARD, GET_HIGHER_ACCESS, DELETE_BOARD, LEAVE_BOARD, NO_ARGS
     }
 }

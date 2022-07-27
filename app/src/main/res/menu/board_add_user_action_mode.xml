@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/board_add_user_action_mode_editor"
-        android:title="@string/add_users_as_editor"
-        app:showAsAction="never"/>
-    <item
         android:id="@+id/board_add_user_action_mode_user"
         android:title="@string/add_users"
-        app:showAsAction="never"/>
+        app:showAsAction="collapseActionView"/>
+    <item
+        android:id="@+id/board_add_user_action_mode_editor"
+        android:title="@string/add_users_as_editor"
+        app:showAsAction="collapseActionView"/>
 </menu>

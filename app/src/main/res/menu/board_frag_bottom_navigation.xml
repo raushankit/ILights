@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bottom_nav_add_boards"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_add_24"
+        android:title="@string/add_board"/>
+    <item
+        android:id="@+id/bottom_nav_more_boards"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_developer_board_24"
+        android:title="@string/more_boards"/>
+    <item
+        android:id="@+id/bottom_nav_notifications"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_notifications_24"
+        android:title="@string/notifications"/>
+</menu>

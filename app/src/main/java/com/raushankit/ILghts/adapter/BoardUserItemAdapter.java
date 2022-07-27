@@ -43,7 +43,7 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
         boardIdString = parent.getContext().getString(R.string.board_list_item_board_id);
         activeColor = parent.getContext().getColor(R.color.scarlet_red);
         inactiveColor = parent.getContext().getColor(R.color.board_list_item_title_text);
-        cardBackGroundColor = parent.getContext().getColor(R.color.list_item_background);
+        cardBackGroundColor = parent.getContext().getColor(R.color.cards_and_dialogs_color);
         return new BoardUserItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.board_list_item, parent, false));
     }
 

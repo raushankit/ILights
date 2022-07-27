@@ -27,7 +27,7 @@
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">#1F1F1F</item>
+        <item name="android:statusBarColor">#212121</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowActionModeOverlay">true</item>
         <item name="windowActionModeOverlay">true</item>
@@ -35,7 +35,7 @@
         <item name="android:windowActionBarOverlay">true</item>
         <item name="actionModeStyle">@style/Theme.ILights.1.ActionModeStyleDark</item>
         <!-- Customize your theme here. -->
-        <item name="toolbarColor">#1F1F1F</item>
+        <item name="toolbarColor">#212121</item>
         <item name="inactive_color">#919191</item>
         <item name="flowBackgroundColor">#29BB86FC</item>
         <item name="actionModeStatusBarColor">@color/shamrock_green</item>
