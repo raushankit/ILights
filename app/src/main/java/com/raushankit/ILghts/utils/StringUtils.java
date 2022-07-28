@@ -34,6 +34,11 @@ public class StringUtils {
         return DateFormat.format("dd-MM-yyyy hh:mm:ss aaa", cal).toString();
     }
 
+    public static long TIMESTAMP(){
+        return Calendar.getInstance()
+                .getTimeInMillis();
+    }
+
     @StringRes
     public static int getDataBaseErrorMessageFromCode(int code){
         switch (code){

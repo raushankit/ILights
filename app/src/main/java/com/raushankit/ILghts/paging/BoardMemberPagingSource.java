@@ -10,6 +10,7 @@ import androidx.paging.rxjava3.RxPagingSource;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.model.board.BoardAuthUser;
+import com.raushankit.ILghts.response.BoardMemberResponse;
 
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;

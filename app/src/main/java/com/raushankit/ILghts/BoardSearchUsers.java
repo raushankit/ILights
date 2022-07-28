@@ -179,7 +179,7 @@ public class BoardSearchUsers extends AppCompatActivity {
                 key = "user_notif/" + it.getUserId() + "/" + UUID.randomUUID().toString();
                 mp.put(key + "/body", "You were added to " + data.getData().getTitle() +
                         " by " + data.getOwnerName());
-                mp.put(key + "/time", ServerValue.TIMESTAMP);
+                mp.put(key + "/time", -1*StringUtils.TIMESTAMP());
                 mp.put(key + "/type", NotificationType.TEXT);
                 builder.append(StringUtils.capitalize(it.getName())).append(", ");
             }
@@ -191,7 +191,7 @@ public class BoardSearchUsers extends AppCompatActivity {
                 .append(data.getData().getTitle());
         String key = "user_notif/" + data.getOwnerId() + "/" + UUID.randomUUID().toString();
         mp.put(key + "/body", builder.toString());
-        mp.put(key + "/time", ServerValue.TIMESTAMP);
+        mp.put(key + "/time", -1*StringUtils.TIMESTAMP());
         mp.put(key + "/type", NotificationType.TEXT);
         viewModel.addUsers(mp);
     }

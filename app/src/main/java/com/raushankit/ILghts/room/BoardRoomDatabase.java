@@ -7,6 +7,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.raushankit.ILghts.model.Notification;
 import com.raushankit.ILghts.model.board.BoardAuthUser;
 import com.raushankit.ILghts.model.board.FavBoard;
 import com.raushankit.ILghts.model.room.BoardRoomData;
@@ -19,15 +20,18 @@ import java.util.concurrent.Executors;
         BoardRoomData.class,
         BoardRoomUserData.class,
         BoardAuthUser.class,
-        FavBoard.class
+        FavBoard.class,
+        Notification.class
         },
         autoMigrations = { @AutoMigration(from = 1, to = 2),
-                            @AutoMigration(from = 2, to = 3)},
-        version = 3, exportSchema = true)
+                            @AutoMigration(from = 2, to = 3),
+                            @AutoMigration(from = 3, to = 4)},
+        version = 4, exportSchema = true)
 public abstract class BoardRoomDatabase extends RoomDatabase {
 
     public abstract BoardDao boardDao();
     public abstract BoardMemberDao boardMemberDao();
+    public abstract NotificationDao notificationDao();
     public static volatile BoardRoomDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
 

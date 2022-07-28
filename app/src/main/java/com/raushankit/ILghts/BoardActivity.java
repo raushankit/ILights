@@ -14,7 +14,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.util.Pair;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
@@ -33,7 +32,6 @@ import com.raushankit.ILghts.fragments.board.BoardEditDetails;
 import com.raushankit.ILghts.fragments.board.BoardEditMemberFragment;
 import com.raushankit.ILghts.fragments.board.BoardFragment;
 import com.raushankit.ILghts.fragments.board.NotificationFragment;
-import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.storage.VolleyRequest;
 import com.raushankit.ILghts.viewModel.BoardCommViewModel;
@@ -101,6 +99,7 @@ public class BoardActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         String key = result.getString(BoardConst.WHICH_FRAG);
+        // TODO: 28-07-2022 must change this to fragment board
         key = key == null? BoardConst.FRAG_BOARD: key;
         switch (key){
             case BoardConst.FRAG_BOARD:
@@ -125,6 +124,12 @@ public class BoardActivity extends AppCompatActivity {
             case BoardConst.FRAG_CRED_DETAILS:
                 ft.replace(R.id.board_main_frame,
                                 BoardCredentialViewer.newInstance(result.getParcelable(BoardConst.BOARD_DATA)))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case BoardConst.FRAG_NOTIFICATION:
+                ft.replace(R.id.board_main_frame,
+                                NotificationFragment.newInstance(Objects.requireNonNull(mAuth.getUid())))
                         .addToBackStack(null)
                         .commit();
                 break;
@@ -199,12 +204,9 @@ public class BoardActivity extends AppCompatActivity {
                 // return true;
             }
             else if(id == itemNotification.getItemId()){
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(R.id.board_main_frame,
-                                NotificationFragment.newInstance(Objects.requireNonNull(mAuth.getUid())))
-                        .addToBackStack(null)
-                        .commit();
+                Bundle args = new Bundle();
+                args.putString(BoardConst.WHICH_FRAG, BoardConst.FRAG_NOTIFICATION);
+                switchFrag(args);
                 return true;
             }
             return false;

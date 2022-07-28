@@ -296,5 +296,6 @@
     <string name="database_error_permission_denied">This client does not have permission to perform this operation</string>
     <string name="database_error_unavailable">The service is unavailable</string>
     <string name="database_error_unknown_error">An unknown error occurred.</string>
+    <string name="notification_icon">Notification Icon</string>
 
 </resources>

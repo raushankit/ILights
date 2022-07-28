@@ -1,4 +1,4 @@
-package com.raushankit.ILghts.paging;
+package com.raushankit.ILghts.response;
 
 import android.util.Log;
 
@@ -73,3 +73,4 @@ public class BoardMemberResponse {
                 '}';
     }
 }
+

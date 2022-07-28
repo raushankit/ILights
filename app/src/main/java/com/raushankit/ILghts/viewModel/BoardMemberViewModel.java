@@ -16,14 +16,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.raushankit.ILghts.entity.NotificationType;
 import com.raushankit.ILghts.model.board.BoardAuthUser;
+import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.room.BoardMemberDao;
 import com.raushankit.ILghts.room.BoardMemberRemoteMediator;
 import com.raushankit.ILghts.room.BoardRoomDatabase;
+import com.raushankit.ILghts.utils.StringUtils;
 import com.raushankit.ILghts.utils.callbacks.CallBack;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import io.reactivex.rxjava3.core.Flowable;
 import kotlinx.coroutines.CoroutineScope;
@@ -46,9 +50,6 @@ public class BoardMemberViewModel extends AndroidViewModel {
         remoteDb =  FirebaseDatabase.getInstance().getReference();
         this.boardId = boardId;
         memberDao = db.boardMemberDao();
-        BoardRoomDatabase.databaseExecutor.execute(() -> {
-            Log.i(TAG, "BoardMemberViewModel: init_data" + memberDao.getPagingMembersListByBoardId(boardId));
-        });
         remoteMediator = new BoardMemberRemoteMediator(remoteDb, db, boardId);
         @SuppressLint("UnsafeOptInUsageError") Pager<Integer, BoardAuthUser> pager = new Pager<>(
                 new PagingConfig(15),
@@ -66,10 +67,22 @@ public class BoardMemberViewModel extends AndroidViewModel {
     }
 
     @SuppressLint("UnsafeOptInUsageError")
-    public void promoteUser(String userId, int level, @NonNull CallBack<DatabaseError> errorCallBack){
+    public void promoteUser(BoardRoomUserData board, BoardAuthUser user, @NonNull CallBack<DatabaseError> errorCallBack){
         Map<String, Object> mp = new HashMap<>();
+        String userId = user.getUserId();
+        int level = user.getLevel() == 1? 2: 1;
         mp.put("board_auth/" + boardId + "/" + userId + "/level", level);
         mp.put("user_boards/" + userId + "/boards/" + boardId, level);
+        String key = "user_notif/" + board.getOwnerId() + "/" + UUID.randomUUID().toString();
+        mp.put(key + "/body", "You " + (user.getLevel() == 1? "promoted ": "demoted ") + StringUtils.capitalize(user.getName())
+                + " on board " + board.getData().getTitle());
+        mp.put(key + "/time", -1* StringUtils.TIMESTAMP());
+        mp.put(key + "/type", NotificationType.TEXT);
+        key = "user_notif/" + userId + "/" + UUID.randomUUID().toString();
+        mp.put(key + "/body", (user.getLevel() == 1? "Admin has given you EDITOR access on board ":
+                "Admin has removed your EDITOR level access from board ") + board.getData().getTitle());
+        mp.put(key + "/time", -1* StringUtils.TIMESTAMP());
+        mp.put(key + "/type", NotificationType.TEXT);
         remoteDb.updateChildren(mp, (error, ref) -> {
             if(error == null){
                 remoteMediator.updateBoardUser(userId, level);
@@ -79,11 +92,21 @@ public class BoardMemberViewModel extends AndroidViewModel {
     }
 
     @SuppressLint("UnsafeOptInUsageError")
-    public void deleteUser(String userId, @NonNull CallBack<DatabaseError> errorCallBack){
+    public void deleteUser(BoardRoomUserData board, BoardAuthUser user, @NonNull CallBack<DatabaseError> errorCallBack){
         Map<String, Object> mp = new HashMap<>();
+        String userId = user.getUserId();
         mp.put("board_auth/" + boardId + "/" + userId, null);
         mp.put("user_boards/" + userId + "/boards/" + boardId, null);
         mp.put("user_boards/" + userId + "/num", ServerValue.increment(-1));
+        String key = "user_notif/" + board.getOwnerId() + "/" + UUID.randomUUID().toString();
+        mp.put(key + "/body", "You removed " + StringUtils.capitalize(user.getName())
+                + " from board " + board.getData().getTitle());
+        mp.put(key + "/time", -1* StringUtils.TIMESTAMP());
+        mp.put(key + "/type", NotificationType.TEXT);
+        key = "user_notif/" + userId + "/" + UUID.randomUUID().toString();
+        mp.put(key + "/body", "Admin has remove you from board " + board.getData().getTitle());
+        mp.put(key + "/time", -1* StringUtils.TIMESTAMP());
+        mp.put(key + "/type", NotificationType.TEXT);
         remoteDb.updateChildren(mp, (error, ref) -> {
             if(error == null){
                 remoteMediator.deleteUser(userId);

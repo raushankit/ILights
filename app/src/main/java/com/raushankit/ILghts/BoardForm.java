@@ -30,6 +30,7 @@ import com.raushankit.ILghts.model.board.BoardCredModel;
 import com.raushankit.ILghts.model.board.BoardCredentialModel;
 import com.raushankit.ILghts.model.board.BoardPinsModel;
 import com.raushankit.ILghts.utils.FormFlowLine;
+import com.raushankit.ILghts.utils.StringUtils;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
 import java.util.HashMap;
@@ -213,7 +214,7 @@ public class BoardForm extends AppCompatActivity {
         mp.put("board_details/" + boardId + "/pins", pinsModel.getUsablePins());
         String key = "user_notif/" + uid + "/" + UUID.randomUUID().toString();
         mp.put(key + "/body", "You created board " + basicModel.getName());
-        mp.put(key + "/time", ServerValue.TIMESTAMP);
+        mp.put(key + "/time", -1* StringUtils.TIMESTAMP());
         mp.put(key + "/type", NotificationType.TEXT);
         if(basicModel.getVisibility() == 0){
             mp.put("board_public/" + boardId, ServerValue.TIMESTAMP);

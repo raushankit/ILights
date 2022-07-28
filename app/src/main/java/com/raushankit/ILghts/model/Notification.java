@@ -35,6 +35,7 @@ public class Notification {
     @Ignore
     public Notification() {}
 
+    @Ignore
     public Notification(@NonNull String id, String body, Long time, String type, boolean seen) {
         this.id = id;
         this.body = body;

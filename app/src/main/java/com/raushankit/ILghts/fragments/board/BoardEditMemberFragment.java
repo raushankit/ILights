@@ -66,8 +66,6 @@ public class BoardEditMemberFragment extends Fragment {
         if(args != null){
             boardData = args.getParcelable(BoardConst.BOARD_DATA);
             Log.i(TAG, "onCreate: BoardData = " + boardData);
-        }else{
-            getParentFragmentManager().popBackStackImmediate();
         }
     }
 
@@ -152,11 +150,10 @@ public class BoardEditMemberFragment extends Fragment {
             if(whichButton == AlertDialogFragment.WhichButton.POSITIVE){
                 switch (clickedData.first){
                     case PROMOTE:
-                        viewModel.promoteUser(clickedData.second.getUserId(),
-                                clickedData.second.getLevel()==1? 2: 1, callBack);
+                        viewModel.promoteUser(boardData, clickedData.second, callBack);
                         break;
                     case DELETE:
-                        viewModel.deleteUser(clickedData.second.getUserId(), callBack);
+                        viewModel.deleteUser(boardData, clickedData.second, callBack);
                         break;
                     default:
                         Log.i(TAG, "onViewCreated: should not reach here");
