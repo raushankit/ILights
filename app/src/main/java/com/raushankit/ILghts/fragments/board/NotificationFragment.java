@@ -15,13 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.NotificationAdapter;
-import com.raushankit.ILghts.entity.NotificationType;
 import com.raushankit.ILghts.factory.NotificationViewModelFactory;
-import com.raushankit.ILghts.model.Notification;
 import com.raushankit.ILghts.viewModel.NotificationViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
@@ -52,7 +47,9 @@ public class NotificationFragment extends Fragment {
         Bundle args = getArguments();
         assert args != null;
         uid = args.getString("user_id");
-        adapter = new NotificationAdapter();
+        adapter = new NotificationAdapter(((type, data) -> {
+
+        }));
     }
 
     @Override

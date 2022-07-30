@@ -26,6 +26,9 @@ public class Notification {
     private Long time;
     private String type;
 
+    @ColumnInfo(defaultValue = "0")
+    private int pagination;
+
     @Embedded
     private NotificationData data;
 
@@ -44,11 +47,22 @@ public class Notification {
         this.seen = seen;
     }
 
+    @Ignore
     public Notification(@NonNull String id, String body, Long time, String type, NotificationData data, boolean seen) {
         this.id = id;
         this.body = body;
         this.time = time;
         this.type = type;
+        this.data = data;
+        this.seen = seen;
+    }
+
+    public Notification(@NonNull String id, String body, Long time, String type, int pagination, NotificationData data, boolean seen) {
+        this.id = id;
+        this.body = body;
+        this.time = time;
+        this.type = type;
+        this.pagination = pagination;
         this.data = data;
         this.seen = seen;
     }
@@ -102,17 +116,25 @@ public class Notification {
         this.data = data;
     }
 
+    public int getPagination() {
+        return pagination;
+    }
+
+    public void setPagination(int pagination) {
+        this.pagination = pagination;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Notification)) return false;
         Notification that = (Notification) o;
-        return seen == that.seen && id.equals(that.id) && Objects.equals(body, that.body) && Objects.equals(time, that.time) && Objects.equals(type, that.type) && Objects.equals(data, that.data);
+        return pagination == that.pagination && seen == that.seen && id.equals(that.id) && Objects.equals(body, that.body) && Objects.equals(time, that.time) && Objects.equals(type, that.type) && Objects.equals(data, that.data);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, body, time, type, data, seen);
+        return Objects.hash(id, body, time, type, pagination, data, seen);
     }
 
     @NonNull
@@ -123,6 +145,7 @@ public class Notification {
                 ", body='" + body + '\'' +
                 ", time=" + time +
                 ", type='" + type + '\'' +
+                ", pagination=" + pagination +
                 ", data=" + data +
                 ", seen=" + seen +
                 '}';

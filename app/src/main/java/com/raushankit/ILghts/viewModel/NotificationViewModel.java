@@ -16,6 +16,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.model.Notification;
 import com.raushankit.ILghts.room.BoardRoomDatabase;
+import com.raushankit.ILghts.room.NotificationDao;
+import com.raushankit.ILghts.room.NotificationFetcher;
 import com.raushankit.ILghts.room.NotificationRemoteMediator;
 
 import io.reactivex.rxjava3.core.Flowable;
@@ -24,7 +26,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi;
 
 public class NotificationViewModel extends AndroidViewModel {
     private static final String TAG = "NotificationViewModel";
-    private final NotificationRemoteMediator remoteMediator;
+    private final NotificationFetcher fetcher;
     private final Flowable<PagingData<Notification>> flowable;
     private final DatabaseReference remoteDb;
     private final String userId;
@@ -38,12 +40,11 @@ public class NotificationViewModel extends AndroidViewModel {
         BoardRoomDatabase db = BoardRoomDatabase.getDatabase(application);
         remoteDb =  FirebaseDatabase.getInstance().getReference();
         this.userId = userId;
-        remoteMediator = new NotificationRemoteMediator(remoteDb, db, userId);
+        fetcher = new NotificationFetcher(remoteDb, db, userId);
         Pager<Integer, Notification> pager = new Pager<>(
-                new PagingConfig(15),
+                new PagingConfig(20),
                 null,
-                remoteMediator,
-                remoteMediator::getSource
+                fetcher::getSource
         );
         flowable = PagingRx.getFlowable(pager);
         CoroutineScope scope = ViewModelKt.getViewModelScope(this);
@@ -53,4 +54,5 @@ public class NotificationViewModel extends AndroidViewModel {
     public Flowable<PagingData<Notification>> getFlowable() {
         return flowable;
     }
+
 }

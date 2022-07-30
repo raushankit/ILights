@@ -89,5 +89,13 @@
             android:paddingEnd="@dimen/_8sdp"
             android:text="@string/title"
             android:textSize="@dimen/_9sdp" />
+
+        <include
+            android:id="@+id/board_notification_list_item_loader_layout"
+            layout="@layout/loading_details_header_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_below="@id/board_notification_list_item_accept_button" />
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -1,10 +1,13 @@
 package com.raushankit.ILghts.adapter;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,15 +16,19 @@ import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textview.MaterialTextView;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.entity.NotificationType;
 import com.raushankit.ILghts.model.Notification;
 import com.raushankit.ILghts.utils.StringUtils;
 
 public class NotificationAdapter extends PagingDataAdapter<Notification, NotificationAdapter.NotificationViewHolder> {
+    private static final String TAG = "NotificationAdapter";
+    private final WhichButtonClickedListener listener;
 
-    public NotificationAdapter() {
+    public NotificationAdapter(@NonNull final WhichButtonClickedListener listener) {
         super(Notification.DIFF_UTIL);
+        this.listener = listener;
     }
 
     @NonNull
@@ -38,12 +45,16 @@ public class NotificationAdapter extends PagingDataAdapter<Notification, Notific
         holder.bind(getItem(position));
     }
 
-    static class NotificationViewHolder extends RecyclerView.ViewHolder {
+    class NotificationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView body;
         private final TextView time;
         private final MaterialButton accept;
         private final MaterialButton reject;
         private final ImageView imageView;
+        private final LinearLayout loadingLayout;
+        private final ProgressBar progressBar;
+        private final MaterialTextView loadingTextView;
+        private final MaterialButton retryButton;
 
         public NotificationViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -52,15 +63,55 @@ public class NotificationAdapter extends PagingDataAdapter<Notification, Notific
             time = itemView.findViewById(R.id.board_notification_list_item_time);
             accept = itemView.findViewById(R.id.board_notification_list_item_accept_button);
             reject = itemView.findViewById(R.id.board_notification_list_item_reject_button);
+            loadingLayout = itemView.findViewById(R.id.board_notification_list_item_loader_layout);
+            progressBar = loadingLayout.findViewById(R.id.loading_details_header_footer_progress_bar);
+            loadingTextView = loadingLayout.findViewById(R.id.loading_details_header_footer_error_msg);
+            retryButton = loadingLayout.findViewById(R.id.loading_details_header_footer_retry_button);
+
+            accept.setOnClickListener(this);
+            reject.setOnClickListener(this);
+            retryButton.setOnClickListener(this);
         }
 
         public void bind(@Nullable Notification item){
             if(item == null) { return; }
             imageView.setImageResource(TextUtils.equals(NotificationType.TEXT, item.getType())? R.drawable.ic_baseline_notifications_24: R.drawable.ic_edit_notifications_filled);
             body.setText(item.getBody());
+            if(item.getPagination() > NotificationType.END_OF_PAGE){
+                loadingTextView.setVisibility(item.getPagination() == NotificationType.LOADING? View.GONE: View.VISIBLE);
+                progressBar.setVisibility(item.getPagination() == NotificationType.LOADING? View.VISIBLE: View.GONE);
+                retryButton.setVisibility(item.getPagination() == NotificationType.LOADING? View.GONE: View.VISIBLE);
+                loadingTextView.setText(R.string.load_older_notifications);
+                retryButton.setText(R.string.load);
+                loadingLayout.setVisibility(View.VISIBLE);
+            }else{
+                loadingLayout.setVisibility(View.GONE);
+            }
             time.setText(StringUtils.formattedTime(-1*item.getTime()));
             accept.setVisibility(TextUtils.equals(item.getType(), NotificationType.TEXT)? View.GONE: View.VISIBLE);
             reject.setVisibility(TextUtils.equals(item.getType(), NotificationType.TEXT)? View.GONE: View.VISIBLE);
         }
+
+        @Override
+        public void onClick(View view) {
+            int id = view.getId();
+            if(id == R.id.board_notification_list_item_accept_button){
+                listener.onClick(WhichButton.ACTION_ACCEPT, getItem(getBindingAdapterPosition()));
+            }else if(id == R.id.board_notification_list_item_reject_button){
+                listener.onClick(WhichButton.ACTION_REJECT, getItem(getBindingAdapterPosition()));
+            }else if(id == R.id.loading_details_header_footer_retry_button){
+                listener.onClick(WhichButton.LOAD_MORE, getItem(getBindingAdapterPosition()));
+            }else{
+                Log.i(TAG, "onClick: unknown click event");
+            }
+        }
+    }
+
+    public enum WhichButton {
+        ACTION_ACCEPT, ACTION_REJECT, LOAD_MORE
+    }
+
+    public interface WhichButtonClickedListener {
+        void onClick(WhichButton type, Notification data);
     }
 }

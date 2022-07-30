@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_margin="@dimen/_5sdp"
     xmlns:tools="http://schemas.android.com/tools">
@@ -21,10 +22,13 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/loading_details_header_footer_retry_button"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/retry"
+        android:textAllCaps="false"
+        app:cornerRadius="@dimen/_40sdp"
+        android:paddingStart="@dimen/_40sdp"
+        android:paddingEnd="@dimen/_40sdp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/_8sdp" />
 
