@@ -210,6 +210,7 @@
     <string name="edit_details">Edit Details</string>
     <string name="show_credentials">Show Credentials</string>
     <string name="add_users">Add Users</string>
+    <string name="add_members">Add Members</string>
     <string name="edit_board_users">Edit Users</string>
     <string name="request_higher_access">Request Editor Level Access</string>
     <string name="delete_board">Delete Board</string>

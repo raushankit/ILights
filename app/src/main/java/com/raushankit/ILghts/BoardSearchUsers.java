@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,11 +43,13 @@ import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.utils.StringUtils;
 import com.raushankit.ILghts.viewModel.BoardSearchViewModel;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class BoardSearchUsers extends AppCompatActivity {
     private static final String TAG = "BoardSearchUsers";
@@ -123,7 +126,10 @@ public class BoardSearchUsers extends AppCompatActivity {
                                 Snackbar.make(findViewById(android.R.id.content), StringUtils.getDataBaseErrorMessageFromCode(s), BaseTransientBottomBar.LENGTH_LONG)
                                         .show();
                             }else{
-                                adapter.submitList(list);
+                                adapter.submitList(Collections.emptyList());
+                                adapter.submitList(list.stream()
+                                        .sorted((t1, t2) -> Boolean.compare(t1.isMember(), t2.isMember()))
+                                        .collect(Collectors.toList()));
                                 actionMode.finish();
                             }
                         });
@@ -160,15 +166,17 @@ public class BoardSearchUsers extends AppCompatActivity {
         });
     }
 
-    private void addUsers(int level){
+    private void addUsers(){
         loadingDialogFragment.show(getSupportFragmentManager(), LoadingDialogFragment.TAG);
         list = adapter.getCurrentList();
-        Map<String, BoardSearchUserModel> selectedUsers = adapter.getSelectedUsers();
+        Map<String, Pair<Integer, BoardSearchUserModel>> selectedUsers = adapter.getSelectedUsers();
         Map<String, Object> mp = new HashMap<>();
         StringBuilder builder = new StringBuilder("You added ");
         list.forEach(it -> {
             if(selectedUsers.containsKey(it.getUserId())){
                 it.setMember(true);
+                Pair<Integer, BoardSearchUserModel> pair = selectedUsers.get(it.getUserId());
+                int level = pair == null? 1: pair.first;
                 String key = "board_auth/" + data.getBoardId() + "/" + it.getUserId();
                 mp.put(key + "/name", it.getName().toLowerCase(Locale.getDefault()));
                 mp.put(key + "/email", it.getEmail());
@@ -181,13 +189,16 @@ public class BoardSearchUsers extends AppCompatActivity {
                         " by " + data.getOwnerName());
                 mp.put(key + "/time", -1*StringUtils.TIMESTAMP());
                 mp.put(key + "/type", NotificationType.TEXT);
-                builder.append(StringUtils.capitalize(it.getName())).append(", ");
+                builder.append(StringUtils.capitalize(it.getName()))
+                        .append("(")
+                        .append(it.getEmail())
+                        .append(")")
+                        .append(" as ")
+                        .append(level == 1? "USER, ": "EDITOR, ");
             }
         });
         builder.setLength(builder.length() - 2);
-        builder.append(" as ")
-                .append(level == 1? "USER": "EDITOR")
-                .append(" to board ")
+        builder.append(" to board ")
                 .append(data.getData().getTitle());
         String key = "user_notif/" + data.getOwnerId() + "/" + UUID.randomUUID().toString();
         mp.put(key + "/body", builder.toString());
@@ -308,11 +319,8 @@ public class BoardSearchUsers extends AppCompatActivity {
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             int id = item.getItemId();
-            if(id == R.id.board_add_user_action_mode_user){
-                addUsers(1);
-                return true;
-            }else if(id == R.id.board_add_user_action_mode_editor){
-                addUsers(2);
+            if(id == R.id.board_add_user_action_mode_members){
+                addUsers();
                 return true;
             }
             return false;
