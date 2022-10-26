@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.raushankit.ILghts.BoardSearchUsers;
@@ -41,6 +43,7 @@ public class BoardFragment extends Fragment {
     private ShimmerFrameLayout shimmerFrameLayout;
     private BoardUserItemAdapter adapter;
     private ActivityResultLauncher<Intent> addBoardUsersLauncher;
+    private LinearLayout noDataLayout;
     private String userId;
     private final BoardBottomSheetFragment.WhichButtonCLickedListener listener;
 
@@ -83,6 +86,7 @@ public class BoardFragment extends Fragment {
     public static BoardFragment newInstance(String userId) {
         BoardFragment fragment = new BoardFragment();
         Bundle args = new Bundle();
+        Log.i(TAG, "newInstance: " + userId);
         args.putString(BoardConst.USER_ID, userId);
         fragment.setArguments(args);
         return fragment;
@@ -114,6 +118,7 @@ public class BoardFragment extends Fragment {
                 }
         );
         recyclerView = view.findViewById(R.id.board_fragment_recyclerview);
+        noDataLayout = view.findViewById(R.id.board_fragment_no_data);
         DividerItemDecoration decoration = new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL);
         decoration.setDrawable(Objects.requireNonNull(ResourcesCompat.getDrawable(getResources(), R.drawable.board_list_item_divider_decoration, requireActivity().getTheme())));
         recyclerView.addItemDecoration(decoration);
@@ -175,6 +180,7 @@ public class BoardFragment extends Fragment {
                 recyclerView.setVisibility(View.VISIBLE);
             }
             Log.w(TAG, "onViewCreated: list = " + dataList);
+            noDataLayout.setVisibility(CollectionUtils.isEmpty(dataList)? View.VISIBLE: View.INVISIBLE);
             adapter.submitList(dataList);
         });
     }
@@ -185,6 +191,15 @@ public class BoardFragment extends Fragment {
         clipboardManager.setPrimaryClip(data);
         Snackbar.make(view, R.string.copied_board_id, BaseTransientBottomBar.LENGTH_SHORT)
                 .show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Bundle args = new Bundle();
+        args.putString(BoardConst.CURRENT_FRAG, BoardConst.FRAG_BOARD);
+        getParentFragmentManager()
+                .setFragmentResult(BoardConst.REQUEST_KEY, args);
     }
 
     @Override

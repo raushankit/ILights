@@ -16,9 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.model.Notification;
 import com.raushankit.ILghts.room.BoardRoomDatabase;
-import com.raushankit.ILghts.room.NotificationDao;
 import com.raushankit.ILghts.room.NotificationFetcher;
-import com.raushankit.ILghts.room.NotificationRemoteMediator;
 
 import io.reactivex.rxjava3.core.Flowable;
 import kotlinx.coroutines.CoroutineScope;
@@ -55,4 +53,8 @@ public class NotificationViewModel extends AndroidViewModel {
         return flowable;
     }
 
+    @Override
+    protected void onCleared() {
+        fetcher.removeSubscription();
+    }
 }

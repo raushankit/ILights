@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.NotificationAdapter;
+import com.raushankit.ILghts.entity.BoardConst;
 import com.raushankit.ILghts.factory.NotificationViewModelFactory;
 import com.raushankit.ILghts.viewModel.NotificationViewModel;
 
@@ -75,5 +76,14 @@ public class NotificationFragment extends Fragment {
         notificationViewModel.getFlowable()
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(notificationPagingData -> adapter.submitData(getLifecycle(), notificationPagingData));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Bundle args = new Bundle();
+        args.putString(BoardConst.CURRENT_FRAG, BoardConst.FRAG_NOTIFICATION);
+        getParentFragmentManager()
+                .setFragmentResult(BoardConst.REQUEST_KEY, args);
     }
 }

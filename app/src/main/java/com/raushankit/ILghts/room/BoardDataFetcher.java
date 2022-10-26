@@ -14,6 +14,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.raushankit.ILghts.entity.ListenerType;
 import com.raushankit.ILghts.model.board.BoardCredModel;
@@ -22,6 +23,7 @@ import com.raushankit.ILghts.model.room.BoardEditableData;
 import com.raushankit.ILghts.model.room.BoardRoomData;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,7 @@ import java.util.Map;
 import io.reactivex.rxjava3.core.Single;
 import kotlin.Triple;
 
-class BoardDataFetcher{
+class BoardDataFetcher {
     private static final String TAG = "BoardDataFetcher";
     private static final int REMOVAL_DELAY = 2000;
     private final MediatorLiveData<List<BoardRoomUserData>> userBoardData = new MediatorLiveData<>();
@@ -37,6 +39,7 @@ class BoardDataFetcher{
     private final BoardDao boardDao;
     private final Handler handler;
     private final UserBoardLiveData userBoardLiveData;
+    private final UserBoardCount userBoardCount;
     private final LiveData<List<BoardRoomUserData>> userBoardsList;
     private final Map<String, BoardUpdateLiveData> mp = new HashMap<>();
     private final Map<String, BoardUpdateLiveData> oldMp = new HashMap<>();
@@ -45,6 +48,7 @@ class BoardDataFetcher{
         boardDao = roomDb.boardDao();
         this.db = db;
         handler = new Handler(Looper.getMainLooper());
+        userBoardCount = new UserBoardCount(userId);
         userBoardLiveData = new UserBoardLiveData(userId);
         userBoardsList = boardDao.getUserBoards();
         init();
@@ -52,6 +56,12 @@ class BoardDataFetcher{
 
     private void init(){
         Log.i(TAG, "init() called");
+        userBoardData.addSource(userBoardCount, count -> {
+            Log.w(TAG, "init: no " + count);
+            if(count == 0) {
+                userBoardData.setValue(Collections.emptyList());
+            }
+        });
         userBoardData.addSource(userBoardLiveData, stringIntegerPair -> {
             Log.d(TAG, "getData: remote data = " + stringIntegerPair);
             fetchDataSingleTime(stringIntegerPair.component1(), stringIntegerPair.component2(), stringIntegerPair.component3());
@@ -120,18 +130,16 @@ class BoardDataFetcher{
     }
 
     Single<BoardCredModel> getBoardAuthResult(@NonNull String boardId){
-        return Single.create(emitter -> {
-            db.child("board_cred")
-                    .child(boardId)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if(task.isSuccessful()){
-                            emitter.onSuccess(task.getResult().getValue(BoardCredModel.class));
-                        }else{
-                            emitter.onSuccess(new BoardCredModel());
-                        }
-                    });
-        });
+        return Single.create(emitter -> db.child("board_cred")
+                .child(boardId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        emitter.onSuccess(task.getResult().getValue(BoardCredModel.class));
+                    }else{
+                        emitter.onSuccess(new BoardCredModel());
+                    }
+                }));
     }
 
     private void addListenerForUpdate(@NonNull String id){
@@ -174,6 +182,7 @@ class BoardDataFetcher{
     }
 
     public void forceCleanBoardUserList() {
+        userBoardData.removeSource(userBoardCount);
         userBoardData.removeSource(userBoardLiveData);
         userBoardData.removeSource(userBoardsList);
         mp.forEach((k,v) -> {
@@ -194,6 +203,7 @@ class BoardDataFetcher{
         private final ChildEventListener listener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Log.w(TAG, "onChildAdded: ");
                 isDataReceived = true;
                 setValue(new Triple<>(ListenerType.ADDED, snapshot.getKey(), snapshot.getValue(Integer.class)));
             }
@@ -225,6 +235,7 @@ class BoardDataFetcher{
             userDb = db.child("user_boards")
                     .child(userId)
                     .child("boards");
+            Log.i(TAG, "UserBoardLiveData: inside constructor");
             isDataReceived = false;
         }
 
@@ -247,6 +258,47 @@ class BoardDataFetcher{
             oldMp.putAll(mp);
             mp.clear();
             isDataReceived = false;
+        }
+    }
+
+    class UserBoardCount extends LiveData<Integer> {
+        private Integer count;
+        private final Query userDb;
+
+        private final ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                count = snapshot.getValue() == null? 0 : 1;
+                setValue(count);
+                Log.w(TAG, "onActive: get method = " + snapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "onActive: get method = " + error);
+            }
+        };
+
+        public UserBoardCount(@NonNull String userId) {
+            userDb = db.child("user_boards")
+                    .child(userId)
+                    .child("boards")
+                    .orderByKey()
+                    .limitToFirst(1);
+            Log.i(TAG, "UserBoardCount: inside constructor");
+            count = -1;
+        }
+
+        @Override
+        protected void onActive() {
+            Log.d(TAG, "onActive: UserBoardCount");
+            userDb.addValueEventListener(listener);
+        }
+
+        @Override
+        protected void onInactive() {
+            Log.d(TAG, "onInactive: UserBoardCount");
+            count = -1;
         }
     }
 

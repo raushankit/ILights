@@ -44,6 +44,32 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <LinearLayout
+        android:id="@+id/board_fragment_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:gravity="center">
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/board_fragment_no_data_lottie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:lottie_autoPlay="true"
+            app:lottie_rawRes="@raw/nodata"
+            app:lottie_speed="1.6" />
+        <TextView
+            android:id="@+id/board_fragment_no_boards_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_16sdp"
+            android:padding="@dimen/_20sdp"
+            android:textColor="?attr/colorPrimary"
+            android:text="@string/no_boards_message">
+        </TextView>
+    </LinearLayout>
+
     <!--include
         android:id="@+id/board_fab_button_layout"
         android:layout_width="wrap_content"

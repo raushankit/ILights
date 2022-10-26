@@ -95,9 +95,7 @@ public class BoardVerification extends Fragment {
 
         prevButton.setOnClickListener(v -> getParentFragmentManager().popBackStackImmediate());
 
-        nextButton.setOnClickListener(v -> {
-            getParentFragmentManager().setFragmentResult(BoardFormConst.REQUEST, result);
-        });
+        nextButton.setOnClickListener(v -> getParentFragmentManager().setFragmentResult(BoardFormConst.REQUEST, result));
     }
 
     private void expandOrShrink(LinearLayout layout, MaterialTextView textView, @DrawableRes int res){
