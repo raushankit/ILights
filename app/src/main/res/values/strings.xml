@@ -290,6 +290,8 @@
     <string name="reject">Reject</string>
     <string name="add_users_successful">Successfully added users to board</string>
     <string name="adding_users">Adding Users</string>
+    <string name="add_as_user">Add as USER</string>
+    <string name="add_as_editor">Add as EDITOR</string>
 
     <string name="database_error_disconnected">The operation had to be aborted due to a network disconnect</string>
     <string name="database_error_max_retries">Too many retries</string>

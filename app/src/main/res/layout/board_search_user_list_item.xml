@@ -88,7 +88,7 @@
                 android:textAllCaps="false"
                 android:padding="0dp"
                 app:strokeWidth="0dp"
-                android:text="Add as USER"/>
+                android:text="@string/add_as_user"/>
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/board_search_user_list_item_role_editor"
                 android:layout_width="0dp"
@@ -98,7 +98,7 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_height="wrap_content"
                 android:textAllCaps="false"
-                android:text="Add as EDITOR"/>
+                android:text="@string/add_as_editor"/>
         </LinearLayout>
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>
