@@ -210,6 +210,7 @@
     <string name="edit_details">Edit Details</string>
     <string name="show_credentials">Show Credentials</string>
     <string name="add_users">Add Users</string>
+    <string name="add_members">Add Members</string>
     <string name="edit_board_users">Edit Users</string>
     <string name="request_higher_access">Request Editor Level Access</string>
     <string name="delete_board">Delete Board</string>
@@ -289,6 +290,8 @@
     <string name="reject">Reject</string>
     <string name="add_users_successful">Successfully added users to board</string>
     <string name="adding_users">Adding Users</string>
+    <string name="add_as_user">Add as USER</string>
+    <string name="add_as_editor">Add as EDITOR</string>
 
     <string name="database_error_disconnected">The operation had to be aborted due to a network disconnect</string>
     <string name="database_error_max_retries">Too many retries</string>
@@ -300,5 +303,6 @@
     <string name="failed_to_load_data">Failed to Load Data</string>
     <string name="load_older_notifications">Load older notifications</string>
     <string name="load">Load</string>
+    <string name="no_boards_message">You have access to no boards. Go to <b>More Boards</b> to add Board</string>
 
 </resources>

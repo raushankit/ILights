@@ -9,12 +9,14 @@ import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.raushankit.ILghts.entity.NotificationType;
 import com.raushankit.ILghts.model.Role;
 import com.raushankit.ILghts.model.User;
 
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class UserUpdates {
     private static final String TAG = "UserUpdates";
@@ -28,6 +30,10 @@ public class UserUpdates {
         Map<String, Object> mp = new LinkedHashMap<>();
         mp.put("users/" + uid, user.toMap());
         mp.put("role/" + uid, new Role(1));
+        String key = "user_notif/" + uid + "/" + UUID.randomUUID().toString();
+        mp.put(key + "/body", "Welcome!!");
+        mp.put(key + "/time", -1* StringUtils.TIMESTAMP());
+        mp.put(key + "/type", NotificationType.TEXT);
         final String[] message = new String[1];
         db.updateChildren(mp, (error, ref) -> {
             if (error != null) {

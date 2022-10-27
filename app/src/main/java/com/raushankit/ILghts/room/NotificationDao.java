@@ -11,6 +11,8 @@ import com.raushankit.ILghts.model.Notification;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Single;
+
 @Dao
 public interface NotificationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -33,4 +35,7 @@ public interface NotificationDao {
 
     @Query("SELECT * FROM notification_table ORDER BY time ASC")
     PagingSource<Integer, Notification> getNotificationsPaging();
+
+    @Query("SELECT * FROM notification_table ORDER BY time ASC LIMIT 1")
+    Single<Notification> getLatestNotification();
 }

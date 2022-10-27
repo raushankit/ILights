@@ -75,7 +75,7 @@ public class BoardMemberViewModel extends AndroidViewModel {
         mp.put("user_boards/" + userId + "/boards/" + boardId, level);
         String key = "user_notif/" + board.getOwnerId() + "/" + UUID.randomUUID().toString();
         mp.put(key + "/body", "You " + (user.getLevel() == 1? "promoted ": "demoted ") + StringUtils.capitalize(user.getName())
-                + " on board " + board.getData().getTitle());
+                + "("+ user.getEmail() + ") on board " + board.getData().getTitle());
         mp.put(key + "/time", -1* StringUtils.TIMESTAMP());
         mp.put(key + "/type", NotificationType.TEXT);
         key = "user_notif/" + userId + "/" + UUID.randomUUID().toString();
@@ -100,7 +100,7 @@ public class BoardMemberViewModel extends AndroidViewModel {
         mp.put("user_boards/" + userId + "/num", ServerValue.increment(-1));
         String key = "user_notif/" + board.getOwnerId() + "/" + UUID.randomUUID().toString();
         mp.put(key + "/body", "You removed " + StringUtils.capitalize(user.getName())
-                + " from board " + board.getData().getTitle());
+                + "("+ user.getEmail() + ") from board " + board.getData().getTitle());
         mp.put(key + "/time", -1* StringUtils.TIMESTAMP());
         mp.put(key + "/type", NotificationType.TEXT);
         key = "user_notif/" + userId + "/" + UUID.randomUUID().toString();

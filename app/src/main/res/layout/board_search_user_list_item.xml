@@ -70,7 +70,35 @@
             android:layout_marginBottom="@dimen/_8sdp"
             android:textColor="?attr/colorPrimary"
             android:textSize="@dimen/_10sdp" />
-        
-        
+        <LinearLayout
+            android:id="@+id/board_search_user_list_item_role_parent_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:gravity="center"
+            android:layout_below="@id/board_search_user_list_item_email">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/board_search_user_list_item_role_member"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:padding="0dp"
+                app:strokeWidth="0dp"
+                android:text="@string/add_as_user"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/board_search_user_list_item_role_editor"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                app:strokeWidth="0dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:text="@string/add_as_editor"/>
+        </LinearLayout>
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>
