@@ -78,7 +78,7 @@ public class BoardFragment extends Fragment {
                     addBoardUsersLauncher.launch(intent);
                     break;
                 default:
-                    Log.i(TAG, "BoardFragment: another type option" + whichButton);
+                    Log.i(TAG, "BoardFragment: another type option: " + whichButton);
             }
         };
     }
@@ -179,7 +179,6 @@ public class BoardFragment extends Fragment {
                 shimmerFrameLayout.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
             }
-            Log.w(TAG, "onViewCreated: list = " + dataList);
             noDataLayout.setVisibility(CollectionUtils.isEmpty(dataList)? View.VISIBLE: View.INVISIBLE);
             adapter.submitList(dataList);
         });

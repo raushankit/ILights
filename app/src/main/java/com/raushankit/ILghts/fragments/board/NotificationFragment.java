@@ -1,6 +1,8 @@
 package com.raushankit.ILghts.fragments.board;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.color.MaterialColors;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.NotificationAdapter;
 import com.raushankit.ILghts.entity.BoardConst;
@@ -24,11 +27,9 @@ import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 
 public class NotificationFragment extends Fragment {
     private static final String TAG = "NotificationFragment";
-    private View view;
     private String uid;
-    private RecyclerView recyclerView;
     private NotificationAdapter adapter;
-    private ShimmerFrameLayout shimmerFrameLayout;
+    private NotificationViewModel notificationViewModel;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -48,17 +49,23 @@ public class NotificationFragment extends Fragment {
         Bundle args = getArguments();
         assert args != null;
         uid = args.getString("user_id");
-        adapter = new NotificationAdapter(((type, data) -> {
-
-        }));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_notification, container, false);
-        recyclerView = view.findViewById(R.id.fragment_notification_recyclerview);
-        shimmerFrameLayout = view.findViewById(R.id.fragment_notification_shimmer_frame);
+        View view = inflater.inflate(R.layout.fragment_notification, container, false);
+        adapter = new NotificationAdapter(MaterialColors.getColor(view, R.attr.flowBackgroundColor, Color.BLACK), (type, data) -> {
+            switch (type) {
+                case SEEN_BUTTON:
+                    notificationViewModel.updateSeen(data);
+                    break;
+                default:
+                    Log.i(TAG, "onCreateView: unknown case: " + type);
+            }
+        });
+        RecyclerView recyclerView = view.findViewById(R.id.fragment_notification_recyclerview);
+        ShimmerFrameLayout shimmerFrameLayout = view.findViewById(R.id.fragment_notification_shimmer_frame);
         recyclerView.setVisibility(View.VISIBLE);
         shimmerFrameLayout.setVisibility(View.GONE);
         recyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
@@ -69,7 +76,7 @@ public class NotificationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        NotificationViewModel notificationViewModel = new ViewModelProvider(requireActivity(),
+        notificationViewModel = new ViewModelProvider(requireActivity(),
                 new NotificationViewModelFactory(requireActivity().getApplication(), uid))
                 .get(NotificationViewModel.class);
 

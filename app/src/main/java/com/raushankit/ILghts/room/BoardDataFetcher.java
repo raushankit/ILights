@@ -55,9 +55,8 @@ class BoardDataFetcher {
     }
 
     private void init(){
-        Log.i(TAG, "init() called");
+        Log.d(TAG, "init() called");
         userBoardData.addSource(userBoardCount, count -> {
-            Log.w(TAG, "init: no " + count);
             if(count == 0) {
                 userBoardData.setValue(Collections.emptyList());
             }
@@ -81,7 +80,7 @@ class BoardDataFetcher {
                 case ADDED:
                     BoardRoomData boardRoomData = boardDao.getBoardRoomDataById(id);
                     if(boardRoomData != null){
-                        Log.d(TAG, "fetchDataSingleTime: boardRoomData exists = " + boardRoomData);
+                        Log.d(TAG, "fetchDataSingleTime: boardRoomData exists");
                         boardDao.insert(new BoardRoomUserData(level, boardRoomData));
                         handler.post(() -> addListenerForUpdate(id));
                     }else{
@@ -116,10 +115,10 @@ class BoardDataFetcher {
                                     insert(level, data);
                                     if(addUpdateListener)
                                         addListenerForUpdate(boardId);
-                                    Log.i(TAG, "fetchBoardByIdFromRemote: " + data);
+                                    Log.d(TAG, "fetchBoardByIdFromRemote");
                                 }
                             }else{
-                                Log.i(TAG, "fetchBoardByIdFromRemote: " + task.getException());
+                                Log.d(TAG, "fetchBoardByIdFromRemote: " + task.getException());
                             }
                 });
     }
@@ -235,7 +234,7 @@ class BoardDataFetcher {
             userDb = db.child("user_boards")
                     .child(userId)
                     .child("boards");
-            Log.i(TAG, "UserBoardLiveData: inside constructor");
+            Log.d(TAG, "UserBoardLiveData: inside constructor");
             isDataReceived = false;
         }
 
@@ -270,7 +269,7 @@ class BoardDataFetcher {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 count = snapshot.getValue() == null? 0 : 1;
                 setValue(count);
-                Log.w(TAG, "onActive: get method = " + snapshot);
+                Log.d(TAG, "onActive: get method");
             }
 
             @Override

@@ -10,12 +10,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.entity.NotificationType;
@@ -25,15 +27,20 @@ import com.raushankit.ILghts.utils.StringUtils;
 public class NotificationAdapter extends PagingDataAdapter<Notification, NotificationAdapter.NotificationViewHolder> {
     private static final String TAG = "NotificationAdapter";
     private final WhichButtonClickedListener listener;
+    @ColorInt private final int unSeenColor;
+    @ColorInt private int seenColor;
 
-    public NotificationAdapter(@NonNull final WhichButtonClickedListener listener) {
+    public NotificationAdapter(@ColorInt final int unSeenColor, @NonNull final WhichButtonClickedListener listener) {
         super(Notification.DIFF_UTIL);
         this.listener = listener;
+        this.unSeenColor = unSeenColor;
     }
 
     @NonNull
     @Override
     public NotificationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        seenColor = parent.getContext()
+                .getColor(R.color.cards_and_dialogs_color);
         return new NotificationViewHolder(
                 LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.board_notification_list_item, parent, false)
@@ -46,6 +53,7 @@ public class NotificationAdapter extends PagingDataAdapter<Notification, Notific
     }
 
     class NotificationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final MaterialCardView cardView;
         private final TextView body;
         private final TextView time;
         private final MaterialButton accept;
@@ -58,6 +66,7 @@ public class NotificationAdapter extends PagingDataAdapter<Notification, Notific
 
         public NotificationViewHolder(@NonNull View itemView) {
             super(itemView);
+            cardView = itemView.findViewById(R.id.board_notification_list_card);
             imageView = itemView.findViewById(R.id.board_notification_list_item_icon);
             body = itemView.findViewById(R.id.board_notification_list_item_title);
             time = itemView.findViewById(R.id.board_notification_list_item_time);
@@ -67,7 +76,7 @@ public class NotificationAdapter extends PagingDataAdapter<Notification, Notific
             progressBar = loadingLayout.findViewById(R.id.loading_details_header_footer_progress_bar);
             loadingTextView = loadingLayout.findViewById(R.id.loading_details_header_footer_error_msg);
             retryButton = loadingLayout.findViewById(R.id.loading_details_header_footer_retry_button);
-
+            cardView.setOnClickListener(this);
             accept.setOnClickListener(this);
             reject.setOnClickListener(this);
             retryButton.setOnClickListener(this);
@@ -77,6 +86,7 @@ public class NotificationAdapter extends PagingDataAdapter<Notification, Notific
             if(item == null) { return; }
             imageView.setImageResource(TextUtils.equals(NotificationType.TEXT, item.getType())? R.drawable.ic_baseline_notifications_24: R.drawable.ic_edit_notifications_filled);
             body.setText(item.getBody());
+            cardView.setBackgroundColor(item.isSeen()? seenColor: unSeenColor);
             if(item.getPagination() > NotificationType.END_OF_PAGE){
                 loadingTextView.setVisibility(item.getPagination() == NotificationType.LOADING? View.GONE: View.VISIBLE);
                 progressBar.setVisibility(item.getPagination() == NotificationType.LOADING? View.VISIBLE: View.GONE);
@@ -101,6 +111,8 @@ public class NotificationAdapter extends PagingDataAdapter<Notification, Notific
                 listener.onClick(WhichButton.ACTION_REJECT, getItem(getBindingAdapterPosition()));
             }else if(id == R.id.loading_details_header_footer_retry_button){
                 listener.onClick(WhichButton.LOAD_MORE, getItem(getBindingAdapterPosition()));
+            }else if(id == R.id.board_notification_list_card){
+                listener.onClick(WhichButton.SEEN_BUTTON, getItem(getBindingAdapterPosition()));
             }else{
                 Log.i(TAG, "onClick: unknown click event");
             }
@@ -108,7 +120,7 @@ public class NotificationAdapter extends PagingDataAdapter<Notification, Notific
     }
 
     public enum WhichButton {
-        ACTION_ACCEPT, ACTION_REJECT, LOAD_MORE
+        ACTION_ACCEPT, ACTION_REJECT, LOAD_MORE, SEEN_BUTTON
     }
 
     public interface WhichButtonClickedListener {

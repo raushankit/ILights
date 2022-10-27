@@ -53,6 +53,10 @@ public class NotificationViewModel extends AndroidViewModel {
         return flowable;
     }
 
+    public void updateSeen(Notification notification) {
+        fetcher.updateSeenStatus(notification);
+    }
+
     @Override
     protected void onCleared() {
         fetcher.removeSubscription();

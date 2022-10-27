@@ -81,18 +81,24 @@ public class NotificationFetcher {
         return notificationDao.getNotificationsPaging();
     }
 
+    public void updateSeenStatus(Notification notification) {
+        if(!notification.isSeen()) {
+            BoardRoomDatabase.databaseExecutor.execute(() -> notificationDao.updateSeen(notification.getId(), true));
+        }
+    }
+
     private void getLatestNotifications() {
         disposable = notificationDao.getLatestNotification()
                         .subscribeOn(Schedulers.io())
                                 .subscribe(notification -> {
                                     Log.w(TAG, "getLatestNotifications: data = " + notification);
                                     db.orderByChild("time")
-                                            .startAfter(notification.getTime(), notification.getId())
+                                            .endBefore(notification.getTime(), notification.getId())
                                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                     insertIntoDb(snapshot, notification);
-                                                    Log.d(TAG, "onDataChange: data = " + snapshot);
+                                                    Log.d(TAG, "onDataChange: data[remote] = " + snapshot);
                                                 }
 
                                                 @Override
@@ -124,7 +130,7 @@ public class NotificationFetcher {
                         notification.setId(data.getKey());
                         if(query == null) {
                             query = db.orderByChild("time")
-                                    .startAfter(notification.getTime(), notification.getId());
+                                    .endBefore(notification.getTime(), notification.getId());
                         }
                         notifications.add(notification);
                     } else {
@@ -134,7 +140,7 @@ public class NotificationFetcher {
         BoardRoomDatabase.databaseExecutor.execute(() -> notificationDao.insert(notifications));
         if(dbNotification != null && query == null) {
             query = db.orderByChild("time")
-                    .startAfter(dbNotification.getTime(), dbNotification.getId());
+                    .endBefore(dbNotification.getTime(), dbNotification.getId());
         }
         if(query != null) {
             query.addChildEventListener(realTimeListener);

@@ -1,6 +1,7 @@
 package com.raushankit.ILghts.adapter;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -154,7 +155,7 @@ public class BoardSearchUserAdapter extends ListAdapter<BoardSearchUserModel, Bo
                     selectedUsers.put(model.getUserId(), Pair.create(2, model));
                 }
                 cardView.setBackgroundColor(selectedColor);
-            } else {
+            } else if(view.getId() == cardView.getId()) {
                 if(selectedUsers.isEmpty()){ return; }
                 boolean b = !checkBox.isChecked();
                 cardView.setBackgroundColor(b? selectedColor: cardBackgroundColor);
@@ -163,6 +164,8 @@ public class BoardSearchUserAdapter extends ListAdapter<BoardSearchUserModel, Bo
                 }else{
                     selectedUsers.remove(model.getUserId());
                 }
+            } else {
+                Log.w(TAG, "onClick: unknown onClick event");
             }
             notifyItemChanged(getBindingAdapterPosition());
             callBack.onClick(selectedUsers.size());

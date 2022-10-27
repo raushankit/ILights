@@ -38,4 +38,7 @@ public interface NotificationDao {
 
     @Query("SELECT * FROM notification_table ORDER BY time ASC LIMIT 1")
     Single<Notification> getLatestNotification();
+
+    @Query("UPDATE notification_table SET seen = :seen WHERE id = :id")
+    void updateSeen(String id, boolean seen);
 }
