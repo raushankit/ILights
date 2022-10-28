@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.raushankit.ILghts.viewModel.BoardSearchViewModel;
+import com.raushankit.ILghts.viewModel.BoardSearchUsersViewModel;
 
 public class BoardSearchViewModelFactory implements ViewModelProvider.Factory {
     private final Application mApplication;
@@ -22,7 +22,7 @@ public class BoardSearchViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new BoardSearchViewModel(mApplication, boardId);
+        return (T) new BoardSearchUsersViewModel(mApplication, boardId);
     }
 }
 

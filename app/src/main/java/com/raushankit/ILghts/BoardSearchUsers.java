@@ -41,7 +41,7 @@ import com.raushankit.ILghts.factory.BoardSearchViewModelFactory;
 import com.raushankit.ILghts.model.board.BoardSearchUserModel;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.utils.StringUtils;
-import com.raushankit.ILghts.viewModel.BoardSearchViewModel;
+import com.raushankit.ILghts.viewModel.BoardSearchUsersViewModel;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,7 +64,7 @@ public class BoardSearchUsers extends AppCompatActivity {
     private RecyclerView recyclerView;
     private LottieAnimationView lottieAnimationView;
     private BoardSearchUserAdapter adapter;
-    private BoardSearchViewModel viewModel;
+    private BoardSearchUsersViewModel viewModel;
     private Snackbar snackbar;
     private String queryStr;
     private BoardRoomUserData data;
@@ -77,7 +77,7 @@ public class BoardSearchUsers extends AppCompatActivity {
         setContentView(R.layout.activity_board_search_users);
         setBoardId();
         viewModel = new ViewModelProvider(this, new BoardSearchViewModelFactory(getApplication(), data.getBoardId()))
-                .get(BoardSearchViewModel.class);
+                .get(BoardSearchUsersViewModel.class);
         loadingDialogFragment = LoadingDialogFragment
                 .newInstance();
         loadingDialogFragment.setTitle(R.string.adding_users);

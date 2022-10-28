@@ -207,6 +207,7 @@ public class BoardForm extends AppCompatActivity {
         mp.put("board_meta/" + boardId + "/visibility", visibilityArray[basicModel.getVisibility()]);
         mp.put("board_meta/" + boardId + "/ownerId", uid);
         mp.put("board_meta/" + boardId + "/ownerName", user.getName());
+        mp.put("board_meta/" + boardId + "/ownerEmail", user.getEmail());
         mp.put("board_meta/" + boardId + "/time", ServerValue.TIMESTAMP);
         mp.put("board_meta/" + boardId + "/lastUpdated", ServerValue.TIMESTAMP);
         mp.put("board_cred/" + boardId, new BoardCredModel(credModel.getId(), credModel.getUsername(), credModel.getPassword()));
@@ -217,9 +218,13 @@ public class BoardForm extends AppCompatActivity {
         mp.put(key + "/time", -1* StringUtils.TIMESTAMP());
         mp.put(key + "/type", NotificationType.TEXT);
         if(basicModel.getVisibility() == 0){
-            mp.put("board_public/" + boardId, ServerValue.TIMESTAMP);
+            mp.put("board_public/" + boardId + "/name", user.getName().toLowerCase(Locale.ROOT));
+            mp.put("board_public/" + boardId + "/email", user.getEmail().toLowerCase(Locale.ROOT));
+            mp.put("board_public/" + boardId + "/time", ServerValue.TIMESTAMP);
         }else{
-            mp.put("board_private/" + boardId, ServerValue.TIMESTAMP);
+            mp.put("board_private/" + boardId + "/name", user.getName().toLowerCase(Locale.ROOT));
+            mp.put("board_private/" + boardId + "/email", user.getEmail().toLowerCase(Locale.ROOT));
+            mp.put("board_private/" + boardId + "/time", ServerValue.TIMESTAMP);
         }
         db.updateChildren(mp, (error, ref) -> {
             loadingDialogFragment.dismiss();

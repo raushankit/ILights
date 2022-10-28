@@ -1,4 +1,4 @@
-package com.raushankit.ILghts.room;
+package com.raushankit.ILghts.fetcher;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -22,6 +22,8 @@ import com.raushankit.ILghts.model.board.FavBoard;
 import com.raushankit.ILghts.model.room.BoardEditableData;
 import com.raushankit.ILghts.model.room.BoardRoomData;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
+import com.raushankit.ILghts.room.BoardDao;
+import com.raushankit.ILghts.room.BoardRoomDatabase;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,7 +33,7 @@ import java.util.Map;
 import io.reactivex.rxjava3.core.Single;
 import kotlin.Triple;
 
-class BoardDataFetcher {
+public class BoardDataFetcher {
     private static final String TAG = "BoardDataFetcher";
     private static final int REMOVAL_DELAY = 2000;
     private final MediatorLiveData<List<BoardRoomUserData>> userBoardData = new MediatorLiveData<>();
@@ -44,7 +46,7 @@ class BoardDataFetcher {
     private final Map<String, BoardUpdateLiveData> mp = new HashMap<>();
     private final Map<String, BoardUpdateLiveData> oldMp = new HashMap<>();
 
-    BoardDataFetcher(final DatabaseReference db, final BoardRoomDatabase roomDb, final String userId){
+    public BoardDataFetcher(final DatabaseReference db, final BoardRoomDatabase roomDb, final String userId){
         boardDao = roomDb.boardDao();
         this.db = db;
         handler = new Handler(Looper.getMainLooper());
@@ -80,7 +82,7 @@ class BoardDataFetcher {
                 case ADDED:
                     BoardRoomData boardRoomData = boardDao.getBoardRoomDataById(id);
                     if(boardRoomData != null){
-                        Log.d(TAG, "fetchDataSingleTime: boardRoomData exists");
+                        Log.d(TAG, "fetchDataSingleTime: boardRoomData exists data + " + boardRoomData);
                         boardDao.insert(new BoardRoomUserData(level, boardRoomData));
                         handler.post(() -> addListenerForUpdate(id));
                     }else{
@@ -123,12 +125,12 @@ class BoardDataFetcher {
                 });
     }
 
-    void insertFavBoard(FavBoard board){
+    public void insertFavBoard(FavBoard board){
         BoardRoomDatabase.databaseExecutor
                 .execute(() -> boardDao.insert(board));
     }
 
-    Single<BoardCredModel> getBoardAuthResult(@NonNull String boardId){
+    public Single<BoardCredModel> getBoardAuthResult(@NonNull String boardId){
         return Single.create(emitter -> db.child("board_cred")
                 .child(boardId)
                 .get()

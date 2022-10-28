@@ -1,4 +1,4 @@
-package com.raushankit.ILghts.room;
+package com.raushankit.ILghts.fetcher;
 
 import android.util.Log;
 
@@ -13,6 +13,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.raushankit.ILghts.model.Notification;
+import com.raushankit.ILghts.room.BoardRoomDatabase;
+import com.raushankit.ILghts.room.NotificationDao;
 
 import java.util.ArrayList;
 import java.util.Collections;

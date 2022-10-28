@@ -1,6 +1,5 @@
 package com.raushankit.ILghts.adapter;
 
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -91,7 +90,9 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
             likeButton.setColorFilter(item.isFav()? activeColor: inactiveColor, PorterDuff.Mode.SRC_ATOP);
             title.setText(item.getData().getTitle());
             description.setText(String.format(detailsString, item.getData().getDescription(),
-                    item.getOwnerName(), StringUtils.formattedTime(item.getTime())));
+                    StringUtils.capitalize(item.getOwnerName()),
+                    item.getOwnerEmail(),
+                    StringUtils.formattedTime(item.getTime())));
             tagVisibility.setText(item.getVisibility());
             tagUserLevel.setText(accessArray[Math.min(3, Math.max(0, item.getAccessLevel()))]);
             uidText.setText(String.format(boardIdString, item.getBoardId()));

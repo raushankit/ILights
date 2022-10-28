@@ -31,6 +31,7 @@ import com.raushankit.ILghts.fragments.board.BoardCredentialViewer;
 import com.raushankit.ILghts.fragments.board.BoardEditDetails;
 import com.raushankit.ILghts.fragments.board.BoardEditMemberFragment;
 import com.raushankit.ILghts.fragments.board.BoardFragment;
+import com.raushankit.ILghts.fragments.board.BoardSearch;
 import com.raushankit.ILghts.fragments.board.NotificationFragment;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.storage.VolleyRequest;
@@ -141,6 +142,12 @@ public class BoardActivity extends AppCompatActivity {
                         .addToBackStack(null)
                         .commit();
                 break;
+            case BoardConst.FRAG_SEARCH_BOARDS:
+                ft.replace(R.id.board_main_frame,
+                                BoardSearch.newInstance())
+                        .addToBackStack(null)
+                        .commit();
+                break;
             default:
                 Log.i(TAG, "switchFrag: some other key " + key);
         }
@@ -208,8 +215,10 @@ public class BoardActivity extends AppCompatActivity {
                 addBoardLauncher.launch(intent);
                 return true;
             } else if (id == itemMore.getItemId()) {
-                // TODO: 27-07-2022
-                // return true;
+                Bundle args = new Bundle();
+                args.putString(BoardConst.WHICH_FRAG, BoardConst.FRAG_SEARCH_BOARDS);
+                switchFrag(args);
+                return true;
             } else if (id == itemNotification.getItemId()) {
                 Bundle args = new Bundle();
                 args.putString(BoardConst.WHICH_FRAG, BoardConst.FRAG_NOTIFICATION);

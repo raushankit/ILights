@@ -79,11 +79,11 @@ public class BoardMemberPagingSource extends RxPagingSource<Long, BoardAuthUser>
                 .limitToFirst(num)
                 .get()
                 .addOnCompleteListener(task -> {
-                    Log.i(TAG, "getData: addOnCompleteListener + " + task.isSuccessful());
+                    Log.i(TAG, "getData: addOnCompleteListener: " + task.isSuccessful());
                     if(task.isSuccessful()){
                         BoardMemberResponse response = new BoardMemberResponse(boardId, num, task.getResult());
                         emitter.onSuccess(response);
-                        Log.i(TAG, "getData: success ");
+                        Log.i(TAG, "getData: success");
                     }else{
                         emitter.onError(task.getException());
                         Log.i(TAG, "getData: error " + task.getException());

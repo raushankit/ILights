@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/_5sdp"
+    android:layout_margin="@dimen/_5sdp"
+    android:elevation="@dimen/_5sdp"
+    android:theme="@style/Theme.ILights.1"
+    app:cardPreventCornerOverlap="true"
+    android:id="@+id/board_search_list_card">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_5sdp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/board_search_list_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_34sdp"
+            android:fontFamily="sans-serif"
+            android:textStyle="bold"
+            android:layout_alignParentStart="true"
+            android:padding="@dimen/_10sdp"
+            android:text="@string/title"
+            android:textColor="@color/board_bottom_sheet_text_color"
+            android:textSize="@dimen/_12sdp" />
+
+        <TextView
+            android:id="@+id/board_search_list_item_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_10sdp"
+            android:textStyle="bold"
+            android:layout_below="@id/board_search_list_item_title"
+            android:fontFamily="@font/rubik_variable"
+            android:text="@string/board_list_item_details"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.1"
+            app:layout_constraintWidth_percent="0.85" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/board_search_list_item_request_button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_35sdp"
+            app:cornerRadius="@dimen/_30sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingStart="@dimen/_15sdp"
+            android:paddingEnd="@dimen/_15sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/board_search_list_item_description"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/request_access_board"
+            android:textAllCaps="false"
+            android:textSize="@dimen/_12sdp"
+            android:visibility="visible"
+            app:strokeWidth="0dp"
+            tools:ignore="RelativeOverlap" />
+
+        <TextView
+            android:id="@+id/board_search_list_item_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/board_search_list_item_title"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/board_search_list_item_request_button"
+            android:fontFamily="sans-serif"
+            android:gravity="end"
+            android:paddingStart="0dp"
+            android:paddingEnd="@dimen/_8sdp"
+            android:text="@string/title"
+            android:textSize="@dimen/_9sdp" />
+
+        <include
+            android:visibility="gone"
+            android:id="@+id/board_search_list_item_loader_layout"
+            layout="@layout/loading_details_header_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_below="@id/board_search_list_item_request_button" />
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

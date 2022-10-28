@@ -22,7 +22,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @SuppressLint("UnsafeOptInUsageError")
 public class BoardMemberRemoteMediator extends RxRemoteMediator<Integer, BoardAuthUser> {
-    private static final String TAG = "BoardMemberRemoteMediat";
+    private static final String TAG = "BoardMemberRemoteMediator";
     private final String boardId;
     private final DatabaseReference db;
     private final BoardRoomDatabase database;

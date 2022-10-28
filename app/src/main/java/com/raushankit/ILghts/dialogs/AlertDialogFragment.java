@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -144,7 +145,7 @@ public class AlertDialogFragment extends DialogFragment implements View.OnClickL
         try {
             textView.setText(stringRes);
         } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
+            Log.w(TAG, "setText: " + e.getMessage());
         }
     }
 

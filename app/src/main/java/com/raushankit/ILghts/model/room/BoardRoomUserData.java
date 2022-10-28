@@ -41,6 +41,9 @@ public class BoardRoomUserData implements Parcelable {
     @ColumnInfo(name = "owner_name")
     private String ownerName;
 
+    @ColumnInfo(name = "owner_email")
+    private String ownerEmail;
+
     @ColumnInfo(name = "time")
     private Long time;
 
@@ -53,13 +56,14 @@ public class BoardRoomUserData implements Parcelable {
     @Ignore
     public BoardRoomUserData(){}
 
-    public BoardRoomUserData(@NonNull String boardId, boolean fav,  BoardEditableData data, String visibility, String ownerId, String ownerName, Long time, Long lastUpdated, int accessLevel) {
+    public BoardRoomUserData(@NonNull String boardId, boolean fav, BoardEditableData data, String visibility, String ownerId, String ownerName, String ownerEmail, Long time, Long lastUpdated, int accessLevel) {
         this.boardId = boardId;
         this.fav = fav;
         this.data = data;
         this.visibility = visibility;
         this.ownerId = ownerId;
         this.ownerName = ownerName;
+        this.ownerEmail = ownerEmail;
         this.time = time;
         this.lastUpdated = lastUpdated;
         this.accessLevel = accessLevel;
@@ -73,6 +77,7 @@ public class BoardRoomUserData implements Parcelable {
         this.visibility = boardRoomData.getVisibility();
         this.ownerId = boardRoomData.getOwnerId();
         this.ownerName = boardRoomData.getOwnerName();
+        this.ownerEmail = boardRoomData.getOwnerEmail();
         this.time = boardRoomData.getTime();
         this.lastUpdated = boardRoomData.getLastUpdated();
         this.accessLevel = accessLevel;
@@ -86,6 +91,7 @@ public class BoardRoomUserData implements Parcelable {
         visibility = in.readString();
         ownerId = in.readString();
         ownerName = in.readString();
+        ownerEmail = in.readString();
         if (in.readByte() == 0) {
             time = null;
         } else {
@@ -186,17 +192,25 @@ public class BoardRoomUserData implements Parcelable {
         this.fav = fav;
     }
 
+    public String getOwnerEmail() {
+        return ownerEmail;
+    }
+
+    public void setOwnerEmail(String ownerEmail) {
+        this.ownerEmail = ownerEmail;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BoardRoomUserData)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         BoardRoomUserData that = (BoardRoomUserData) o;
-        return fav == that.fav && accessLevel == that.accessLevel && boardId.equals(that.boardId) && Objects.equals(data, that.data) && Objects.equals(visibility, that.visibility) && Objects.equals(ownerId, that.ownerId) && Objects.equals(ownerName, that.ownerName) && Objects.equals(time, that.time) && Objects.equals(lastUpdated, that.lastUpdated);
+        return fav == that.fav && accessLevel == that.accessLevel && boardId.equals(that.boardId) && Objects.equals(data, that.data) && Objects.equals(visibility, that.visibility) && Objects.equals(ownerId, that.ownerId) && Objects.equals(ownerName, that.ownerName) && Objects.equals(ownerEmail, that.ownerEmail) && Objects.equals(time, that.time) && Objects.equals(lastUpdated, that.lastUpdated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(boardId, fav, data, visibility, ownerId, ownerName, time, lastUpdated, accessLevel);
+        return Objects.hash(boardId, fav, data, visibility, ownerId, ownerName, ownerEmail, time, lastUpdated, accessLevel);
     }
 
     @NonNull
@@ -209,6 +223,7 @@ public class BoardRoomUserData implements Parcelable {
                 ", visibility='" + visibility + '\'' +
                 ", ownerId='" + ownerId + '\'' +
                 ", ownerName='" + ownerName + '\'' +
+                ", ownerEmail='" + ownerEmail + '\'' +
                 ", time=" + time +
                 ", lastUpdated=" + lastUpdated +
                 ", accessLevel=" + accessLevel +
@@ -243,6 +258,7 @@ public class BoardRoomUserData implements Parcelable {
         parcel.writeString(visibility);
         parcel.writeString(ownerId);
         parcel.writeString(ownerName);
+        parcel.writeString(ownerEmail);
         if (time == null) {
             parcel.writeByte((byte) 0);
         } else {

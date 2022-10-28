@@ -1,13 +1,12 @@
-package com.raushankit.ILghts.room;
+package com.raushankit.ILghts.fetcher;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.raushankit.ILghts.model.board.BoardSearchUserModel;
-import com.raushankit.ILghts.response.BoardSearchResponse;
+import com.raushankit.ILghts.response.BoardSearchUserResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +37,9 @@ public class BoardSearchUserFetcher {
     public Single<List<BoardSearchUserModel>> getSearchableUsersByQuery(@NonNull String boardId, @NonNull String query){
         return Single.zip(
                 getUsersByQuery(query)
-                        .onErrorReturn(throwable -> new BoardSearchResponse.Users(throwable.getMessage())),
+                        .onErrorReturn(throwable -> new BoardSearchUserResponse.Users(throwable.getMessage())),
                 getBoardMembersByQuery(boardId, query)
-                        .onErrorReturn(throwable -> new BoardSearchResponse.Members(throwable.getMessage())),
+                        .onErrorReturn(throwable -> new BoardSearchUserResponse.Members(throwable.getMessage())),
                 (users, members) -> {
                     Set<String> st = members.getUsersSet();
                     List<BoardSearchUserModel> modelList;
@@ -61,7 +60,7 @@ public class BoardSearchUserFetcher {
         );
     }
 
-    private Single<BoardSearchResponse.Users> getUsersByQuery(@NonNull String query){
+    private Single<BoardSearchUserResponse.Users> getUsersByQuery(@NonNull String query){
         return Single.create(emitter -> {
             db.child("users")
                     .orderByChild("name")
@@ -71,7 +70,7 @@ public class BoardSearchUserFetcher {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && task.getResult() != null) {
                             Log.w(TAG, "getUsersByQuery: users = " + task.getResult());
-                            emitter.onSuccess(new BoardSearchResponse.Users(task.getResult()));
+                            emitter.onSuccess(new BoardSearchUserResponse.Users(task.getResult()));
                         } else {
                             emitter.onError(task.getException());
                         }
@@ -79,7 +78,7 @@ public class BoardSearchUserFetcher {
         });
     }
 
-    private Single<BoardSearchResponse.Members> getBoardMembersByQuery(@NonNull String boardId, @NonNull String query){
+    private Single<BoardSearchUserResponse.Members> getBoardMembersByQuery(@NonNull String boardId, @NonNull String query){
         return Single.create(emitter -> {
             db.child("board_auth")
                     .child(boardId)
@@ -90,7 +89,7 @@ public class BoardSearchUserFetcher {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && task.getResult() != null) {
                             Log.w(TAG, "getUsersByQuery: members = " + task.getResult());
-                            emitter.onSuccess(new BoardSearchResponse.Members(task.getResult()));
+                            emitter.onSuccess(new BoardSearchUserResponse.Members(task.getResult()));
                         } else {
                             emitter.onError(task.getException());
                         }

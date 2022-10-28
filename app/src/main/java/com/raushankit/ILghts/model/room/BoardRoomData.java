@@ -2,16 +2,19 @@ package com.raushankit.ILghts.model.room;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 @Keep
 @IgnoreExtraProperties
 @Entity(tableName = "board_table")
@@ -34,6 +37,9 @@ public class BoardRoomData {
     @ColumnInfo(name = "owner_name")
     private String ownerName;
 
+    @ColumnInfo(name = "owner_email")
+    private String ownerEmail;
+
     @ColumnInfo(name = "time")
     private Long time;
 
@@ -44,12 +50,13 @@ public class BoardRoomData {
     public BoardRoomData(){
     }
 
-    public BoardRoomData(@NonNull String boardId, BoardEditableData data, String visibility, String ownerId, String ownerName, Long time, Long lastUpdated) {
+    public BoardRoomData(@NonNull String boardId, BoardEditableData data, String visibility, String ownerId, String ownerName, String ownerEmail, Long time, Long lastUpdated) {
         this.boardId = boardId;
         this.data = data;
         this.visibility = visibility;
         this.ownerId = ownerId;
         this.ownerName = ownerName;
+        this.ownerEmail = ownerEmail;
         this.time = time;
         this.lastUpdated = lastUpdated;
     }
@@ -111,21 +118,30 @@ public class BoardRoomData {
         this.lastUpdated = lastUpdated;
     }
 
+    public String getOwnerEmail() {
+        return ownerEmail;
+    }
+
+    public void setOwnerEmail(String ownerEmail) {
+        this.ownerEmail = ownerEmail;
+    }
+
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
-        if (!(o instanceof BoardRoomData)) return false;
-        BoardRoomData that = (BoardRoomData) o;
-        return boardId.equals(that.boardId) && Objects.equals(data, that.data) && Objects.equals(visibility, that.visibility) && Objects.equals(ownerId, that.ownerId) && Objects.equals(ownerName, that.ownerName) && Objects.equals(time, that.time) && Objects.equals(lastUpdated, that.lastUpdated);
+        if (o == null || getClass() != o.getClass()) return false;
+        BoardRoomData roomData = (BoardRoomData) o;
+        return boardId.equals(roomData.boardId) && Objects.equals(data, roomData.data) && Objects.equals(visibility, roomData.visibility) && Objects.equals(ownerId, roomData.ownerId) && Objects.equals(ownerName, roomData.ownerName) && Objects.equals(ownerEmail, roomData.ownerEmail) && Objects.equals(time, roomData.time) && Objects.equals(lastUpdated, roomData.lastUpdated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(boardId, data, visibility, ownerId, ownerName, time, lastUpdated);
+        return Objects.hash(boardId, data, visibility, ownerId, ownerName, ownerEmail, time, lastUpdated);
     }
 
-    @Override
     @NonNull
+    @Override
     public String toString() {
         return "BoardRoomData{" +
                 "boardId='" + boardId + '\'' +
@@ -133,8 +149,23 @@ public class BoardRoomData {
                 ", visibility='" + visibility + '\'' +
                 ", ownerId='" + ownerId + '\'' +
                 ", ownerName='" + ownerName + '\'' +
+                ", ownerEmail='" + ownerEmail + '\'' +
                 ", time=" + time +
                 ", lastUpdated=" + lastUpdated +
                 '}';
     }
+
+    @Exclude
+    @Ignore
+    public static final DiffUtil.ItemCallback<BoardRoomData> DIFF_UTIL = new DiffUtil.ItemCallback<BoardRoomData>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull BoardRoomData oldItem, @NonNull BoardRoomData newItem) {
+            return oldItem.getBoardId().equals(newItem.getBoardId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull BoardRoomData oldItem, @NonNull BoardRoomData newItem) {
+            return oldItem.equals(newItem);
+        }
+    };
 }
