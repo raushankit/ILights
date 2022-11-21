@@ -34,6 +34,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/_10sdp"
             android:textStyle="bold"
+            android:layout_marginStart="@dimen/_11sdp"
             android:layout_below="@id/board_search_list_item_title"
             android:fontFamily="@font/rubik_variable"
             android:text="@string/board_list_item_details"

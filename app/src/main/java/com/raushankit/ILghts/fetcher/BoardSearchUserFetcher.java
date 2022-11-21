@@ -61,39 +61,35 @@ public class BoardSearchUserFetcher {
     }
 
     private Single<BoardSearchUserResponse.Users> getUsersByQuery(@NonNull String query){
-        return Single.create(emitter -> {
-            db.child("users")
-                    .orderByChild("name")
-                    .startAt(query)
-                    .endAt(query + "\uf8ff")
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            Log.w(TAG, "getUsersByQuery: users = " + task.getResult());
-                            emitter.onSuccess(new BoardSearchUserResponse.Users(task.getResult()));
-                        } else {
-                            emitter.onError(task.getException());
-                        }
-                    });
-        });
+        return Single.create(emitter -> db.child("users")
+                .orderByChild("name")
+                .startAt(query)
+                .endAt(query + "\uf8ff")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        Log.w(TAG, "getUsersByQuery: users = " + task.getResult());
+                        emitter.onSuccess(new BoardSearchUserResponse.Users(task.getResult()));
+                    } else {
+                        emitter.onError(task.getException());
+                    }
+                }));
     }
 
     private Single<BoardSearchUserResponse.Members> getBoardMembersByQuery(@NonNull String boardId, @NonNull String query){
-        return Single.create(emitter -> {
-            db.child("board_auth")
-                    .child(boardId)
-                    .orderByChild("name")
-                    .startAt(query)
-                    .endAt(query + "\uf8ff")
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            Log.w(TAG, "getUsersByQuery: members = " + task.getResult());
-                            emitter.onSuccess(new BoardSearchUserResponse.Members(task.getResult()));
-                        } else {
-                            emitter.onError(task.getException());
-                        }
-                    });
-        });
+        return Single.create(emitter -> db.child("board_auth")
+                .child(boardId)
+                .orderByChild("name")
+                .startAt(query)
+                .endAt(query + "\uf8ff")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        Log.w(TAG, "getUsersByQuery: members = " + task.getResult());
+                        emitter.onSuccess(new BoardSearchUserResponse.Members(task.getResult()));
+                    } else {
+                        emitter.onError(task.getException());
+                    }
+                }));
     }
 }

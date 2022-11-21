@@ -308,5 +308,6 @@
     <string name="load_older_notifications">Load older notifications</string>
     <string name="load">Load</string>
     <string name="no_boards_message">You have access to no boards. Go to <b>More Boards</b> to add Board</string>
+    <string name="home">Home</string>
 
 </resources>
