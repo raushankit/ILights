@@ -10,9 +10,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.BoardSearchAdapter;
+import com.raushankit.ILghts.dialogs.FilterDialogFragment;
 import com.raushankit.ILghts.entity.BoardConst;
 import com.raushankit.ILghts.model.FilterModel;
 
@@ -25,6 +27,7 @@ public class BoardSearch extends Fragment {
     private BoardSearchAdapter adapter;
     private Snackbar snackbar;
     private FilterModel filterModel;
+    private FilterDialogFragment filterDialogFragment;
 
     public BoardSearch() {
         // Required empty public constructor
@@ -43,6 +46,7 @@ public class BoardSearch extends Fragment {
         if (getArguments() != null) {
         }
         adapter = new BoardSearchAdapter(Collections.emptyMap());
+        filterDialogFragment = FilterDialogFragment.newInstance();
     }
 
     @Override
@@ -52,10 +56,12 @@ public class BoardSearch extends Fragment {
         View view = inflater.inflate(R.layout.fragment_board_search, container, false);
         snackbar = Snackbar.make(view, R.string.failed_to_load_data, Snackbar.LENGTH_INDEFINITE);
         TextView snackText = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+        FloatingActionButton filterButton = view.findViewById(R.id.board_search_list_filter_button);
         snackText.setMaxLines(5);
         snackbar.setAction(R.string.retry, v -> {
             //TODO: do retry
         });
+        filterButton.setOnClickListener(v -> filterDialogFragment.show(getChildFragmentManager(), "filterModel"));
         RecyclerView recyclerView = view.findViewById(R.id.board_search_list);
         shimmerFrameLayout = view.findViewById(R.id.board_search_shimmer_container);
         shimmerFrameLayout.setVisibility(View.VISIBLE);

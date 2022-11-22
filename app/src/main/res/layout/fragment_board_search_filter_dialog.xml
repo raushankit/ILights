@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/_15sdp"
+    android:background="@drawable/loading_dialog_background"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/filter_board_search_dialog_title_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseCompoundDrawables">
+        <ImageView
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_gravity="center_vertical"
+            android:padding="@dimen/_2sdp"
+            app:tint="@color/forgot_password_btn"
+            android:src="@drawable/ic_baseline_filter_alt_24"
+            android:contentDescription="@android:string/fingerprint_icon_content_description" />
+        <TextView
+            android:id="@+id/filter_board_search_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/filter_dialog_title"
+            android:textColor="@color/forgot_password_btn"
+            android:textSize="@dimen/_20sdp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/filter_board_search_dialog_menu"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintTop_toBottomOf="@id/filter_board_search_dialog_title_parent"
+        android:hint="@string/leave_board">
+
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/filter_board_search_dialog_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:padding="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintTop_toBottomOf="@id/filter_board_search_dialog_menu"
+        android:text="@string/consent_dialog_body"
+        android:textColor="@color/forgot_password_btn"
+        android:textSize="@dimen/_15sdp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/filter_board_search_dialog_privacy_policy_button_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/filter_board_search_dialog_body"
+        app:layout_constraintWidth_percent="0.95">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/consent_dialog_privacy_policy_button"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/splash_screen_btn"
+            app:cornerRadius="@dimen/_5sdp"
+            android:visibility="visible"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/consent_dialog_policy_link"
+            app:strokeWidth="@dimen/_1sdp" />
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/consent_dialog_check_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:textSize="@dimen/_15sdp"
+            android:checked="false"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="0dp"
+            android:background="@color/controller_title_settings_background"
+            android:buttonTint="@color/splash_screen_btn"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:textColor="@color/splash_screen_btn"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/not_show_again"/>
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/consent_dialog_positive_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_9sdp"
+        app:cornerRadius="@dimen/_5sdp"
+        app:layout_constraintWidth_percent="0.45"
+        app:backgroundTint="@color/splash_screen_btn"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/agree"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/consent_dialog_negative_button"
+        app:layout_constraintTop_toBottomOf="@+id/filter_board_search_dialog_privacy_policy_button_parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/consent_dialog_negative_button"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:padding="@dimen/_8sdp"
+        app:cornerRadius="@dimen/_5sdp"
+        android:textColor="@color/splash_screen_btn"
+        app:iconTint="@color/splash_screen_btn"
+        android:fontFamily="sans-serif-black"
+        app:icon="@drawable/ic_baseline_do_not_disturb_24"
+        android:text="@string/disagree"
+        app:layout_constraintEnd_toStartOf="@+id/consent_dialog_positive_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/filter_board_search_dialog_privacy_policy_button_parent"
+        app:layout_constraintWidth_percent="0.45"
+        app:strokeWidth="@dimen/_1sdp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

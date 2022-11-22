@@ -16,10 +16,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -32,8 +30,6 @@ import com.raushankit.ILghts.adapter.BoardUserItemAdapter;
 import com.raushankit.ILghts.dialogs.BoardBottomSheetFragment;
 import com.raushankit.ILghts.entity.BoardConst;
 import com.raushankit.ILghts.viewModel.BoardDataViewModel;
-
-import java.util.Objects;
 
 public class BoardFragment extends Fragment {
     public static final String TAG = "BoardFragment";
@@ -119,9 +115,6 @@ public class BoardFragment extends Fragment {
         );
         recyclerView = view.findViewById(R.id.board_fragment_recyclerview);
         noDataLayout = view.findViewById(R.id.board_fragment_no_data);
-        DividerItemDecoration decoration = new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL);
-        decoration.setDrawable(Objects.requireNonNull(ResourcesCompat.getDrawable(getResources(), R.drawable.board_list_item_divider_decoration, requireActivity().getTheme())));
-        recyclerView.addItemDecoration(decoration);
         adapter = new BoardUserItemAdapter((type, data) -> {
             switch (type){
                 case COPY_ID:

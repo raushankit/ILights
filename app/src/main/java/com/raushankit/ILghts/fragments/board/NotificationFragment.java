@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -68,7 +67,6 @@ public class NotificationFragment extends Fragment {
         ShimmerFrameLayout shimmerFrameLayout = view.findViewById(R.id.fragment_notification_shimmer_frame);
         recyclerView.setVisibility(View.VISIBLE);
         shimmerFrameLayout.setVisibility(View.GONE);
-        recyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
         return view;
     }

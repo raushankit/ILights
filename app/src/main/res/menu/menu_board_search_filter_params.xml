@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/board_search_menu_time"
+        app:showAsAction="always"
+        android:title="@string/time"
+        android:icon="@drawable/ic_baseline_access_time_24" />
+    <item
+        android:id="@+id/board_search_menu_name"
+        android:title="@string/name"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_baseline_perm_identity_24" />
+    <item
+        android:id="@+id/board_search_menu_email"
+        app:showAsAction="always"
+        android:title="@string/email"
+        android:icon="@drawable/ic_baseline_email_24" />
+</menu>

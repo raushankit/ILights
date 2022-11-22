@@ -244,6 +244,12 @@
     <string name="sign_out">Sign Out</string>
     <string name="delete_account">Delete Account</string>
 
+    <!-- Filter dialog fragment -->
+    <string name="filter_dialog_title">Choose a filter</string>
+    <string name="email">email</string>
+    <string name="name">name</string>
+    <string name="time">time</string>
+
     <!-- Preference Titles -->
     <string name="about_header">About</string>
     <string name="profile_header">Profile</string>

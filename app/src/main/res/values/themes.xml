@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.ILights" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.ILights" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -18,7 +18,7 @@
         <item name="colorAccent">@color/scarlet_red</item>
     </style>
 
-    <style name="Theme.ILights.1" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.ILights.1" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">#009e60</item>
         <item name="colorPrimaryVariant">#008b54</item>
