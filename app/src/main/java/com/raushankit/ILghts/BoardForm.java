@@ -2,6 +2,7 @@ package com.raushankit.ILghts;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -132,6 +133,11 @@ public class BoardForm extends AppCompatActivity {
         if(savedInstanceState == null){
             switchFrags(BoardFormConst.FORM1);
         }
+    }
+
+    @Override
+    public Resources.Theme getTheme() {
+        return super.getTheme();
     }
 
     private void getUserData(){

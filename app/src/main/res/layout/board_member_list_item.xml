@@ -7,7 +7,6 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/_5sdp"
     android:elevation="@dimen/_5sdp"
-    android:theme="@style/Theme.ILights.1"
     app:cardPreventCornerOverlap="true">
     <RelativeLayout
         android:layout_width="match_parent"

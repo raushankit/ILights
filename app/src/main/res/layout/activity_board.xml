@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/Theme.ILights.1"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".BoardActivity">
     <com.google.android.material.appbar.MaterialToolbar
@@ -37,7 +36,6 @@
         android:layout_height="wrap_content"
         app:elevation="@dimen/_8sdp"
         android:visibility="gone"
-        android:background="@color/list_item_background"
         app:labelVisibilityMode="labeled"
         app:itemIconTint="?attr/colorPrimary"
         app:itemTextColor="?attr/colorPrimary"

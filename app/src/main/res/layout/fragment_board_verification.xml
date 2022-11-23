@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:theme="@style/Theme.ILights.1"
     tools:context=".forms.board.BoardVerification">
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -13,6 +13,10 @@
         <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
         <item name="android:windowLightStatusBar">false</item>
         <!-- Customize your theme here. -->
+        <item name="toolbarColor">#212121</item>
+        <item name="inactive_color">#919191</item>
+        <item name="flowBackgroundColor">#29BB86FC</item>
+        <item name="actionModeStatusBarColor">@color/shamrock_green</item>
     </style>
     <style name="PreferenceScreen" parent="Theme.ILights">
         <item name="colorAccent">@color/teal_200</item>

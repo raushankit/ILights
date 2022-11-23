@@ -7,7 +7,6 @@
     app:cardCornerRadius="@dimen/_5sdp"
     android:layout_margin="@dimen/_5sdp"
     android:elevation="@dimen/_5sdp"
-    android:theme="@style/Theme.ILights.1"
     app:cardPreventCornerOverlap="true"
     android:id="@+id/board_search_list_card">
     <RelativeLayout

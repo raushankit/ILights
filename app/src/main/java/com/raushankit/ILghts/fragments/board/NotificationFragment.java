@@ -88,6 +88,7 @@ public class NotificationFragment extends Fragment {
         super.onResume();
         Bundle args = new Bundle();
         args.putString(BoardConst.CURRENT_FRAG, BoardConst.FRAG_NOTIFICATION);
+        args.putInt(BoardConst.CURRENT_FRAG_MENU_ID, R.id.bottom_nav_notifications);
         getParentFragmentManager()
                 .setFragmentResult(BoardConst.REQUEST_KEY, args);
     }

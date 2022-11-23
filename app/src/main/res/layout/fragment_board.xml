@@ -70,14 +70,4 @@
         </TextView>
     </LinearLayout>
 
-    <!--include
-        android:id="@+id/board_fab_button_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        layout="@layout/board_fab_options"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"/-->
-
 </RelativeLayout>

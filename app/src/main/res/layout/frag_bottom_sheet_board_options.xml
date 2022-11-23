@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/_20sdp"
-    android:theme="@style/Theme.ILights.1">
+    android:paddingBottom="@dimen/_20sdp">
 
     <TextView
         android:id="@+id/frag_bottom_sheet_board_options_header"

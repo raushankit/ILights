@@ -87,6 +87,7 @@ public class BoardActivity extends AppCompatActivity {
                                 getSupportFragmentManager().popBackStackImmediate();
                             } else if (result.containsKey(BoardConst.CURRENT_FRAG)) {
                                 currentFrag = result.getString(BoardConst.CURRENT_FRAG);
+                                bottomNavigationView.setSelectedItemId(result.getInt(BoardConst.CURRENT_FRAG_MENU_ID, R.id.bottom_nav_board));
                             }
                         });
 
@@ -200,7 +201,6 @@ public class BoardActivity extends AppCompatActivity {
         MenuItem itemAdd = menu.getItem(1);
         MenuItem itemMore = menu.getItem(2);
         MenuItem itemNotification = menu.getItem(3);
-        menu.setGroupCheckable(0, false, true);
         userViewModel.getRoleData()
                 .observe(this, role -> {
                     itemAdd.setVisible(role.getAccessLevel() >= 2);

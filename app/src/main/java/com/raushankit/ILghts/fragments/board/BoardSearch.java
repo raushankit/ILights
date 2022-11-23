@@ -75,6 +75,7 @@ public class BoardSearch extends Fragment {
         super.onResume();
         Bundle args = new Bundle();
         args.putString(BoardConst.CURRENT_FRAG, BoardConst.FRAG_SEARCH_BOARDS);
+        args.putInt(BoardConst.CURRENT_FRAG_MENU_ID, R.id.bottom_nav_more_boards);
         getParentFragmentManager()
                 .setFragmentResult(BoardConst.REQUEST_KEY, args);
     }
