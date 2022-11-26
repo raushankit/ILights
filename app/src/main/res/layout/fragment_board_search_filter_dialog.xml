@@ -142,7 +142,6 @@
             android:fontFamily="sans-serif-medium"
             android:padding="@dimen/_5sdp"
             android:layout_marginTop="@dimen/_10sdp"
-            android:background="@color/active_icon_color"
             android:textAlignment="viewStart"
             app:layout_constraintTop_toBottomOf="@id/filter_board_input_parent"
             android:text="@string/text_box_placeholder"

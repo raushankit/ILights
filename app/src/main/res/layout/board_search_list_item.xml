@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Material3.CardView.Elevated"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/_5sdp"
     android:layout_margin="@dimen/_5sdp"
+    android:checkable="true"
+    android:focusable="true"
+    android:clickable="true"
+    app:checkedIcon="@drawable/ic_baseline_check_circle_24"
     android:elevation="@dimen/_5sdp"
     app:cardPreventCornerOverlap="true"
     android:id="@+id/board_search_list_card">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_5sdp"
         android:orientation="vertical">
 
         <TextView
@@ -37,21 +41,42 @@
             android:layout_below="@id/board_search_list_item_title"
             android:fontFamily="@font/rubik_variable"
             android:text="@string/board_list_item_details"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.1"
-            app:layout_constraintWidth_percent="0.85" />
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/board_search_list_item_input_layout"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_12sdp"
+            app:errorEnabled="true"
+            android:layout_marginStart="@dimen/_11sdp"
+            android:layout_toStartOf="@id/board_search_list_item_request_button"
+            app:boxStrokeWidth="2dp"
+            android:layout_below="@id/board_search_list_item_description"
+            android:hint="@string/select">
+
+            <AutoCompleteTextView
+                android:id="@+id/board_search_list_item_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_10sdp"
+                android:inputType="none"
+                tools:ignore="LabelFor" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/board_search_list_item_request_button"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/_35sdp"
+            android:layout_height="@dimen/_40sdp"
             app:cornerRadius="@dimen/_30sdp"
-            android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginEnd="@dimen/_10sdp"
             android:paddingTop="@dimen/_8sdp"
-            android:paddingBottom="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_15sdp"
             android:paddingStart="@dimen/_15sdp"
             android:paddingEnd="@dimen/_15sdp"
+            android:paddingBottom="@dimen/_8sdp"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/board_search_list_item_description"
             android:insetLeft="0dp"
@@ -79,13 +104,5 @@
             android:text="@string/title"
             android:textSize="@dimen/_9sdp" />
 
-        <include
-            android:visibility="gone"
-            android:id="@+id/board_search_list_item_loader_layout"
-            layout="@layout/loading_details_header_footer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_below="@id/board_search_list_item_request_button" />
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

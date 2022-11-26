@@ -32,6 +32,9 @@ public abstract class BoardDao {
     @Query("SELECT * FROM board_table WHERE id = :id LIMIT 1")
     public abstract BoardRoomData getBoardRoomDataById(String id);
 
+    @Query("SELECT * FROM board_table WHERE id IN (:ids)")
+    public abstract List<BoardRoomData> getBoardRoomDataByIds(List<String> ids);
+
     @Query("SELECT last_updated FROM board_table WHERE id = :id")
     public abstract Long getLastUpdateTimeById(String id);
 

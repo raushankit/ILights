@@ -17,11 +17,16 @@ public class FilterModel implements Cloneable {
 
     private String value;
 
-    @NonNull
+    private boolean retry;
+
+    private boolean nextPage;
+
     @Override
     public FilterModel clone() {
         try {
-            return (FilterModel) super.clone();
+            FilterModel clone = (FilterModel) super.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
@@ -73,17 +78,34 @@ public class FilterModel implements Cloneable {
         this.fieldIndex = fieldIndex;
     }
 
+    public boolean isRetry() {
+        return retry;
+    }
+
+    public void setRetry(boolean retry) {
+        this.retry = retry;
+    }
+
+    public boolean isNextPage() {
+        return nextPage;
+    }
+
+    public void setNextPage(boolean nextPage) {
+        this.nextPage = nextPage;
+    }
+
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FilterModel that = (FilterModel) o;
-        return fieldIndex == that.fieldIndex && Objects.equals(fieldName, that.fieldName) && Objects.equals(type, that.type) && Objects.equals(value, that.value);
+        return fieldIndex == that.fieldIndex && retry == that.retry && nextPage == that.nextPage && Objects.equals(fieldName, that.fieldName) && Objects.equals(type, that.type) && Objects.equals(value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fieldIndex, fieldName, type, value);
+        return Objects.hash(fieldIndex, fieldName, type, value, retry, nextPage);
     }
 
     @NonNull
@@ -94,6 +116,8 @@ public class FilterModel implements Cloneable {
                 ", fieldName='" + fieldName + '\'' +
                 ", type='" + type + '\'' +
                 ", value='" + value + '\'' +
+                ", retry=" + retry +
+                ", nextPage=" + nextPage +
                 '}';
     }
 }

@@ -1,6 +1,7 @@
 package com.raushankit.ILghts.dialogs;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Filter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,9 +27,11 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.model.FilterModel;
+import com.raushankit.ILghts.utils.NoFilterArrayAdapter;
 import com.raushankit.ILghts.utils.callbacks.CallBack;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FilterDialogFragment extends DialogFragment implements View.OnClickListener {
@@ -162,12 +166,31 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
         for(int i = 0;i < fields.length;++i) {
             mp.put(fields[i], i);
         }
-        Log.e(TAG, "onCreateView: wtffffff");
-        ArrayAdapter<String> fieldAdapter = new ArrayAdapter<>(requireContext(), R.layout.dropdown_item, fields);
+        NoFilterArrayAdapter<String> fieldAdapter = new NoFilterArrayAdapter<>(requireContext(), R.layout.dropdown_item, fields);
         fieldInput.setAdapter(fieldAdapter);
         String[] timeOrders = getResources().getStringArray(R.array.filter_model_time_order);
-        ArrayAdapter<String> timeAdapter = new ArrayAdapter<>(requireContext(), R.layout.dropdown_item, timeOrders);
+        NoFilterArrayAdapter<String> timeAdapter = new NoFilterArrayAdapter<>(requireContext(), R.layout.dropdown_item, timeOrders);
         timeInput.setAdapter(timeAdapter);
+        if(filterModel != null) {
+            Log.e(TAG, "onCreateView: model in bundle " + filterModel);
+            if(filterModel.getFieldName() != null) {
+                fieldInput.setText(filterModel.getFieldName(), false);
+                nameInput.setText(filterModel.getFieldIndex() == 0? filterModel.getValue(): null);
+                emailInput.setText(filterModel.getFieldIndex() == 1? filterModel.getValue(): null);
+                timeInput.setText(filterModel.getFieldIndex() == 2? filterModel.getValue(): null, false);
+            } else {
+                fieldInput.getText().clear();
+                nameInput.setText(null);
+                emailInput.setText(null);
+                timeInput.getText().clear();
+            }
+            nameInputLayout.setVisibility(filterModel.getFieldName() != null && filterModel.getFieldIndex() == 0
+                    ? View.VISIBLE: View.GONE);
+            emailInputLayout.setVisibility(filterModel.getFieldName() != null && filterModel.getFieldIndex() == 1
+                    ? View.VISIBLE: View.GONE);
+            timeInputLayout.setVisibility(filterModel.getFieldName() != null && filterModel.getFieldIndex() == 2
+                    ? View.VISIBLE: View.GONE);
+        }
         return view;
     }
 
@@ -233,12 +256,14 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
                         }
                     }
                     if(flag) {
+                        filterModel.setType(FilterModel.Type.FIELD);
                         callBack.onClick(filterModel);
                         dismiss();
                     }
                 }
             } else if(id == R.id.filter_dialog_clear_button) {
                 filterModel = new FilterModel();
+                filterModel.setType(FilterModel.Type.NULL);
                 callBack.onClick(filterModel);
                 dismiss();
                 fieldInput.getText().clear();
@@ -253,26 +278,6 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
     @Override
     public void onResume() {
         super.onResume();
-        if(filterModel != null) {
-            Log.e(TAG, "onCreateView: model in bundle" + filterModel);
-            if(filterModel.getFieldName() != null) {
-                fieldInput.setText(filterModel.getFieldName(), false);
-                nameInput.setText(filterModel.getFieldIndex() == 0? filterModel.getValue(): null);
-                emailInput.setText(filterModel.getFieldIndex() == 1? filterModel.getValue(): null);
-                timeInput.setText(filterModel.getFieldIndex() == 2? filterModel.getValue(): null, false);
-            } else {
-                fieldInput.getText().clear();
-                nameInput.setText(null);
-                emailInput.setText(null);
-                timeInput.getText().clear();
-            }
-            nameInputLayout.setVisibility(filterModel.getFieldName() != null && filterModel.getFieldIndex() == 0
-                    ? View.VISIBLE: View.GONE);
-            emailInputLayout.setVisibility(filterModel.getFieldName() != null && filterModel.getFieldIndex() == 1
-                    ? View.VISIBLE: View.GONE);
-            timeInputLayout.setVisibility(filterModel.getFieldName() != null && filterModel.getFieldIndex() == 2
-                    ? View.VISIBLE: View.GONE);
-        }
         fieldInput.addTextChangedListener(fieldWatcher);
         nameInput.addTextChangedListener(nameWatcher);
         emailInput.addTextChangedListener(emailWatcher);
@@ -286,10 +291,5 @@ public class FilterDialogFragment extends DialogFragment implements View.OnClick
         nameInput.removeTextChangedListener(nameWatcher);
         emailInput.removeTextChangedListener(emailWatcher);
         timeInput.removeTextChangedListener(timeWatcher);
-    }
-
-    @Override
-    public void dismiss() {
-        super.dismiss();
     }
 }

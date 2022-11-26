@@ -7,28 +7,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.BoardSearchAdapter;
 import com.raushankit.ILghts.dialogs.FilterDialogFragment;
 import com.raushankit.ILghts.entity.BoardConst;
 import com.raushankit.ILghts.model.FilterModel;
+import com.raushankit.ILghts.viewModel.BoardSearchViewModel;
 
-import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class BoardSearch extends Fragment {
     private static final String TAG = "BoardSearch";
 
+    private Snackbar snackbar;
     private ShimmerFrameLayout shimmerFrameLayout;
     private BoardSearchAdapter adapter;
-    private Snackbar snackbar;
     private FilterModel filterModel;
     private FilterDialogFragment filterDialogFragment;
+    private LinearProgressIndicator progressIndicator;
+    private BoardSearchViewModel viewModel;
 
     public BoardSearch() {
         // Required empty public constructor
@@ -44,13 +52,10 @@ public class BoardSearch extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
-        adapter = new BoardSearchAdapter(Collections.emptyMap());
-        filterDialogFragment = FilterDialogFragment.newInstance();
-        filterDialogFragment.addCallBack(value ->  {
-            Log.e(TAG, "onCreate: model = " + value);
+        adapter = new BoardSearchAdapter(value -> {
+            Log.i(TAG, "onCreate: value: " + value) ;
         });
+        filterDialogFragment = FilterDialogFragment.newInstance();
         filterModel = new FilterModel();
     }
 
@@ -59,24 +64,78 @@ public class BoardSearch extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_board_search, container, false);
-        snackbar = Snackbar.make(view, R.string.failed_to_load_data, Snackbar.LENGTH_INDEFINITE);
-        TextView snackText = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
         FloatingActionButton filterButton = view.findViewById(R.id.board_search_list_filter_button);
-        snackText.setMaxLines(5);
-        snackbar.setAction(R.string.retry, v -> {
-            //TODO: do retry
-        });
         filterButton.setOnClickListener(v -> {
-            filterModel = new FilterModel(2, "Creation time", "", "Descending");
             filterDialogFragment.setFilterModel(filterModel);
             filterDialogFragment.show(getChildFragmentManager(), "filterModel");
         });
+        snackbar = Snackbar.make(view, R.string.something_went_wrong, BaseTransientBottomBar.LENGTH_INDEFINITE);
+        TextView snackText = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+        snackText.setMaxLines(5);
+
         RecyclerView recyclerView = view.findViewById(R.id.board_search_list);
+        progressIndicator = view.findViewById(R.id.board_search_progress_bar);
         shimmerFrameLayout = view.findViewById(R.id.board_search_shimmer_container);
-        shimmerFrameLayout.setVisibility(View.VISIBLE);
-        shimmerFrameLayout.startShimmer();
         recyclerView.setAdapter(adapter);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel = new ViewModelProvider(requireActivity())
+                .get(BoardSearchViewModel.class);
+        filterDialogFragment.addCallBack(value ->  {
+            Log.e(TAG, "onCreate: model = " + value);
+            value.setRetry(false);
+            value.setNextPage(false);
+            viewModel.setFilterModel(value.clone());
+            filterModel = value;
+        });
+        adapter.addTrigger(value -> {
+            Log.e(TAG, "onViewCreated: should reach here");
+            filterModel.setNextPage(true);
+            filterModel.setRetry(false);
+            viewModel.setBooleans(false, true);
+        });
+        filterModel.setType(FilterModel.Type.NULL);
+        viewModel.setFilterModel(filterModel);
+        viewModel.getSearchResults().observe(getViewLifecycleOwner(), data -> {
+            Log.e(TAG, "onCreateView: got data: " + data);
+            adapter.setUserBoards(data.getUserBoardIds());
+            if(data.getData().isEmpty() && !data.isNoData()) {
+                shimmerFrameLayout.setVisibility(View.VISIBLE);
+                shimmerFrameLayout.startShimmer();
+            }
+            if(data.isNoData() || !data.getData().isEmpty() || data.getError() != null) {
+                shimmerFrameLayout.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmer();
+                progressIndicator.setVisibility(View.GONE);
+                adapter.submitList(data.getData().values().stream().sorted((o1, o2) -> {
+                    boolean c1 = data.getUserBoardIds().containsKey(o1.getBoardId());
+                    boolean c2 = data.getUserBoardIds().containsKey(o2.getBoardId());
+                    return c1 && c2? 0: c1? 1: -1;
+                }).collect(Collectors.toList()));
+                if(data.isNoData()) {
+                    snackbar.setText(R.string.no_data_found)
+                            .setDuration(BaseTransientBottomBar.LENGTH_LONG)
+                            .show();
+                }
+            }
+            if(data.getPageNumber() > 1 && data.isLoading()) {
+                progressIndicator.setVisibility(View.VISIBLE);
+            }
+            if(data.getError() != null) {
+                snackbar.setText(R.string.something_went_wrong)
+                        .setDuration(BaseTransientBottomBar.LENGTH_INDEFINITE)
+                        .setAction(R.string.retry, v -> {
+                            filterModel.setNextPage(false);
+                            filterModel.setRetry(true);
+                            viewModel.setBooleans(true, false);
+                    snackbar.dismiss();
+                });
+            }
+        });
     }
 
     @Override

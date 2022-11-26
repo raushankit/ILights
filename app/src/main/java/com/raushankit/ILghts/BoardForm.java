@@ -206,6 +206,7 @@ public class BoardForm extends AppCompatActivity {
         Log.w(TAG, "create_new_board: id = " + boardId + " basic = " + basicModel + " cred = " + credModel + " pinsModel = " + pinsModel);
 
         Map<String, Object> mp = new LinkedHashMap<>();
+        long timeStamp = StringUtils.TIMESTAMP();
         mp.put("user_boards/" + uid + "/boards/" + boardId, OWNER_LEVEL);
         mp.put("user_boards/" + uid + "/num", ServerValue.increment(1));
         mp.put("board_meta/" + boardId + "/data/title", basicModel.getName());
@@ -221,16 +222,18 @@ public class BoardForm extends AppCompatActivity {
         mp.put("board_details/" + boardId + "/pins", pinsModel.getUsablePins());
         String key = "user_notif/" + uid + "/" + UUID.randomUUID().toString();
         mp.put(key + "/body", "You created board " + basicModel.getName());
-        mp.put(key + "/time", -1* StringUtils.TIMESTAMP());
+        mp.put(key + "/time", -1* timeStamp);
         mp.put(key + "/type", NotificationType.TEXT);
         if(basicModel.getVisibility() == 0){
             mp.put("board_public/" + boardId + "/name", user.getName().toLowerCase(Locale.ROOT));
             mp.put("board_public/" + boardId + "/email", user.getEmail().toLowerCase(Locale.ROOT));
-            mp.put("board_public/" + boardId + "/time", ServerValue.TIMESTAMP);
+            mp.put("board_public/" + boardId + "/time", timeStamp);
+            mp.put("board_public/" + boardId + "/time_neg", -1* timeStamp);
         }else{
             mp.put("board_private/" + boardId + "/name", user.getName().toLowerCase(Locale.ROOT));
             mp.put("board_private/" + boardId + "/email", user.getEmail().toLowerCase(Locale.ROOT));
-            mp.put("board_private/" + boardId + "/time", ServerValue.TIMESTAMP);
+            mp.put("board_private/" + boardId + "/time", timeStamp);
+            mp.put("board_private/" + boardId + "/time_neg", -1* timeStamp);
         }
         db.updateChildren(mp, (error, ref) -> {
             loadingDialogFragment.dismiss();

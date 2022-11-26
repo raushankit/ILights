@@ -15,12 +15,15 @@ public class BoardSearchModel {
 
     private Long time;
 
+    private Long time_neg;
+
     public BoardSearchModel() {}
 
-    public BoardSearchModel(String name, String email, Long time) {
+    public BoardSearchModel(String name, String email, Long time, Long time_neg) {
         this.name = name;
         this.email = email;
         this.time = time;
+        this.time_neg = time_neg;
     }
 
     public String getName() {
@@ -47,17 +50,25 @@ public class BoardSearchModel {
         this.time = time;
     }
 
+    public Long getTime_neg() {
+        return time_neg;
+    }
+
+    public void setTime_neg(Long time_neg) {
+        this.time_neg = time_neg;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BoardSearchModel that = (BoardSearchModel) o;
-        return Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(time, that.time);
+        return Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(time, that.time) && Objects.equals(time_neg, that.time_neg);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, email, time);
+        return Objects.hash(name, email, time, time_neg);
     }
 
     @NonNull
@@ -67,6 +78,7 @@ public class BoardSearchModel {
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", time=" + time +
+                ", time_neg=" + time_neg +
                 '}';
     }
 }

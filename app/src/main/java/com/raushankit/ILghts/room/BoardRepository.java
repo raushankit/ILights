@@ -10,15 +10,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.fetcher.BoardDataFetcher;
+import com.raushankit.ILghts.fetcher.BoardPublicFetcher;
 import com.raushankit.ILghts.fetcher.BoardSearchUserFetcher;
+import com.raushankit.ILghts.model.FilterModel;
 import com.raushankit.ILghts.model.board.BoardCredModel;
 import com.raushankit.ILghts.model.board.BoardSearchUserModel;
 import com.raushankit.ILghts.model.board.FavBoard;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
+import com.raushankit.ILghts.response.BoardSearchResponse;
 
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 
 public class BoardRepository {
@@ -26,6 +30,7 @@ public class BoardRepository {
 
     private static volatile BoardRepository INSTANCE;
     private final BoardDataFetcher boardFetcher;
+    private final BoardPublicFetcher boardPublicFetcher;
     private final BoardSearchUserFetcher boardSearchUserFetcher;
 
     private BoardRepository(Application application) {
@@ -36,6 +41,7 @@ public class BoardRepository {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         boardFetcher = new BoardDataFetcher(db, roomDatabase, userId);
         boardSearchUserFetcher = new BoardSearchUserFetcher(db);
+        boardPublicFetcher = new BoardPublicFetcher(db, roomDatabase, userId);
     }
 
     public static BoardRepository getInstance(Application application) {
@@ -72,5 +78,9 @@ public class BoardRepository {
 
     public void forceCleanBoardUserList(){
         boardFetcher.forceCleanBoardUserList();
+    }
+
+    public Flowable<BoardSearchResponse> getPublicBoards(@NonNull FilterModel model) {
+        return boardPublicFetcher.getData(model);
     }
 }
