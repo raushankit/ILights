@@ -315,5 +315,22 @@
     <string name="load">Load</string>
     <string name="no_boards_message">You have access to no boards. Go to <b>More Boards</b> to add Board</string>
     <string name="home">Home</string>
+    <string name="apply">Apply</string>
+    <string name="clear_filter">Clear Filter</string>
+    <string name="filter_dialog_body"><![CDATA[<b>Filter based on following fields:</b><ul><li style="margin: 0; padding: 0;"><i>Owner\'s name: </i> Enter at least first 4 letters of the name to search.</li><li style="margin: 0; padding: 0;"><i>Owner\'s email: </i> Enter at least first 4 letters of the email to search.</li><li style="margin: 0; padding: 0;"><i>Time: </i> Pick Ascending or Descending order to search.</li></ul>]]></string>
+    <string name="select">Select</string>
 
+    <string-array name="filter_model_board_search_fields">
+        <item>Owner\'s name</item>
+        <item>Owner\'s email</item>
+        <item>Creation time</item>
+    </string-array>
+    <string-array name="filter_model_time_order">
+        <item>Ascending</item>
+        <item>Descending</item>
+    </string-array>
+    <string name="no_field_chosen">No field chosen</string>
+    <string name="type_something_to_search">Type something to search</string>
+    <string name="pick_an_order">pick an order</string>
+    <string name="type_more_than_3_words">must be more than 3 characters</string>
 </resources>

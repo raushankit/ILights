@@ -1,6 +1,7 @@
 package com.raushankit.ILghts.fragments.board;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,10 @@ public class BoardSearch extends Fragment {
         }
         adapter = new BoardSearchAdapter(Collections.emptyMap());
         filterDialogFragment = FilterDialogFragment.newInstance();
+        filterDialogFragment.addCallBack(value ->  {
+            Log.e(TAG, "onCreate: model = " + value);
+        });
+        filterModel = new FilterModel();
     }
 
     @Override
@@ -61,7 +66,11 @@ public class BoardSearch extends Fragment {
         snackbar.setAction(R.string.retry, v -> {
             //TODO: do retry
         });
-        filterButton.setOnClickListener(v -> filterDialogFragment.show(getChildFragmentManager(), "filterModel"));
+        filterButton.setOnClickListener(v -> {
+            filterModel = new FilterModel(2, "Creation time", "", "Descending");
+            filterDialogFragment.setFilterModel(filterModel);
+            filterDialogFragment.show(getChildFragmentManager(), "filterModel");
+        });
         RecyclerView recyclerView = view.findViewById(R.id.board_search_list);
         shimmerFrameLayout = view.findViewById(R.id.board_search_shimmer_container);
         shimmerFrameLayout.setVisibility(View.VISIBLE);

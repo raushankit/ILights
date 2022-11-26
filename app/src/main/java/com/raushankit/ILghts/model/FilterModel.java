@@ -7,13 +7,25 @@ import java.util.Objects;
 
 @SuppressWarnings("unused")
 @Keep
-public class FilterModel {
+public class FilterModel implements Cloneable {
+
+    private int fieldIndex;
 
     private String fieldName;
 
     private String type;
 
     private String value;
+
+    @NonNull
+    @Override
+    public FilterModel clone() {
+        try {
+            return (FilterModel) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 
     public static class Type {
         public static final String FIELD = "field";
@@ -22,7 +34,8 @@ public class FilterModel {
 
     public FilterModel() {}
 
-    public FilterModel(String fieldName, String type, String value) {
+    public FilterModel(int fieldIndex, String fieldName, String type, String value) {
+        this.fieldIndex = fieldIndex;
         this.fieldName = fieldName;
         this.type = type;
         this.value = value;
@@ -52,24 +65,33 @@ public class FilterModel {
         this.value = value;
     }
 
+    public int getFieldIndex() {
+        return fieldIndex;
+    }
+
+    public void setFieldIndex(int fieldIndex) {
+        this.fieldIndex = fieldIndex;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FilterModel that = (FilterModel) o;
-        return Objects.equals(fieldName, that.fieldName) && Objects.equals(type, that.type) && Objects.equals(value, that.value);
+        return fieldIndex == that.fieldIndex && Objects.equals(fieldName, that.fieldName) && Objects.equals(type, that.type) && Objects.equals(value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fieldName, type, value);
+        return Objects.hash(fieldIndex, fieldName, type, value);
     }
 
     @NonNull
     @Override
     public String toString() {
         return "FilterModel{" +
-                "fieldName='" + fieldName + '\'' +
+                "fieldIndex=" + fieldIndex +
+                ", fieldName='" + fieldName + '\'' +
                 ", type='" + type + '\'' +
                 ", value='" + value + '\'' +
                 '}';
