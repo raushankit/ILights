@@ -1,9 +1,9 @@
 package com.raushankit.ILghts.adapter;
 
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,15 +26,17 @@ import com.raushankit.ILghts.utils.callbacks.CallBack;
 import java.util.Collections;
 import java.util.Map;
 
+import kotlin.Triple;
+
 public class BoardSearchAdapter extends ListAdapter<BoardRoomData, BoardSearchAdapter.BoardSearchViewHolder> {
 
     private String descString;
     private Map<String, Boolean> userBoards;
     private String[] roles;
     private CallBack<Boolean> trigger;
-    private final CallBack<Pair<Integer, BoardRoomData>> requestCallBack;
+    private final CallBack<Triple<Integer, Integer, BoardRoomData>> requestCallBack;
 
-    public BoardSearchAdapter(@NonNull CallBack<Pair<Integer, BoardRoomData>> requestCallBack) {
+    public BoardSearchAdapter(@NonNull CallBack<Triple<Integer, Integer, BoardRoomData>> requestCallBack) {
         super(BoardRoomData.DIFF_UTIL);
         userBoards = Collections.emptyMap();
         this.requestCallBack = requestCallBack;
@@ -66,6 +68,10 @@ public class BoardSearchAdapter extends ListAdapter<BoardRoomData, BoardSearchAd
         if(trigger != null && position == getItemCount() - 1) {
             trigger.onClick(true);
         }
+    }
+
+    public void updateUserBoards(String boardId, boolean value) {
+        if(userBoards != null) userBoards.put(boardId, value);
     }
 
     class BoardSearchViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -129,10 +135,10 @@ public class BoardSearchAdapter extends ListAdapter<BoardRoomData, BoardSearchAd
         @Override
         public void onClick(View v) {
             if(v.getId() == R.id.board_search_list_item_request_button) {
-                if(rolesEditText.getText() == null || rolesEditText.getText().length() == 0) {
+                if(TextUtils.isEmpty(rolesEditText.getText())) {
                     roleLayout.setError("select a role");
                 } else {
-                    requestCallBack.onClick(Pair.create(
+                    requestCallBack.onClick(new Triple<>(getBindingAdapterPosition(),
                             "user".equalsIgnoreCase(rolesEditText.getText().toString()) ? 1: 2,
                             getCurrentList().get(getBindingAdapterPosition())));
                 }

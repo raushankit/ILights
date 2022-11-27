@@ -13,11 +13,14 @@ import com.raushankit.ILghts.fetcher.BoardDataFetcher;
 import com.raushankit.ILghts.fetcher.BoardPublicFetcher;
 import com.raushankit.ILghts.fetcher.BoardSearchUserFetcher;
 import com.raushankit.ILghts.model.FilterModel;
+import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.model.board.BoardCredModel;
 import com.raushankit.ILghts.model.board.BoardSearchUserModel;
 import com.raushankit.ILghts.model.board.FavBoard;
+import com.raushankit.ILghts.model.room.BoardRoomData;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.response.BoardSearchResponse;
+import com.raushankit.ILghts.utils.callbacks.CallBack;
 
 import java.util.List;
 import java.util.Map;
@@ -82,5 +85,9 @@ public class BoardRepository {
 
     public Flowable<BoardSearchResponse> getPublicBoards(@NonNull FilterModel model) {
         return boardPublicFetcher.getData(model);
+    }
+
+    public void requestAccess(BoardRoomData data, User user, int level, CallBack<String> callBack) {
+        boardPublicFetcher.requestAccess(data, user, level, callBack);
     }
 }

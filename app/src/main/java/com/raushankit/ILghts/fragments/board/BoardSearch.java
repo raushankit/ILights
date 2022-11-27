@@ -23,6 +23,7 @@ import com.raushankit.ILghts.adapter.BoardSearchAdapter;
 import com.raushankit.ILghts.dialogs.FilterDialogFragment;
 import com.raushankit.ILghts.entity.BoardConst;
 import com.raushankit.ILghts.model.FilterModel;
+import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.viewModel.BoardSearchViewModel;
 
 import java.util.stream.Collectors;
@@ -37,14 +38,16 @@ public class BoardSearch extends Fragment {
     private FilterDialogFragment filterDialogFragment;
     private LinearProgressIndicator progressIndicator;
     private BoardSearchViewModel viewModel;
+    private User userTemp;
 
     public BoardSearch() {
         // Required empty public constructor
     }
 
-    public static BoardSearch newInstance() {
+    public static BoardSearch newInstance(@NonNull User user) {
         BoardSearch fragment = new BoardSearch();
         Bundle args = new Bundle();
+        args.putParcelable("user-data", user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,9 +55,11 @@ public class BoardSearch extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new BoardSearchAdapter(value -> {
-            Log.i(TAG, "onCreate: value: " + value) ;
-        });
+        Bundle args = getArguments();
+        userTemp = null;
+        if(args != null) {
+            userTemp = args.getParcelable("user-data");
+        }
         filterDialogFragment = FilterDialogFragment.newInstance();
         filterModel = new FilterModel();
     }
@@ -72,7 +77,23 @@ public class BoardSearch extends Fragment {
         snackbar = Snackbar.make(view, R.string.something_went_wrong, BaseTransientBottomBar.LENGTH_INDEFINITE);
         TextView snackText = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
         snackText.setMaxLines(5);
-
+        final User user = userTemp;
+        adapter = new BoardSearchAdapter(value -> {
+            Log.i(TAG, "onCreate: value: " + value) ;
+            if(user == null) {
+                Log.w(TAG, "onCreate: must not reach here user cannot be null");
+            } else {
+                viewModel.getAccess(value.getThird(), user, value.getSecond(), v -> {
+                    if(v == null) {
+                        adapter.updateUserBoards(value.getThird().getBoardId(), false);
+                        adapter.notifyItemChanged(value.getFirst());
+                    } else {
+                        Snackbar.make(view, R.string.failed_to_request_access, BaseTransientBottomBar.LENGTH_LONG)
+                                .show();
+                    }
+                });
+            }
+        });
         RecyclerView recyclerView = view.findViewById(R.id.board_search_list);
         progressIndicator = view.findViewById(R.id.board_search_progress_bar);
         shimmerFrameLayout = view.findViewById(R.id.board_search_shimmer_container);
@@ -86,14 +107,14 @@ public class BoardSearch extends Fragment {
         viewModel = new ViewModelProvider(requireActivity())
                 .get(BoardSearchViewModel.class);
         filterDialogFragment.addCallBack(value ->  {
-            Log.e(TAG, "onCreate: model = " + value);
+            Log.d(TAG, "onCreate: model = " + value);
             value.setRetry(false);
             value.setNextPage(false);
             viewModel.setFilterModel(value.clone());
             filterModel = value;
         });
         adapter.addTrigger(value -> {
-            Log.e(TAG, "onViewCreated: should reach here");
+            Log.d(TAG, "onViewCreated: should reach here");
             filterModel.setNextPage(true);
             filterModel.setRetry(false);
             viewModel.setBooleans(false, true);

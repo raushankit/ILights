@@ -339,4 +339,5 @@
     <string name="type_more_than_3_words">must be more than 3 characters</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="no_data_found">No data found for following filter parameters</string>
+    <string name="failed_to_request_access">Failed to Request Access</string>
 </resources>

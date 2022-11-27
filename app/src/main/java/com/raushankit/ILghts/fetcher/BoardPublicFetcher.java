@@ -9,16 +9,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.raushankit.ILghts.entity.NotificationType;
 import com.raushankit.ILghts.model.FilterModel;
+import com.raushankit.ILghts.model.NotificationData;
+import com.raushankit.ILghts.model.User;
+import com.raushankit.ILghts.model.board.BoardRequestModel;
 import com.raushankit.ILghts.model.room.BoardRoomData;
 import com.raushankit.ILghts.response.BoardSearchResponse;
 import com.raushankit.ILghts.room.BoardDao;
 import com.raushankit.ILghts.room.BoardRoomDatabase;
+import com.raushankit.ILghts.utils.StringUtils;
+import com.raushankit.ILghts.utils.callbacks.CallBack;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -30,6 +37,8 @@ import io.reactivex.rxjava3.core.FlowableEmitter;
 public class BoardPublicFetcher {
 
     private static final String TAG = "BoardPublicFetcher";
+    private static final String NOTIF_BODY_OWNER = "%s(%s) has requested %s level access for board(%s).";
+    private static final String NOTIF_BODY_REQUESTER = "Requested %s level access for board(%s) from %s(%s)";
 
     private final BoardDao boardDao;
     private final DatabaseReference db;
@@ -107,33 +116,31 @@ public class BoardPublicFetcher {
     public Flowable<BoardSearchResponse> getData(@NonNull FilterModel model) {
         return Flowable.create(emitter -> {
             latestQuery = model.isRetry()? latestQuery: model.isNextPage()? getNextPageQuery(model): getQuery(model);
-            Log.e(TAG, "getData: I am here");
             if(response.isEndOfPage() || !allow.compareAndSet(true, false)) {
                 if(response.isEndOfPage()) {
-                    Log.i(TAG, "getData: already end of page");
+                    Log.d(TAG, "getData: already end of page");
                     emitter.onComplete();
                 } else {
-                    Log.i(TAG, "getData: method running still");
+                    Log.d(TAG, "getData: method running still");
                 }
             } else {
-                Log.e(TAG, "getData: inside else branch");
                 response.increasePage(model.isRetry()? 0: 1);
                 response.setLoading(true);
                 if(gotBoardIds) {
-                    Log.e(TAG, "getData: have board ids");
+                    Log.d(TAG, "getData: have board ids");
                     executeQuery(emitter);
                 } else {
                     db.child("user_boards").child(userId).child("boards")
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    Log.e(TAG, "onDataChange: requests children1: " + snapshot);
+                                    Log.d(TAG, "onDataChange: requests children1: " + snapshot);
                                     snapshot.getChildren().forEach(child -> response.setUserBoardIds(child.getKey(), true));
-                                    db.child("board_requests").orderByChild("userId").equalTo(userId)
+                                    db.child("board_requests").child(userId).orderByChild("requesterId").equalTo(userId)
                                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    Log.e(TAG, "onDataChange: requests children2: " + snapshot.hasChildren());
+                                                    Log.d(TAG, "onDataChange: requests children2: " + snapshot.hasChildren());
                                                     gotBoardIds = true;
                                                     snapshot.getChildren().forEach(child -> response.setUserBoardIds(child.getKey(), false));
                                                     emitter.onNext(response);
@@ -220,6 +227,31 @@ public class BoardPublicFetcher {
                         }
                     }));
         });
+    }
 
+    public void requestAccess(BoardRoomData data, User user, int level, CallBack<String> callBack) {
+        if(response == null) { callBack.onClick("failed to request access"); }
+        Map<String, Object> mp = new LinkedHashMap<>();
+        String key = "user_notif/" + data.getOwnerId() + "/" + UUID.randomUUID().toString();
+        long timestamp = StringUtils.TIMESTAMP();
+        mp.put(key + "/body", String.format(NOTIF_BODY_OWNER, user.getName(), user.getEmail(),
+                level == 1? "user": "editor", data.getData().getTitle()));
+        mp.put(key + "/time", -1* timestamp);
+        mp.put(key + "/type", level == 1? NotificationType.ACTION_USER_REQUEST: NotificationType.ACTION_EDITOR_REQUEST);
+        mp.put(key + "/data", new NotificationData(data.getBoardId(), userId));
+        key = "user_notif/" + userId + "/" + UUID.randomUUID().toString();
+        mp.put(key + "/body", String.format(NOTIF_BODY_REQUESTER, level == 1? "user": "editor", data.getData().getTitle(),
+                data.getOwnerName(), data.getOwnerEmail()));
+        mp.put(key + "/time", -1* timestamp);
+        mp.put(key + "/type", NotificationType.TEXT);
+        mp.put("board_requests/" + userId + "/" + data.getBoardId(), new BoardRequestModel(userId, data.getOwnerId(), timestamp, level));
+        db.updateChildren(mp, (error, ref) -> {
+            if(error == null) {
+                response.setUserBoardIds(data.getBoardId(), false);
+                callBack.onClick(null);
+            } else {
+                callBack.onClick(error.getMessage());
+            }
+        });
     }
 }

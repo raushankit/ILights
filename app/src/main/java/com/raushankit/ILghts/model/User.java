@@ -1,5 +1,8 @@
 package com.raushankit.ILghts.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
@@ -15,7 +18,7 @@ import java.util.Objects;
 @Keep
 @IgnoreExtraProperties
 @SuppressWarnings("unused")
-public class User {
+public class User implements Parcelable {
 
     private String name;
     private String email;
@@ -28,6 +31,23 @@ public class User {
         this.name = name.toLowerCase(Locale.ROOT);
         this.email = email.toLowerCase(Locale.ROOT);
     }
+
+    protected User(Parcel in) {
+        name = in.readString();
+        email = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String getName() {
         return StringUtils.capitalize(name);
@@ -73,5 +93,16 @@ public class User {
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(email);
     }
 }

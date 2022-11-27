@@ -33,6 +33,7 @@ import com.raushankit.ILghts.fragments.board.BoardEditMemberFragment;
 import com.raushankit.ILghts.fragments.board.BoardFragment;
 import com.raushankit.ILghts.fragments.board.BoardSearch;
 import com.raushankit.ILghts.fragments.board.NotificationFragment;
+import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.storage.VolleyRequest;
 import com.raushankit.ILghts.viewModel.BoardCommViewModel;
@@ -57,6 +58,7 @@ public class BoardActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
     private FirebaseAuth mAuth;
     private String currentFrag;
+    private User user;
 
     private ActivityResultLauncher<Intent> addBoardLauncher;
 
@@ -145,7 +147,7 @@ public class BoardActivity extends AppCompatActivity {
                 break;
             case BoardConst.FRAG_SEARCH_BOARDS:
                 ft.replace(R.id.board_main_frame,
-                                BoardSearch.newInstance())
+                                BoardSearch.newInstance(user))
                         .addToBackStack(null)
                         .commit();
                 break;
@@ -206,6 +208,8 @@ public class BoardActivity extends AppCompatActivity {
                     itemAdd.setVisible(role.getAccessLevel() >= 2);
                     bottomNavigationView.setVisibility(View.VISIBLE);
                 });
+        userViewModel.getUserData()
+                        .observe(this, u -> user = u);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             Log.w(TAG, "setNavMenu: id = " + id);
