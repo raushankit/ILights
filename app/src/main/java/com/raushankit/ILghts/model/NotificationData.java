@@ -14,12 +14,18 @@ public class NotificationData {
 
     private String boardId;
     private String userId;
+    private String userName;
+    private String userEmail;
+    private String boardName;
 
     public NotificationData() {}
 
-    public NotificationData(String boardId, String userId) {
+    public NotificationData(String boardId, String userId, String userName, String userEmail, String boardName) {
         this.boardId = boardId;
         this.userId = userId;
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.boardName = boardName;
     }
 
     public String getBoardId() {
@@ -38,17 +44,41 @@ public class NotificationData {
         this.userId = userId;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getBoardName() {
+        return boardName;
+    }
+
+    public void setBoardName(String boardName) {
+        this.boardName = boardName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof NotificationData)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         NotificationData that = (NotificationData) o;
-        return Objects.equals(boardId, that.boardId) && Objects.equals(userId, that.userId);
+        return Objects.equals(boardId, that.boardId) && Objects.equals(userId, that.userId) && Objects.equals(userName, that.userName) && Objects.equals(userEmail, that.userEmail) && Objects.equals(boardName, that.boardName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(boardId, userId);
+        return Objects.hash(boardId, userId, userName, userEmail, boardName);
     }
 
     @NonNull
@@ -57,8 +87,9 @@ public class NotificationData {
         return "NotificationData{" +
                 "boardId='" + boardId + '\'' +
                 ", userId='" + userId + '\'' +
+                ", userName='" + userName + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                ", boardName='" + boardName + '\'' +
                 '}';
     }
-
-
 }

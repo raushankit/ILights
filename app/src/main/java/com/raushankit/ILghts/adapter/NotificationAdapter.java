@@ -100,6 +100,8 @@ public class NotificationAdapter extends PagingDataAdapter<Notification, Notific
             time.setText(StringUtils.formattedTime(-1*item.getTime()));
             accept.setVisibility(TextUtils.equals(item.getType(), NotificationType.TEXT)? View.GONE: View.VISIBLE);
             reject.setVisibility(TextUtils.equals(item.getType(), NotificationType.TEXT)? View.GONE: View.VISIBLE);
+            accept.setEnabled(!TextUtils.equals(item.getType(), NotificationType.ACTION_DONE));
+            reject.setEnabled(!TextUtils.equals(item.getType(), NotificationType.ACTION_DONE));
         }
 
         @Override

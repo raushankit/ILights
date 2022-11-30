@@ -238,7 +238,7 @@ public class BoardPublicFetcher {
                 level == 1? "user": "editor", data.getData().getTitle()));
         mp.put(key + "/time", -1* timestamp);
         mp.put(key + "/type", level == 1? NotificationType.ACTION_USER_REQUEST: NotificationType.ACTION_EDITOR_REQUEST);
-        mp.put(key + "/data", new NotificationData(data.getBoardId(), userId));
+        mp.put(key + "/data", new NotificationData(data.getBoardId(), userId, user.getName(), user.getEmail(), data.getData().getTitle()));
         key = "user_notif/" + userId + "/" + UUID.randomUUID().toString();
         mp.put(key + "/body", String.format(NOTIF_BODY_REQUESTER, level == 1? "user": "editor", data.getData().getTitle(),
                 data.getOwnerName(), data.getOwnerEmail()));

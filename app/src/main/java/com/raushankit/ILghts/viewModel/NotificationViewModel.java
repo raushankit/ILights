@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.model.Notification;
 import com.raushankit.ILghts.room.BoardRoomDatabase;
 import com.raushankit.ILghts.fetcher.NotificationFetcher;
+import com.raushankit.ILghts.utils.callbacks.CallBack;
 
 import io.reactivex.rxjava3.core.Flowable;
 import kotlinx.coroutines.CoroutineScope;
@@ -60,5 +61,9 @@ public class NotificationViewModel extends AndroidViewModel {
     @Override
     protected void onCleared() {
         fetcher.removeSubscription();
+    }
+
+    public void doAction(Notification notification, boolean flag, CallBack<String> callBack) {
+        fetcher.requestAction(notification, flag, callBack);
     }
 }

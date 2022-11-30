@@ -41,4 +41,7 @@ public interface NotificationDao {
 
     @Query("UPDATE notification_table SET seen = :seen WHERE id = :id")
     void updateSeen(String id, boolean seen);
+
+    @Query("UPDATE notification_table SET type = :type WHERE id = :id")
+    void updateType(String id, String type);
 }
