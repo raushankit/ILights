@@ -75,12 +75,15 @@ public class BoardActivity extends AppCompatActivity {
         getSupportFragmentManager()
                 .setFragmentResultListener(FRAG_REQUEST_KEY, this,
                         (requestKey, result) -> {
+                            Log.e(TAG, "onCreate: data = " + requestKey + "  " + result);
+                            result.putParcelable(BoardConst.USER, user);
                             if (!TextUtils.equals(requestKey, FRAG_REQUEST_KEY)) {
                                 return;
                             }
                             if (result.containsKey(BoardConst.WHICH_FRAG)) {
                                 switchFrag(result);
-                            } else if (result.containsKey(BoardConst.SHOW_SNACK_BAR)) {
+                            }
+                            else if (result.containsKey(BoardConst.SHOW_SNACK_BAR)) {
                                 if (result.containsKey(BoardConst.SNACK_MESSAGE)) {
                                     Snackbar.make(findViewById(android.R.id.content),
                                                     result.getInt(BoardConst.SNACK_MESSAGE), BaseTransientBottomBar.LENGTH_SHORT)
@@ -116,39 +119,35 @@ public class BoardActivity extends AppCompatActivity {
         switch (key) {
             case BoardConst.FRAG_BOARD:
                 ft.replace(R.id.board_main_frame,
-                                BoardFragment.newInstance(mAuth.getUid()))
-                        .addToBackStack(null)
+                                BoardFragment.newInstance(mAuth.getUid(), result.getParcelable(BoardConst.USER)))
                         .commit();
                 break;
             case BoardConst.FRAG_EDIT_MEMBER:
                 BoardRoomUserData data = result.getParcelable(BoardConst.BOARD_DATA);
                 ft.replace(R.id.board_main_frame,
                                 BoardEditMemberFragment.newInstance(data))
-                        .addToBackStack(null)
                         .commit();
                 break;
             case BoardConst.FRAG_EDIT_DETAILS:
                 ft.replace(R.id.board_main_frame,
                                 BoardEditDetails.newInstance(result.getParcelable(BoardConst.BOARD_DATA)))
-                        .addToBackStack(null)
                         .commit();
                 break;
             case BoardConst.FRAG_CRED_DETAILS:
                 ft.replace(R.id.board_main_frame,
                                 BoardCredentialViewer.newInstance(result.getParcelable(BoardConst.BOARD_DATA)))
-                        .addToBackStack(null)
                         .commit();
                 break;
             case BoardConst.FRAG_NOTIFICATION:
                 ft.replace(R.id.board_main_frame,
                                 NotificationFragment.newInstance(Objects.requireNonNull(mAuth.getUid())))
-                        .addToBackStack(null)
+                        .addToBackStack(BoardConst.FRAG_NOTIFICATION)
                         .commit();
                 break;
             case BoardConst.FRAG_SEARCH_BOARDS:
                 ft.replace(R.id.board_main_frame,
                                 BoardSearch.newInstance(user))
-                        .addToBackStack(null)
+                        .addToBackStack(BoardConst.FRAG_SEARCH_BOARDS)
                         .commit();
                 break;
             default:
@@ -230,6 +229,7 @@ public class BoardActivity extends AppCompatActivity {
                 return true;
             } else if (id == itemHome.getItemId()) {
                 Bundle args = new Bundle();
+                args.putParcelable(BoardConst.USER, user);
                 args.putString(BoardConst.WHICH_FRAG, BoardConst.FRAG_BOARD);
                 switchFrag(args);
                 return true;

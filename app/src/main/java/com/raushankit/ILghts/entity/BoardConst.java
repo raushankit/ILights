@@ -11,6 +11,7 @@ public class BoardConst {
     public static final String FRAG_CRED_DETAILS = "fragment_credential_details";
     public static final String FRAG_NOTIFICATION = "fragment_notification";
     public static final String FRAG_SEARCH_BOARDS = "fragment_search_boards";
+    public static final String FRAG_BOARD_CONTROL = "fragment_board_control";
 
 
     public static final String USER_ID = "user_id";
@@ -18,4 +19,5 @@ public class BoardConst {
     public static final String BOARD_DATA = "board_data";
     public static final String SHOW_SNACK_BAR = "show_snack_bar";
     public static final String SNACK_MESSAGE = "snack_message";
+    public static final String USER = "user";
 }

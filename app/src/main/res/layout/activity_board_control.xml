@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/controller_background"
+    tools:context=".BoardControl">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/board_control_appbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/board_control_top_appbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/controller_title"
+            app:menu="@menu/board_control_menu_items"
+            app:navigationIconTint="@color/user_info_name_text"
+            app:navigationIcon="@drawable/ic_arrow_back" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/board_control_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/_50sdp"
+        android:animateLayoutChanges="true"
+        android:animationCache="true">
+
+        <RelativeLayout
+            android:id="@+id/no_switch_parent_layout"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/_30sdp"
+                android:paddingStart="@dimen/_30sdp"
+                android:textSize="@dimen/_15sdp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/board_control_add_switch_button"
+                android:text="@string/no_switches_in_board" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/board_control_add_switch_button"
+                style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="@dimen/_120sdp"
+                android:layout_centerInParent="true"
+                app:icon="@drawable/ic_baseline_add_24"
+                app:iconSize="@dimen/_100sdp"
+                app:iconTint="@color/quantum_grey_600" />
+
+
+        </RelativeLayout>
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/board_control_shimmer_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:animateLayoutChanges="true"
+            android:animationCache="true"
+            app:shimmer_repeat_mode="restart">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include layout="@layout/frag_controller_shimmer_item"/>
+                <include layout="@layout/frag_controller_shimmer_item"/>
+                <include layout="@layout/frag_controller_shimmer_item"/>
+                <include layout="@layout/frag_controller_shimmer_item"/>
+                <include layout="@layout/frag_controller_shimmer_item"/>
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -75,54 +75,54 @@ public class ControllerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_controller, container, false);
-        db = FirebaseDatabase.getInstance().getReference();
-        settingsButton = view.findViewById(R.id.frag_controller_settings_button);
-        TextView boardStatus = view.findViewById(R.id.frag_controller_board_status);
-        shimmerFrameLayout = view.findViewById(R.id.frag_controller_shimmer_container);
-        shimmerFrameLayout.setVisibility(View.VISIBLE);
-        shimmerFrameLayout.startShimmer();
-        AtomicReference<String> name = new AtomicReference<>();
-        RecyclerView recyclerView = view.findViewById(R.id.frag_controller_pin_items_list_recyclerview);
-        PinListAdapter adapter = new PinListAdapter(getString(R.string.controller_item_details),
-                value -> {
-                    if (name.get() != null) {
-                        Map<String, Object> mp = new LinkedHashMap<>();
-                        mp.put("control/status/" + value.getPinNumber(), !value.isStatus());
-                        mp.put("control/update/" + value.getPinNumber(), PinData.toMap(name.get().toLowerCase(Locale.getDefault()), Objects.requireNonNull(mAuth.getUid())));
-                        db.updateChildren(mp, (error, ref) -> {
-                            if (error != null) {
-                                Snackbar.make(view, error.getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();
-                            }
-                        });
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(AnalyticsParam.PIN_NUMBER, value.getPinNumber());
-                        bundle.putString(AnalyticsParam.PIN_NAME, value.getPinName());
-                        mFirebaseAnalytics.logEvent(AnalyticsParam.Event.CONTROLLER_EVENT, bundle);
-                    } else {
-                        Log.e(TAG, "onCreateView: name: " + name);
-                    }
-                });
-        UserViewModel userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-        pinDataViewModel.getPinData(Objects.requireNonNull(mAuth.getUid())).observe(getViewLifecycleOwner(), pinListData -> {
-            if (!pinListData.isEmpty()) {
-                pinListData.sort(Comparator.comparingInt(PinListData::getPinNumber));
-                Log.i(TAG, "onCreateView: pinListData = " + pinListData);
-                adapter.submitList(pinListData);
-                if (shimmerFrameLayout.isShimmerStarted()) {
-                    shimmerFrameLayout.stopShimmer();
-                    shimmerFrameLayout.setVisibility(View.GONE);
-                }
-            }
-        });
-        userViewModel.getRoleData().observe(getViewLifecycleOwner(), role -> {
-            if (role.getAccessLevel() <= 0) {
-                fragViewModel.selectItem(ControllerFragActions.BLOCK_EVENT);
-            }
-        });
-        StatusViewModel statusViewModel = new ViewModelProvider(requireActivity()).get(StatusViewModel.class);
-        userViewModel.getUserData().observe(getViewLifecycleOwner(), user -> name.set(user.getName()));
-        statusViewModel.getStatusData().observe(getViewLifecycleOwner(), aBoolean -> boardStatus.setText(getString(R.string.controller_board_status, (aBoolean ? "ONLINE" : "OFFLINE"))));
-        recyclerView.setAdapter(adapter);
+//        db = FirebaseDatabase.getInstance().getReference();
+//        settingsButton = view.findViewById(R.id.frag_controller_settings_button);
+//        TextView boardStatus = view.findViewById(R.id.frag_controller_board_status);
+//        shimmerFrameLayout = view.findViewById(R.id.frag_controller_shimmer_container);
+//        shimmerFrameLayout.setVisibility(View.VISIBLE);
+//        shimmerFrameLayout.startShimmer();
+//        AtomicReference<String> name = new AtomicReference<>();
+//        RecyclerView recyclerView = view.findViewById(R.id.frag_controller_pin_items_list_recyclerview);
+//        PinListAdapter adapter = new PinListAdapter(getString(R.string.controller_item_details),
+//                value -> {
+//                    if (name.get() != null) {
+//                        Map<String, Object> mp = new LinkedHashMap<>();
+//                        mp.put("control/status/" + value.getPinNumber(), !value.isStatus());
+//                        mp.put("control/update/" + value.getPinNumber(), PinData.toMap(name.get().toLowerCase(Locale.getDefault()), Objects.requireNonNull(mAuth.getUid())));
+//                        db.updateChildren(mp, (error, ref) -> {
+//                            if (error != null) {
+//                                Snackbar.make(view, error.getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();
+//                            }
+//                        });
+//                        Bundle bundle = new Bundle();
+//                        bundle.putInt(AnalyticsParam.PIN_NUMBER, value.getPinNumber());
+//                        bundle.putString(AnalyticsParam.PIN_NAME, value.getPinName());
+//                        mFirebaseAnalytics.logEvent(AnalyticsParam.Event.CONTROLLER_EVENT, bundle);
+//                    } else {
+//                        Log.e(TAG, "onCreateView: name: " + name);
+//                    }
+//                });
+//        UserViewModel userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+//        pinDataViewModel.getPinData(Objects.requireNonNull(mAuth.getUid())).observe(getViewLifecycleOwner(), pinListData -> {
+//            if (!pinListData.isEmpty()) {
+//                pinListData.sort(Comparator.comparingInt(PinListData::getPinNumber));
+//                Log.i(TAG, "onCreateView: pinListData = " + pinListData);
+//                adapter.submitList(pinListData);
+//                if (shimmerFrameLayout.isShimmerStarted()) {
+//                    shimmerFrameLayout.stopShimmer();
+//                    shimmerFrameLayout.setVisibility(View.GONE);
+//                }
+//            }
+//        });
+//        userViewModel.getRoleData().observe(getViewLifecycleOwner(), role -> {
+//            if (role.getAccessLevel() <= 0) {
+//                fragViewModel.selectItem(ControllerFragActions.BLOCK_EVENT);
+//            }
+//        });
+//        StatusViewModel statusViewModel = new ViewModelProvider(requireActivity()).get(StatusViewModel.class);
+//        userViewModel.getUserData().observe(getViewLifecycleOwner(), user -> name.set(user.getName()));
+//        statusViewModel.getStatusData().observe(getViewLifecycleOwner(), aBoolean -> boardStatus.setText(getString(R.string.controller_board_status, (aBoolean ? "ONLINE" : "OFFLINE"))));
+//        recyclerView.setAdapter(adapter);
         return view;
     }
 

@@ -24,11 +24,13 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.raushankit.ILghts.BoardControl;
 import com.raushankit.ILghts.BoardSearchUsers;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.BoardUserItemAdapter;
 import com.raushankit.ILghts.dialogs.BoardBottomSheetFragment;
 import com.raushankit.ILghts.entity.BoardConst;
+import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.viewModel.BoardDataViewModel;
 
 public class BoardFragment extends Fragment {
@@ -39,13 +41,38 @@ public class BoardFragment extends Fragment {
     private ShimmerFrameLayout shimmerFrameLayout;
     private BoardUserItemAdapter adapter;
     private ActivityResultLauncher<Intent> addBoardUsersLauncher;
+    private ActivityResultLauncher<Intent> goToSwitchesLauncher;
     private LinearLayout noDataLayout;
     private String userId;
-    private final BoardBottomSheetFragment.WhichButtonCLickedListener listener;
+    private User user;
+    private BoardBottomSheetFragment.WhichButtonCLickedListener listener;
 
     public BoardFragment() {
+
+    }
+
+    public static BoardFragment newInstance(String userId, User user) {
+        BoardFragment fragment = new BoardFragment();
+        Bundle args = new Bundle();
+        Log.i(TAG, "newInstance: " + user);
+        args.putString(BoardConst.USER_ID, userId);
+        args.putParcelable(BoardConst.USER, user);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        Bundle args1 = getArguments();
+        if(args1 != null){
+            userId = args1.getString(BoardConst.USER_ID);
+            user = args1.getParcelable(BoardConst.USER);
+        }
         listener = (whichButton, details) -> {
             Bundle args = new Bundle();
+            Log.e(TAG, "BoardFragment: another type option: " + whichButton);
             switch (whichButton){
                 case COPY_ID:
                     copyToClipBoard(details.getBoardId());
@@ -73,29 +100,17 @@ public class BoardFragment extends Fragment {
                     intent.putExtra("BOARD", details);
                     addBoardUsersLauncher.launch(intent);
                     break;
+                case GO_TO_BOARD:
+                    Intent intent1 = new Intent(requireActivity(), BoardControl.class);
+                    intent1.putExtra("BOARD", details);
+                    intent1.putExtra("USERID", userId);
+                    intent1.putExtra("USER", user);
+                    goToSwitchesLauncher.launch(intent1);
+                    break;
                 default:
                     Log.i(TAG, "BoardFragment: another type option: " + whichButton);
             }
         };
-    }
-
-    public static BoardFragment newInstance(String userId) {
-        BoardFragment fragment = new BoardFragment();
-        Bundle args = new Bundle();
-        Log.i(TAG, "newInstance: " + userId);
-        args.putString(BoardConst.USER_ID, userId);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        Bundle args = getArguments();
-        if(args != null){
-            userId = args.getString(BoardConst.USER_ID);
-        }
         boardDataViewModel = new ViewModelProvider(requireActivity())
                 .get(BoardDataViewModel.class);
     }
@@ -113,6 +128,14 @@ public class BoardFragment extends Fragment {
                     }
                 }
         );
+        goToSwitchesLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if(result.getResultCode() == Activity.RESULT_OK){
+                        Snackbar.make(view, R.string.add_users_successful, BaseTransientBottomBar.LENGTH_SHORT)
+                                .show();
+                    }
+                }
+        );
         recyclerView = view.findViewById(R.id.board_fragment_recyclerview);
         noDataLayout = view.findViewById(R.id.board_fragment_no_data);
         adapter = new BoardUserItemAdapter((type, data) -> {
@@ -121,7 +144,11 @@ public class BoardFragment extends Fragment {
                     copyToClipBoard(data.getBoardId());
                     break;
                 case GO_TO_BOARD:
-                    Log.i(TAG, "onCreateView:" + type + " -> " + data);
+                    Intent intent1 = new Intent(requireActivity(), BoardControl.class);
+                    intent1.putExtra("BOARD", data);
+                    intent1.putExtra("USERID", userId);
+                    intent1.putExtra("USER", user);
+                    goToSwitchesLauncher.launch(intent1);
                     break;
                 case SHOW_OPTIONS:
                     BoardBottomSheetFragment fragment = BoardBottomSheetFragment.newInstance(data);

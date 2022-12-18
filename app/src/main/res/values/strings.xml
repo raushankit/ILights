@@ -340,4 +340,8 @@
     <string name="something_went_wrong">Something went wrong</string>
     <string name="no_data_found">No data found for following filter parameters</string>
     <string name="failed_to_request_access">Failed to Request Access</string>
+    <string name="add_switch">Add Switch</string>
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="no_switches_in_board">No switches in board. Add a switch by clicking the plus button below</string>
 </resources>

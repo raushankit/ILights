@@ -6,6 +6,7 @@
     android:layout_margin="@dimen/_5sdp"
     android:elevation="@dimen/_10sdp"
     app:cardCornerRadius="@dimen/_10sdp"
+    app:strokeWidth="0dp"
     android:background="@color/pin_item_background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content">
@@ -13,6 +14,42 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/pin_item_edit_button"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_6sdp"
+            android:backgroundTint="@color/controller_background"
+            android:elevation="@dimen/_5sdp"
+            android:text="@string/edit"
+            app:icon="@drawable/ic_baseline_edit_24"
+            android:layout_marginEnd="@dimen/_10sdp"
+            app:iconSize="@dimen/_20sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/pin_item_delete_button"
+            app:layout_constraintTop_toBottomOf="@id/pin_item_details"
+            app:strokeWidth="0dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/pin_item_delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/controller_background"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:elevation="@dimen/_5sdp"
+            app:layout_constraintTop_toBottomOf="@id/pin_item_details"
+            app:icon="@drawable/ic_baseline_delete_24"
+            android:text="@string/delete"
+            android:textColor="@color/design_default_color_error"
+            app:strokeWidth="0dp"
+            app:iconTint="@color/error"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:layout_marginBottom="@dimen/_6sdp"
+            app:iconSize="@dimen/_20sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
             android:id="@+id/pin_item_title"
@@ -39,25 +76,24 @@
             android:text="@string/controller_item_details"
             android:textSize="@dimen/_10sdp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pin_item_title" />
-
-        <androidx.appcompat.widget.SwitchCompat
+        <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/pin_item_switch"
-            android:layout_width="@dimen/_70sdp"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:checked="false"
-            app:switchTextAppearance="@style/SwitchTextAppearance"
-            android:layout_marginEnd="@dimen/_15sdp"
-            android:fontFamily="sans-serif-medium"
-            android:thumb="@drawable/pin_item_switch_thumb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
+            android:textStyle="bold"
+            android:enabled="true"
+            android:backgroundTint="@color/controller_background"
+            android:textAllCaps="false"
+            app:thumbIcon="@drawable/ic_baseline_check_24"
+            android:layout_marginEnd="@dimen/_10sdp"
+            app:thumbIconTintMode="src_atop"
             app:layout_constraintBottom_toBottomOf="@+id/pin_item_title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/pin_item_title"
-            app:showText="true"
-            app:track="@drawable/pin_item_switch_track" />
+            app:layout_constraintTop_toTopOf="@+id/pin_item_title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

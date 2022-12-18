@@ -3,7 +3,7 @@ package com.raushankit.ILghts.observer;
 import com.raushankit.ILghts.flivedata.ChildDelayLiveData;
 
 public class PinStatusLiveData extends ChildDelayLiveData<Boolean> {
-    public PinStatusLiveData() {
-        super("/control/status", Boolean.class);
+    public PinStatusLiveData(String boardId) {
+        super("/board_control/" + boardId + "/status", Boolean.class);
     }
 }

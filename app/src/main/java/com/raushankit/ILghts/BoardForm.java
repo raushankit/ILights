@@ -220,6 +220,7 @@ public class BoardForm extends AppCompatActivity {
         mp.put("board_cred/" + boardId, new BoardCredModel(credModel.getId(), credModel.getUsername(), credModel.getPassword()));
         mp.put("board_details/" + boardId + "/heartBeat", ServerValue.TIMESTAMP);
         mp.put("board_details/" + boardId + "/pins", pinsModel.getUsablePins());
+        mp.put("board_details/" + boardId + "/number_of_pins", 0);
         String key = "user_notif/" + uid + "/" + UUID.randomUUID().toString();
         mp.put(key + "/body", "You created board " + basicModel.getName());
         mp.put(key + "/time", -1* timeStamp);

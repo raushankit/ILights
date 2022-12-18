@@ -1,29 +1,45 @@
 package com.raushankit.ILghts.adapter;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.model.PinListData;
+import com.raushankit.ILghts.model.Role;
 import com.raushankit.ILghts.utils.StringUtils;
 import com.raushankit.ILghts.utils.callbacks.CallBack;
 
 public class PinListAdapter extends ListAdapter<PinListData, PinListAdapter.PinListViewHolder> {
 
-    private final String detailsString;
-    private final CallBack<PinListData> callBack;
+    private static final String TAG = "PinListAdapter";
 
-    public PinListAdapter(@NonNull String detailsString, @NonNull CallBack<PinListData> callBack) {
+    private final String detailsString;
+    private final CallBack<Pair<WhichButton, PinListData>> callBack;
+    private final Role role;
+
+    public PinListAdapter(@NonNull String detailsString,
+                          @NonNull CallBack<Pair<WhichButton, PinListData>> callBack) {
         super(PinListData.DIFF_CALLBACK);
         this.detailsString = detailsString;
         this.callBack = callBack;
+        this.role = new Role(0);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setRole(int level) {
+        role.setAccessLevel(level);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -41,14 +57,20 @@ public class PinListAdapter extends ListAdapter<PinListData, PinListAdapter.PinL
 
         private final TextView name;
         private final TextView details;
-        private final SwitchCompat _switch;
+        private final MaterialSwitch _switch;
 
         public PinListViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.pin_item_title);
             details = itemView.findViewById(R.id.pin_item_details);
             _switch = itemView.findViewById(R.id.pin_item_switch);
+            MaterialButton editButton = itemView.findViewById(R.id.pin_item_edit_button);
+            MaterialButton deleteButton = itemView.findViewById(R.id.pin_item_delete_button);
+            editButton.setVisibility(role.getAccessLevel() >= 2? View.VISIBLE: View.GONE);
+            deleteButton.setVisibility(role.getAccessLevel() >= 2? View.VISIBLE: View.GONE);
             _switch.setOnClickListener(this);
+            editButton.setOnClickListener(this);
+            deleteButton.setOnClickListener(this);
         }
 
         void bind(PinListData data) {
@@ -59,7 +81,20 @@ public class PinListAdapter extends ListAdapter<PinListData, PinListAdapter.PinL
 
         @Override
         public void onClick(View view) {
-            callBack.onClick(getCurrentList().get(getAdapterPosition()));
+            int id = view.getId();
+            if(id == R.id.pin_item_switch) {
+                callBack.onClick(Pair.create(WhichButton.SWITCH, getCurrentList().get(getBindingAdapterPosition())));
+            } else if (id == R.id.pin_item_edit_button) {
+                callBack.onClick(Pair.create(WhichButton.EDIT, getCurrentList().get(getBindingAdapterPosition())));
+            } else if (id == R.id.pin_item_delete_button) {
+                callBack.onClick(Pair.create(WhichButton.DELETE, getCurrentList().get(getBindingAdapterPosition())));
+            } else {
+                Log.w(TAG, "onClick: unknown id = " + id);
+            }
         }
+    }
+
+    public enum WhichButton {
+        EDIT, DELETE, SWITCH
     }
 }

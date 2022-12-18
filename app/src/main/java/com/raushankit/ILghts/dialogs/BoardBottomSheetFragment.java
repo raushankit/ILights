@@ -102,9 +102,11 @@ public class BoardBottomSheetFragment extends BottomSheetDialogFragment implemen
         }
         else if(id == R.id.frag_bottom_sheet_board_options_delete_board_button){
             listener.onCLick(WhichButton.DELETE_BOARD, data);
-        } else if(id == R.id.frag_bottom_sheet_board_options_leave_board_button){
+        }
+        else if(id == R.id.frag_bottom_sheet_board_options_leave_board_button){
             listener.onCLick(WhichButton.LEAVE_BOARD, data);
-        } else{
+        }
+        else{
             Log.i(TAG, "onClick: unknown type");
         }
         dismiss();

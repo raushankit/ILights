@@ -4,7 +4,7 @@ import com.raushankit.ILghts.flivedata.ChildDelayLiveData;
 import com.raushankit.ILghts.model.PinData;
 
 public class PinUpdateLiveData extends ChildDelayLiveData<PinData> {
-    public PinUpdateLiveData() {
-        super("/control/update", PinData.class);
+    public PinUpdateLiveData(String boardId) {
+        super("/board_control/" + boardId + "/update", PinData.class);
     }
 }

@@ -14,7 +14,7 @@ public class EditPinViewModel extends ViewModel {
     private final BoardMetaData boardMetaData;
 
     public EditPinViewModel() {
-        pinInfoLivedata = new PinInfoLivedata();
+        pinInfoLivedata = new PinInfoLivedata("dummy");
         boardMetaData = new BoardMetaData();
     }
 
