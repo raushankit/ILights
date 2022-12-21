@@ -21,6 +21,7 @@
             app:menu="@menu/board_control_menu_items"
             app:navigationIconTint="@color/user_info_name_text"
             app:navigationIcon="@drawable/ic_arrow_back" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -30,6 +31,7 @@
         android:visibility="gone"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -89,5 +91,17 @@
             </LinearLayout>
         </com.facebook.shimmer.ShimmerFrameLayout>
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/board_control_progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_15sdp"
+        android:indeterminate="true"
+        android:visibility="gone"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="?attr/colorPrimary"
+        app:layout_anchor="@id/board_control_list"
+        app:layout_anchorGravity="top" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

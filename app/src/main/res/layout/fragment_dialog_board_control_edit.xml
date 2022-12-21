@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="@dimen/_20sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
@@ -18,14 +20,124 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_dialog_board_control_edit_flex_layout"
+    <LinearLayout
+        android:id="@+id/fragment_dialog_board_control_edit_flex_layout_parent"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_150sdp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintHeight_max="@dimen/_200sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fragment_dialog_board_control_edit_title">
+        <TextView
+            android:id="@+id/fragment_dialog_board_control_edit_flex_layout_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/_15sdp"
+            android:paddingEnd="@dimen/_15sdp"
+            android:paddingTop="@dimen/_15sdp"
+            android:textSize="@dimen/_15sdp"
+            android:text="@string/board_form_pin_selection_title"/>
+        <TextView
+            android:id="@+id/fragment_dialog_board_control_edit_error_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/rubik_variable"
+            android:text="@string/required"
+            android:textColor="@color/error"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:layout_marginStart="@dimen/_15sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/fragment_dialog_board_control_edit_flex_layout"
+            android:layout_width="match_parent"
+            android:paddingStart="@dimen/_8sdp"
+            android:paddingEnd="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_height="wrap_content">
+        </androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
 
-    </androidx.recyclerview.widget.RecyclerView>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragment_dialog_board_control_edit_name_input_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:hint="@string/board_form_title_hint"
+        app:boxCornerRadiusBottomEnd="@dimen/_5sdp"
+        app:boxCornerRadiusBottomStart="@dimen/_5sdp"
+        app:boxCornerRadiusTopEnd="@dimen/_5sdp"
+        app:boxCornerRadiusTopStart="@dimen/_5sdp"
+        app:errorEnabled="true"
+        app:helperText="@string/pin_form_title_helper"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fragment_dialog_board_control_edit_flex_layout_parent"
+        app:layout_constraintWidth_percent="0.9"
+        app:startIconDrawable="@drawable/ic_title_black_24dp">
+
+        <!--this is the actual edit text which takes the input-->
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragment_dialog_board_control_edit_name_input_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:inputType="textCapWords"
+            android:maxLength="30" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragment_dialog_board_control_edit_description_input_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:hint="@string/board_form_description_hint"
+        app:boxCornerRadiusBottomEnd="@dimen/_5sdp"
+        app:boxCornerRadiusBottomStart="@dimen/_5sdp"
+        app:boxCornerRadiusTopEnd="@dimen/_5sdp"
+        app:boxCornerRadiusTopStart="@dimen/_5sdp"
+        app:errorEnabled="true"
+        app:helperText="@string/pin_form_description_helper"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fragment_dialog_board_control_edit_name_input_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.9"
+        app:startIconDrawable="@drawable/ic_description_black_24dp">
+
+        <!--this is the actual edit text which takes the input-->
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragment_dialog_board_control_edit_description_input_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine|textCapSentences|textAutoCorrect"
+            android:maxLength="200"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fragment_dialog_board_control_edit_cancel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        app:icon="@drawable/ic_close"
+        android:backgroundTint="@color/error"
+        android:layout_marginTop="@dimen/_15sdp"
+        app:layout_constraintStart_toStartOf="@id/fragment_dialog_board_control_edit_description_input_layout"
+        app:layout_constraintTop_toBottomOf="@id/fragment_dialog_board_control_edit_description_input_layout"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fragment_dialog_board_control_edit_ok_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/done"
+        android:backgroundTint="@color/shamrock_green"
+        android:layout_marginTop="@dimen/_15sdp"
+        app:layout_constraintEnd_toEndOf="@id/fragment_dialog_board_control_edit_description_input_layout"
+        app:layout_constraintTop_toBottomOf="@id/fragment_dialog_board_control_edit_description_input_layout"
+        app:icon="@drawable/ic_baseline_check_24"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

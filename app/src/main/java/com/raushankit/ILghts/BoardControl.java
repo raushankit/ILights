@@ -21,9 +21,11 @@ import com.raushankit.ILghts.model.PinListData;
 import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.viewModel.PinDataViewModel;
+import com.raushankit.ILghts.viewModel.PinEditDataViewModel;
 import com.raushankit.ILghts.viewModel.StatusViewModel;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class BoardControl extends AppCompatActivity {
@@ -50,7 +52,7 @@ public class BoardControl extends AppCompatActivity {
         PinListAdapter adapter = new PinListAdapter(getString(R.string.controller_item_details), dataPair -> {
             switch (dataPair.first) {
                 case EDIT:
-                    BoardControlEditFragment.newInstance(12)
+                    BoardControlEditFragment.newInstance(Arrays.asList(1,2,3,4,5,6,7,8,9,10), null, null)
                             .show(getSupportFragmentManager(), BoardControlEditFragment.TAG);
                     break;
                 default:
@@ -62,7 +64,7 @@ public class BoardControl extends AppCompatActivity {
             finish();
         });
         addBoardButton.setOnClickListener(v -> {
-            BoardControlEditFragment.newInstance(12)
+            BoardControlEditFragment.newInstance(Arrays.asList(1,2,3,4,5,6,7,8,9,10), null, null)
                     .show(getSupportFragmentManager(), BoardControlEditFragment.TAG);
         });
         Intent intent = getIntent();
@@ -91,6 +93,10 @@ public class BoardControl extends AppCompatActivity {
         StatusViewModel statusViewModel = new ViewModelProvider(this,
                 new StatusViewModelFactory(getApplication(), boardRoomUserData.getBoardId()))
                 .get(StatusViewModel.class);
+        PinEditDataViewModel pinEditDataViewModel = new ViewModelProvider(this).get(PinEditDataViewModel.class);
+        pinEditDataViewModel.getPinData().observe(this, data -> {
+            Log.e(TAG, "onCreate: data = " + data);
+        });
         statusViewModel.getStatusData().observe(this, aBoolean -> toolbar.setSubtitle(Boolean.TRUE.equals(aBoolean)? "Online": null));
         recyclerView.setAdapter(adapter);
     }

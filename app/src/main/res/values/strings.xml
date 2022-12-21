@@ -170,7 +170,7 @@
         <item>PRIVATE</item>
     </string-array>
     <string name="board_form_visibility_helper_text">If visibility is \"PUBLIC\" then this board will be visible to everyone in the app else it will only be visible to people you will choose.\nIn either case, users will need permission before they get access to the board.</string>
-    <string name="board_form_pin_selection_title">Select Pins</string>
+    <string name="board_form_pin_selection_title">Select Pin</string>
     <string name="board_form_pin_selection_pick_board_hint">Choose Board</string>
     <string name="board_form_pin_selection_pick_board_helper">All Boards come with a lot of pins but not all of them are to be used because not all GPIOs are exposed to normal use, some GPIOs are not recommended to use and others have very specific functions. So, choose pins in this page wisely or you board might misbehave.\nFor ex: The ESP8266 board comes with 17 GPIO pins but only pins 2, 4, 5, 10, 12, 13, 14, 15, 16, 17 are safe to use.</string>
     <string name="board_form_pin_selection_choose_pins_hint">No. of Pins</string>
@@ -344,4 +344,9 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="no_switches_in_board">No switches in board. Add a switch by clicking the plus button below</string>
+    <string name="pin_form_title_helper">Pick a name for this pin</string>
+    <string name="pin_form_description_helper">Brief description of this pin</string>
+    <string name="done">Done</string>
+    <string name="edit_pin">Edit Pin</string>
+    <string name="add_pin">Add Pin</string>
 </resources>
