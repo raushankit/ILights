@@ -21,6 +21,7 @@ public class PinListData {
     };
     private int pinNumber;
     private String pinName;
+    private String pinDescription;
     private String changedBy;
     private long changedAt;
     private boolean status;
@@ -30,9 +31,10 @@ public class PinListData {
 
     }
 
-    public PinListData(int pinNumber, String pinName, String changedBy, long changedAt, boolean status, boolean you) {
+    public PinListData(int pinNumber, String pinName, String pinDescription, String changedBy, long changedAt, boolean status, boolean you) {
         this.pinNumber = pinNumber;
         this.pinName = pinName;
+        this.pinDescription = pinDescription;
         this.changedBy = changedBy;
         this.changedAt = changedAt;
         this.status = status;
@@ -87,17 +89,25 @@ public class PinListData {
         this.you = you;
     }
 
+    public String getPinDescription() {
+        return pinDescription;
+    }
+
+    public void setPinDescription(String pinDescription) {
+        this.pinDescription = pinDescription;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PinListData)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         PinListData that = (PinListData) o;
-        return pinNumber == that.pinNumber && changedAt == that.changedAt && status == that.status && you == that.you && Objects.equals(pinName, that.pinName) && Objects.equals(changedBy, that.changedBy);
+        return pinNumber == that.pinNumber && changedAt == that.changedAt && status == that.status && you == that.you && Objects.equals(pinName, that.pinName) && Objects.equals(pinDescription, that.pinDescription) && Objects.equals(changedBy, that.changedBy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pinNumber, pinName, changedBy, changedAt, status, you);
+        return Objects.hash(pinNumber, pinName, pinDescription, changedBy, changedAt, status, you);
     }
 
     @NonNull
@@ -106,6 +116,7 @@ public class PinListData {
         return "PinListData{" +
                 "pinNumber=" + pinNumber +
                 ", pinName='" + pinName + '\'' +
+                ", pinDescription='" + pinDescription + '\'' +
                 ", changedBy='" + changedBy + '\'' +
                 ", changedAt=" + changedAt +
                 ", status=" + status +

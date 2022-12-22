@@ -1,5 +1,7 @@
 package com.raushankit.ILghts.flivedata;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
@@ -24,6 +26,10 @@ public class SingleLiveData<T> extends LiveData<T> {
 
         }
     };
+
+    public void setNewValue(T val) {
+        postValue(val);
+    }
 
     public SingleLiveData(@NonNull String path, Class<T> cls) {
         this.cls = cls;

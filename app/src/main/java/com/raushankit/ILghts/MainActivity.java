@@ -112,9 +112,9 @@ public class MainActivity extends AppCompatActivity {
         alertDialogFragment.setBodyString(getString(R.string.forced_update_message));
         alertDialogFragment.setNegativeButtonText(R.string.exit);
         webViewDialogFragment = WebViewDialogFragment.newInstance(link);
-        startActivity(new Intent(this, BoardActivity.class));
-        finish();
-        /*askAgainForUpdate();
+//        startActivity(new Intent(this, BoardActivity.class));
+//        finish();
+        askAgainForUpdate();
         consentDialogFragment = ConsentDialogFragment.newInstance(true, false);
         snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_network_detected), BaseTransientBottomBar.LENGTH_LONG);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -267,14 +267,14 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             normalRoleFlow(splashData.getRole());
-        });*/
+        });
     }
-/*
+
     private void normalRoleFlow(Role r1) {
         if (r1 != null) {
             if (r1.getAccessLevel() > 0) {
-                intent.putExtra(PageKeys.WHICH_PAGE.name(), PageKeys.CONTROLLER_PAGE.name());
-                startActivity(intent);
+                startActivity(new Intent(this, BoardActivity.class));
+                finish();
             } else {
                 Bundle bundle = new Bundle();
                 bundle.putString(AnalyticsParam.BLOCKED_USER, "user is blocked");
@@ -387,5 +387,5 @@ public class MainActivity extends AppCompatActivity {
         mHandler.removeCallbacks(runnable);
         Log.w(TAG, "onDestroy: removing callback from handler");
         super.onDestroy();
-    }*/
+    }
 }

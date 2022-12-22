@@ -119,7 +119,7 @@ public class BoardActivity extends AppCompatActivity {
         switch (key) {
             case BoardConst.FRAG_BOARD:
                 ft.replace(R.id.board_main_frame,
-                                BoardFragment.newInstance(mAuth.getUid(), result.getParcelable(BoardConst.USER)))
+                                BoardFragment.newInstance(mAuth.getUid()))
                         .commit();
                 break;
             case BoardConst.FRAG_EDIT_MEMBER:
@@ -229,7 +229,6 @@ public class BoardActivity extends AppCompatActivity {
                 return true;
             } else if (id == itemHome.getItemId()) {
                 Bundle args = new Bundle();
-                args.putParcelable(BoardConst.USER, user);
                 args.putString(BoardConst.WHICH_FRAG, BoardConst.FRAG_BOARD);
                 switchFrag(args);
                 return true;

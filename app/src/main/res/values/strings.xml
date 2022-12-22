@@ -103,7 +103,7 @@
     <string name="add_pin_frag_item_hint_text">Pin</string>
     <string name="add_pin_frag_item_pin_name">Pin name</string>
     <string name="add_pin_frag_item_pin_number">Pin number %1$d</string>
-    <string name="all_pins_active">All pins are Occupied</string>
+    <string name="all_pins_active">All pins are in use.</string>
     <string name="pin_name_update_successful">Successfully updated name of Pin %1$d</string>
     <string name="pin_name_update_failure">Failed to update pin name</string>
     <string name="pin_name_add_successful">Successfully added Pin %1$d</string>
@@ -144,7 +144,7 @@
     <string name="controller_title">Controller</string>
     <string name="controller_board_status">Board is %1$s</string>
     <string name="controller_update_failure">Failed to update data</string>
-    <string name="controller_item_details">Pin Configuration %1$d\n\nTurned %2$s by %3$s\nat %4$s</string>
+    <string name="controller_item_details">%5$s\nPin Configuration %1$d\n\nTurned %2$s by %3$s\nat %4$s</string>
 
     <!-- Board Activity -->
     <string name="board">Boards</string>

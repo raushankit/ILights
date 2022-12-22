@@ -30,6 +30,7 @@ import com.raushankit.ILghts.utils.callbacks.CallBack;
 import com.raushankit.ILghts.viewModel.PinEditDataViewModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BoardControlEditFragment extends DialogFragment implements View.OnClickListener, CallBack<Integer> {
@@ -38,6 +39,7 @@ public class BoardControlEditFragment extends DialogFragment implements View.OnC
 
     public static final String PINS_ALLOWED = "pins_allowed";
 
+    public static final String PIN = "pin";
     public static final String TITLE = "title";
     public static final String DESCRIPTION = "description";
 
@@ -90,7 +92,7 @@ public class BoardControlEditFragment extends DialogFragment implements View.OnC
         };
     }
 
-    public static BoardControlEditFragment newInstance(List<Integer> pinsAllowed, String name, String description) {
+    public static BoardControlEditFragment newInstance(List<Integer> pinsAllowed, Integer pin, String name, String description) {
         Bundle args = new Bundle();
         BoardControlEditFragment fragment = new BoardControlEditFragment();
         args.putIntegerArrayList(PINS_ALLOWED, new ArrayList<>(pinsAllowed));
@@ -99,6 +101,9 @@ public class BoardControlEditFragment extends DialogFragment implements View.OnC
         }
         if(!TextUtils.isEmpty(description)) {
             args.putString(DESCRIPTION, description);
+        }
+        if(pin != null) {
+            args.putInt(PIN, pin);
         }
         fragment.setArguments(args);
         return fragment;
@@ -115,6 +120,7 @@ public class BoardControlEditFragment extends DialogFragment implements View.OnC
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dialog_board_control_edit, container, false);
         TextView titleText = view.findViewById(R.id.fragment_dialog_board_control_edit_title);
+        TextView listTitle = view.findViewById(R.id.fragment_dialog_board_control_edit_flex_layout_title);
         LinearLayout layout = view.findViewById(R.id.fragment_dialog_board_control_edit_flex_layout_parent);
         RecyclerView recyclerView = view.findViewById(R.id.fragment_dialog_board_control_edit_flex_layout);
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(inflater.getContext());
@@ -130,23 +136,29 @@ public class BoardControlEditFragment extends DialogFragment implements View.OnC
         MaterialButton done = view.findViewById(R.id.fragment_dialog_board_control_edit_ok_button);
         Bundle args = getArguments();
         assert args != null;
-        List<Integer> pins = args.getIntegerArrayList(PINS_ALLOWED);
-        if(CollectionUtils.isEmpty(pins)) {
-            titleText.setText(R.string.edit_pin);
-            layout.setVisibility(View.GONE);
-        } else {
-            titleText.setText(R.string.add_pin);
-            PinItemSelectorAdapter adapter = new PinItemSelectorAdapter(pins, this);
-            recyclerView.setAdapter(adapter);
+        if(args.containsKey(PIN)) {
+            selectedPin = args.getInt(PIN);
         }
         if(args.containsKey(TITLE)) {
             titleEditText.setText(args.getString(TITLE));
         }
         if(args.containsKey(DESCRIPTION)) {
-            titleEditText.setText(args.getString(DESCRIPTION));
+            descEditText.setText(args.getString(DESCRIPTION));
+        }
+        PinItemSelectorAdapter adapter;
+        List<Integer> pins = args.getIntegerArrayList(PINS_ALLOWED);
+        if(CollectionUtils.isEmpty(pins)) {
+            titleText.setText(R.string.edit_pin);
+            listTitle.setVisibility(View.GONE);
+            adapter = new PinItemSelectorAdapter(Collections.singletonList(selectedPin), 0, this);
+        } else {
+            listTitle.setVisibility(View.VISIBLE);
+            titleText.setText(R.string.add_pin);
+            adapter = new PinItemSelectorAdapter(pins, -1, this);
         }
         done.setOnClickListener(this);
         cancel.setOnClickListener(this);
+        recyclerView.setAdapter(adapter);
         return view;
     }
 

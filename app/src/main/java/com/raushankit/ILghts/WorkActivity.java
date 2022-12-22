@@ -161,8 +161,8 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
             if (intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
             ft.replace(R.id.work_main_frame, new ForgotPasswordFragment(changeFragment)).addToBackStack(null).commit();
         } else if (id.equals(PageKeys.CONTROLLER_PAGE.name())) {
-            if (intent != null) intent.putExtra(PageKeys.WHICH_PAGE.name(), id);
-            ft.replace(R.id.work_main_frame, ControllerFragment.newInstance()).commit();
+            startActivity(new Intent(this, BoardActivity.class));
+            finish();
         } else {
             Log.d(TAG, "replaceFragment: invalid Fragment action");
         }

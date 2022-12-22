@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pin_item_card_view"
     android:layout_width="match_parent"
     app:cardPreventCornerOverlap="true"
     android:layout_margin="@dimen/_5sdp"
     android:elevation="@dimen/_10sdp"
     app:cardCornerRadius="@dimen/_10sdp"
-    app:strokeWidth="0dp"
+    app:strokeWidth="@dimen/_2sdp"
     android:background="@color/pin_item_background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content">
@@ -42,7 +43,7 @@
             app:layout_constraintTop_toBottomOf="@id/pin_item_details"
             app:icon="@drawable/ic_baseline_delete_24"
             android:text="@string/delete"
-            android:textColor="@color/design_default_color_error"
+            android:textColor="@color/error"
             app:strokeWidth="0dp"
             app:iconTint="@color/error"
             android:layout_marginEnd="@dimen/_6sdp"

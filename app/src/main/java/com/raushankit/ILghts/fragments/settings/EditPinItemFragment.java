@@ -143,7 +143,7 @@ public class EditPinItemFragment extends Fragment {
                 return;
             }
             String[] str = pinNumberText.getText().toString().split(" ", -1);
-            settingCommViewModel.selectItem((isEdit ? "edit_pin_item" : "add_pin_item"), new EditPinInfo(Integer.parseInt(str[str.length - 1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString())));
+            settingCommViewModel.selectItem((isEdit ? "edit_pin_item" : "add_pin_item"), new EditPinInfo(Integer.parseInt(str[str.length - 1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString(), null)));
         });
         pinNameEdittext.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_DONE) {
@@ -160,7 +160,7 @@ public class EditPinItemFragment extends Fragment {
                     return false;
                 }
                 String[] str = pinNumberText.getText().toString().split(" ", -1);
-                settingCommViewModel.selectItem((isEdit ? "edit_pin_item" : "add_pin_item"), new EditPinInfo(Integer.parseInt(str[str.length - 1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString())));
+                settingCommViewModel.selectItem((isEdit ? "edit_pin_item" : "add_pin_item"), new EditPinInfo(Integer.parseInt(str[str.length - 1]), new PinInfo(Objects.requireNonNull(pinNameEdittext.getText()).toString(), null)));
                 return true;
             }
             return false;

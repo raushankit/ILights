@@ -12,12 +12,15 @@ public class PinInfo {
 
     private String name;
 
+    private String description;
+
     public PinInfo() {
 
     }
 
-    public PinInfo(String name) {
+    public PinInfo(String name, String description) {
         this.name = name;
+        this.description = description;
     }
 
     public String getName() {
@@ -28,11 +31,20 @@ public class PinInfo {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @NonNull
     @Override
     public String toString() {
         return "PinInfo{" +
                 "name='" + name + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

@@ -7,17 +7,18 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.viewModel.PinDataViewModel;
 
 public class PinDataViewModelFactory implements ViewModelProvider.Factory {
     private final Application mApplication;
     private final String userId;
-    private final String boardId;
+    private final BoardRoomUserData boardData;
 
-    public PinDataViewModelFactory(Application application, @NonNull String userId, @NonNull String boardId) {
+    public PinDataViewModelFactory(Application application, @NonNull String userId, @NonNull BoardRoomUserData boardData) {
         mApplication = application;
         this.userId = userId;
-        this.boardId = boardId;
+        this.boardData = boardData;
     }
 
     @SuppressLint("UnsafeOptInUsageWarning")
@@ -25,6 +26,6 @@ public class PinDataViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new PinDataViewModel(mApplication, userId, boardId);
+        return (T) new PinDataViewModel(mApplication, userId, boardData);
     }
 }

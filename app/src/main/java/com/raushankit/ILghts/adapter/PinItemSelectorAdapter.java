@@ -27,8 +27,11 @@ public class PinItemSelectorAdapter extends RecyclerView.Adapter<PinItemSelector
 
     private final CallBack<Integer> callBack;
 
-    public PinItemSelectorAdapter(List<Integer> data, @NonNull CallBack<Integer> callBack) {
+    private boolean isEdit;
+
+    public PinItemSelectorAdapter(List<Integer> data, int checkedIndex, @NonNull CallBack<Integer> callBack) {
         this.data = data;
+        this.checkedIndex = checkedIndex;
         this.callBack = callBack;
     }
 
@@ -61,7 +64,7 @@ public class PinItemSelectorAdapter extends RecyclerView.Adapter<PinItemSelector
             super(itemView);
             cardView = itemView.findViewById(R.id.dynamic_pin_item_selector_button_parent);
             button = itemView.findViewById(R.id.dynamic_pin_item_selector_button);
-            cardView.setOnClickListener(this);
+            if(!isEdit) { cardView.setOnClickListener(this); }
         }
 
         void bind(int val) {

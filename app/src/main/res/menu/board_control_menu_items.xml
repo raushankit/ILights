@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/edit"
+        android:id="@+id/board_control_menu_item_add_switch"
         android:title="@string/add_switch"
         android:contentDescription="@string/add"
-        app:showAsAction="ifRoom" />
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_baseline_add_24"/>
 
 </menu>

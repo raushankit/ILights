@@ -51,12 +51,10 @@ public class BoardFragment extends Fragment {
 
     }
 
-    public static BoardFragment newInstance(String userId, User user) {
+    public static BoardFragment newInstance(String userId) {
         BoardFragment fragment = new BoardFragment();
         Bundle args = new Bundle();
-        Log.i(TAG, "newInstance: " + user);
         args.putString(BoardConst.USER_ID, userId);
-        args.putParcelable(BoardConst.USER, user);
         fragment.setArguments(args);
         return fragment;
     }
