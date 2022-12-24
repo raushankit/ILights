@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +59,7 @@ public class LoadingDialogFragment extends DialogFragment {
         try {
             titleView.setText(title);
         } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
+            Log.w(TAG, "setTitle: ", e);
         }
     }
 
@@ -68,7 +69,7 @@ public class LoadingDialogFragment extends DialogFragment {
         try {
             messageView.setText(message);
         } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
+            Log.w(TAG, "setTitle: ", e);
         }
     }
 

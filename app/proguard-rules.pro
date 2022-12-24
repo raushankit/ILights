@@ -31,9 +31,11 @@
 
 -keep class com.firebase.** { *; }
 -keep class org.apache.** { *; }
+-keep class com.raushankit.ILghts.entity.** { *; }
 -keepnames class com.fasterxml.jackson.** { *; }
 -keepnames class javax.servlet.** { *; }
 -keepnames class org.ietf.jgss.** { *; }
 -keepnames class com.raushankit.ILghts.fragments.** { *; }
+-keep class com.raushankit.ILghts.forms.board.** { *; }
 -dontwarn org.apache.**
 -dontwarn org.w3c.dom.**

@@ -1,9 +1,11 @@
 package com.raushankit.ILghts.model.board;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
 import java.util.Objects;
 
+@Keep
 @SuppressWarnings("unused")
 public class BoardRequestModel {
 

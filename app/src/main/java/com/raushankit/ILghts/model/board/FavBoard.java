@@ -1,11 +1,13 @@
 package com.raushankit.ILghts.model.board;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+@Keep
 @Entity(tableName = "favourite_boards")
 public class FavBoard {
 

@@ -143,7 +143,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/_15sdp"
-            android:backgroundTint="@color/splash_screen_btn"
+            android:backgroundTint="?attr/splashScreenColor"
             android:minWidth="@dimen/_200sdp"
             android:padding="@dimen/_8sdp"
             android:text="@string/signup_page_register_btn"

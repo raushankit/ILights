@@ -135,7 +135,7 @@ public class BoardDataFetcher {
                 .child(boardId)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
+                    if(task.isSuccessful() && task.getResult() != null){
                         emitter.onSuccess(task.getResult().getValue(BoardCredModel.class));
                     }else{
                         emitter.onSuccess(new BoardCredModel());

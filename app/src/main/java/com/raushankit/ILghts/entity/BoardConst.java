@@ -20,4 +20,6 @@ public class BoardConst {
     public static final String SHOW_SNACK_BAR = "show_snack_bar";
     public static final String SNACK_MESSAGE = "snack_message";
     public static final String USER = "user";
+    public static final String DELETE_CREDS = "delete_credentials";
+    public static final String NOTIFICATIONS_UNSEEN_COUNT = "notifications_unseen_count";
 }

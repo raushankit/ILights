@@ -51,6 +51,7 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.Theme_ILights_1);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work);
         Intent settingsIntent = new Intent(this, SettingsActivity.class);

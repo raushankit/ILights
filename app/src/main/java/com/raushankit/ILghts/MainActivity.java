@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,7 +30,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieProperty;
+import com.airbnb.lottie.model.KeyPath;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
@@ -77,11 +83,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(newBase);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(newBase.getApplicationContext());
         boolean isv29 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
         String themeType = sharedPreferences.getString("theme", isv29 ? "follow_system" : "light");
-        boolean battery_saver_on = sharedPreferences.getBoolean("battery_saver_theme", true);
         if (themeType.equals("light")) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
@@ -89,21 +93,25 @@ public class MainActivity extends AppCompatActivity {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
         if (isv29 && themeType.equals("follow_system")) {
-            AppCompatDelegate.setDefaultNightMode(battery_saver_on ? AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
+        super.attachBaseContext(newBase);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.Theme_ILights_1);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAnalytics = FirebaseAnalytics.getInstance(this);
         appUpdateManager = AppUpdateManagerFactory.create(this);
-
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getColor(R.color.splash_screen_bg_end));
+        if (getColor(R.color.splash_screen_btn_text) == Color.WHITE) {
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
         intent = new Intent(this, WorkActivity.class);
         blockedIntent = new Intent(this, SettingsActivity.class);
         SharedRepo sharedRepo = SharedRepo.newInstance(this);
@@ -154,6 +162,12 @@ public class MainActivity extends AppCompatActivity {
 
         LottieAnimationView spv = findViewById(R.id.splash_screen_lottie);
         LottieAnimationView networkLoader = findViewById(R.id.splash_screen_network_lottie);
+        networkLoader.addValueCallback(
+                new KeyPath("**"),
+                LottieProperty.COLOR_FILTER,
+                frameInfo -> new PorterDuffColorFilter(MaterialColors.getColor(MainActivity.this, R.attr.splashScreenColor, getColor(R.color.splash_screen_btn))
+                        , PorterDuff.Mode.SRC_ATOP)
+        );
         TextView spText = findViewById(R.id.splash_main_text);
         TextView privacyText = findViewById(R.id.splash_screen_privacy_policy);
         setTextViewHTML(privacyText, getString(R.string.splash_page_policy, link));

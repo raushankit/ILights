@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    style="@style/Widget.Material3.CardView.Elevated"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/board_search_user_list_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/_5sdp"
-    android:elevation="@dimen/_5sdp"
-    android:background="@color/cards_and_dialogs_color"
+    android:layout_margin="@dimen/_2sdp"
+    android:backgroundTint="@color/white"
     app:cardPreventCornerOverlap="true">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/_5sdp"
         android:orientation="vertical">
 
         <TextView
@@ -73,7 +74,7 @@
         <LinearLayout
             android:id="@+id/board_search_user_list_item_role_parent_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_30sdp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="2"
             android:layout_marginTop="@dimen/_5sdp"
@@ -81,21 +82,20 @@
             android:layout_below="@id/board_search_user_list_item_email">
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/board_search_user_list_item_role_member"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:backgroundTint="@color/controller_background"
                 android:layout_height="wrap_content"
                 android:textAllCaps="false"
-                android:padding="0dp"
+                android:layout_marginEnd="@dimen/_60sdp"
                 app:strokeWidth="0dp"
                 android:text="@string/add_as_user"/>
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/board_search_user_list_item_role_editor"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:padding="0dp"
+                android:layout_width="wrap_content"
+                android:backgroundTint="@color/controller_background"
                 app:strokeWidth="0dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_height="wrap_content"
                 android:textAllCaps="false"
                 android:text="@string/add_as_editor"/>

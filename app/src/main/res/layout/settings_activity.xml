@@ -16,8 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            app:contentScrim="@color/controller_title_background"
-            app:statusBarScrim="@color/controller_title_background"
+            app:contentScrim="?attr/settingsScrimColor"
+            app:statusBarScrim="?attr/settingsScrimColor"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/settings_user_data_shimmer"
@@ -46,10 +46,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="22sp"
-                    android:textColor="@color/user_info_name_text"
+                    android:textColor="@color/white"
                     android:visibility="invisible"
                     android:fontFamily="sans-serif-light"
-                    android:textStyle="bold"
                     android:paddingStart="@dimen/_15sdp"
                     android:paddingEnd="@dimen/_1sdp"
                     android:gravity="center_vertical"/>

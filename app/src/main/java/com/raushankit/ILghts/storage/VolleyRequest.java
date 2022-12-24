@@ -24,6 +24,4 @@ public class VolleyRequest {
     public <T> void add(Request<T> request){
         requestQueue.add(request);
     }
-
-
 }

@@ -9,8 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 
@@ -53,12 +51,8 @@ import com.raushankit.ILghts.dialogs.WebViewDialogFragment;
 import com.raushankit.ILghts.entity.InfoType;
 import com.raushankit.ILghts.entity.SharedRefKeys;
 import com.raushankit.ILghts.fragments.settings.ChangeName;
-import com.raushankit.ILghts.fragments.settings.EditPinItemFragment;
-import com.raushankit.ILghts.fragments.settings.EditPinsFragment;
 import com.raushankit.ILghts.fragments.settings.ManageUserFragment;
 import com.raushankit.ILghts.fragments.settings.ReAuthFragment;
-import com.raushankit.ILghts.model.EditPinInfo;
-import com.raushankit.ILghts.model.PinData;
 import com.raushankit.ILghts.model.ThemeData;
 import com.raushankit.ILghts.model.VersionInfo;
 import com.raushankit.ILghts.storage.SharedRepo;
@@ -71,10 +65,8 @@ import com.raushankit.ILghts.viewModel.SettingUserViewModel;
 import com.raushankit.ILghts.viewModel.SettingsFragmentViewModel;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -122,6 +114,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.Theme_ILights_1);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
         if (savedInstanceState == null) {
@@ -138,10 +131,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         appUpdateManager = AppUpdateManagerFactory.create(this);
         webViewDialogFragment = WebViewDialogFragment.newInstance(link);
         loadingDialogFragment = LoadingDialogFragment.newInstance();
-        Window window = getWindow();
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(getColor(R.color.transparent));
         mAuth = FirebaseAuth.getInstance();
         Bundle bundle1 = new Bundle();
         bundle1.putString(FirebaseAnalytics.Param.SCREEN_NAME, getClass().getSimpleName());
@@ -179,7 +168,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             }
             alertDialogFragment.dismiss();
         });
-
         shimmerFrameLayout = findViewById(R.id.settings_user_data_shimmer);
         toolBarTextView = findViewById(R.id.settings_activity_toolbar_textview);
         implementListeners();
@@ -216,7 +204,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && themeData.getThemeType().equals("follow_system")) {
-                        AppCompatDelegate.setDefaultNightMode(themeData.isBatterySaverOn() ? AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                     }
                     break;
                 case "verify_email":
@@ -239,61 +227,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     alertDialogFragment.setActionType(requestKey);
                     if (!alertDialogFragment.isAdded())
                         alertDialogFragment.show(getSupportFragmentManager(), AlertDialogFragment.TAG);
-                    break;
-                case "edit_pin":
-                    if (!(item instanceof EditPinInfo)) break;
-                    final Fragment fragmentEdit = EditPinItemFragment.newInstance("edit", (EditPinInfo) item);
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.settings_fragment, fragmentEdit)
-                            .addToBackStack(null)
-                            .commit();
-                    break;
-                case "add_pin":
-                    List<String> list = new ArrayList<>();
-                    for (int i = 1; i < ((List<?>) item).size(); i++) {
-                        Boolean val = (Boolean) ((List<?>) item).get(i);
-                        if (val) list.add(getString(R.string.add_pin_frag_item_pin_number, i));
-                    }
-                    if (list.isEmpty()) {
-                        Snackbar.make(findViewById(android.R.id.content), R.string.all_pins_active, BaseTransientBottomBar.LENGTH_SHORT).show();
-                    } else {
-                        final Fragment fragmentAdd = EditPinItemFragment.newInstance("add", list.toArray(new String[0]));
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.settings_fragment, fragmentAdd)
-                                .addToBackStack(null)
-                                .commit();
-                    }
-                    break;
-                case "delete_pin_item":
-                    bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.DELETE_PIN);
-                    mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
-                    int deletePinNum = (int) item;
-                    Map<String, Object> mp1 = new LinkedHashMap<>();
-                    mp1.put("control/info/" + deletePinNum, null);
-                    mp1.put("control/info/" + deletePinNum, null);
-                    mp1.put("control/update/" + deletePinNum, null);
-                    mp1.put("control/status/" + deletePinNum, null);
-                    db.updateChildren(mp1, ((error, ref) -> Snackbar.make(findViewById(android.R.id.content), (error == null ? getString(R.string.pin_name_delete_successful, deletePinNum) : getString(R.string.pin_name_delete_failure)), BaseTransientBottomBar.LENGTH_SHORT).show()));
-                    break;
-                case "edit_pin_item":
-                    bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.EDIT_PIN);
-                    mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
-                    EditPinInfo info = (EditPinInfo) item;
-                    db.child("control/info/" + info.getPinNumber()).setValue(info.getPinInfo())
-                            .addOnCompleteListener(task -> Snackbar.make(findViewById(android.R.id.content), (task.isSuccessful() ? getString(R.string.pin_name_update_successful, info.getPinNumber()) : getString(R.string.pin_name_update_failure)), BaseTransientBottomBar.LENGTH_SHORT).show());
-                    getSupportFragmentManager().popBackStackImmediate();
-                    break;
-                case "add_pin_item":
-                    if (!(item instanceof EditPinInfo)) break;
-                    bundle.putString(FirebaseAnalytics.Param.METHOD, AnalyticsParam.ADD_PIN);
-                    mFirebaseAnalytics.logEvent(AnalyticsParam.Event.SETTINGS_CHANGE, bundle);
-                    EditPinInfo info1 = (EditPinInfo) item;
-                    Map<String, Object> mp = new LinkedHashMap<>();
-                    mp.put("control/info/" + info1.getPinNumber(), info1.getPinInfo());
-                    mp.put("control/update/" + info1.getPinNumber(), PinData.toMap(name, Objects.requireNonNull(mAuth.getUid())));
-                    mp.put("control/status/" + info1.getPinNumber(), Boolean.FALSE);
-                    db.updateChildren(mp, ((error, ref) -> Snackbar.make(findViewById(android.R.id.content), (error == null ? getString(R.string.pin_name_add_successful, info1.getPinNumber()) : getString(R.string.pin_name_add_failure)), BaseTransientBottomBar.LENGTH_SHORT).show()));
-                    getSupportFragmentManager().popBackStackImmediate();
                     break;
                 case "play_update":
                     appUpdateManager.getAppUpdateInfo().addOnSuccessListener(it1 -> {
@@ -434,11 +367,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 args.putInt("role", accessLevel);
                 pref.setFragment(ManageUserFragment.class.getName());
                 break;
-            case "manage_pins":
-                args.putString("user_name", name);
-                args.putString("user_uid", mAuth.getUid());
-                pref.setFragment(EditPinsFragment.class.getName());
-                break;
             case "change_password":
                 args.putString("action", "change_password");
                 pref.setFragment(ReAuthFragment.class.getName());
@@ -571,7 +499,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     public static class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
         private SettingCommViewModel settingCommViewModelFrag;
         private ListPreference themePreference;
-        private CheckBoxPreference batterySaverPreference;
         private PreferenceCategory profileCategory;
         private PreferenceCategory adminCategory;
         private Preference verifyEmailPreference;
@@ -619,7 +546,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
             themePreference = findPreference("theme");
-            batterySaverPreference = findPreference("battery_saver_theme");
             profileCategory = findPreference("profile_category");
             adminCategory = findPreference("admin_category");
             verifyEmailPreference = findPreference("verify_email");
@@ -632,12 +558,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
             if (themePreference != null) {
                 themePreference.setOnPreferenceChangeListener(this);
-            }
-            if (batterySaverPreference != null) {
-                String themeValue = (themePreference == null || themePreference.getValue() == null ? "null" : themePreference.getValue());
-                batterySaverPreference.setEnabled(themeValue.equals("follow_system"));
-                batterySaverPreference.setSummary(themeValue.equals("follow_system") ? R.string.battery_saver_summary : R.string.battery_saver_disabled_summary);
-                batterySaverPreference.setOnPreferenceChangeListener(this);
             }
             if (privacyPolicyPreference != null) {
                 privacyPolicyPreference.setOnPreferenceClickListener(this);
@@ -664,9 +584,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             switch (preference.getKey()) {
                 case "theme":
-                    settingCommViewModelFrag.selectItem("theme", new ThemeData((String) newValue, batterySaverPreference.isChecked()));
-                    batterySaverPreference.setEnabled(newValue.equals("follow_system"));
-                    batterySaverPreference.setSummary(newValue.equals("follow_system") ? R.string.battery_saver_summary : R.string.battery_saver_disabled_summary);
+                    settingCommViewModelFrag.selectItem("theme", new ThemeData((String) newValue, false));
                     return true;
                 case "send_statistics":
                     settingCommViewModelFrag.selectItem("edit_analytics_state", newValue);

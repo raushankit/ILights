@@ -349,4 +349,7 @@
     <string name="done">Done</string>
     <string name="edit_pin">Edit Pin</string>
     <string name="add_pin">Add Pin</string>
+    <string name="need_higher_access">You don\'t have required permissions to add/edit pins. Request a higher level access from board owner from BOARDS menu.</string>
+    <string name="ok">OK</string>
+    <string name="deleting_board_title">Deleting board</string>
 </resources>

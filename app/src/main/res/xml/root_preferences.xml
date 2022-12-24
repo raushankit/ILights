@@ -63,7 +63,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:isPreferenceVisible="false"
+        app:isPreferenceVisible="true"
         app:iconSpaceReserved="false"
         app:key="admin_category"
         app:title="@string/admin_header">
@@ -83,12 +83,6 @@
             app:title="@string/manage_users"
             app:fragment="com.raushankit.ILghts.fragments.settings.ManageUserFragment"
             app:key="manage_users"/>
-
-        <Preference
-            app:icon="@drawable/ic_baseline_developer_board_24"
-            app:title="@string/manage_pins"
-            app:fragment="com.raushankit.ILghts.fragments.settings.EditPinsFragment"
-            app:key="manage_pins"/>
     </PreferenceCategory>
     <PreferenceCategory
         app:iconSpaceReserved="false"

@@ -44,7 +44,8 @@
         <item name="inactive_color">#515151</item>
         <item name="flowBackgroundColor">#19009e60</item>
         <item name="actionModeStatusBarColor">@color/gray33</item>
-
+        <item name="settingsScrimColor">#009e60</item>
+        <item name="splashScreenColor">#009e60</item>
     </style>
 
     <style name="Theme.ILights.1.ActionModeStyle" parent="@style/Widget.AppCompat.ActionMode">

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -15,11 +16,13 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.raushankit.ILghts.adapter.PinListAdapter;
 import com.raushankit.ILghts.dialogs.AlertDialogFragment;
 import com.raushankit.ILghts.dialogs.BoardControlEditFragment;
+import com.raushankit.ILghts.entity.BoardConst;
 import com.raushankit.ILghts.factory.PinDataViewModelFactory;
 import com.raushankit.ILghts.factory.StatusViewModelFactory;
 import com.raushankit.ILghts.model.PinInfo;
@@ -53,9 +56,15 @@ public class BoardControl extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setTheme(R.style.Theme_ILights_1);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_control);
+
+        Intent intent = getIntent();
+        BoardRoomUserData boardRoomUserData = intent.getParcelableExtra(BoardConst.BOARD_DATA);
+        user = new AtomicReference<>(intent.getParcelableExtra(BoardConst.USER));
+        String userId = intent.getStringExtra(BoardConst.USER_ID);
+
         RelativeLayout noPinLayout = findViewById(R.id.no_switch_parent_layout);
         ProgressBar progressBar = findViewById(R.id.board_control_progress_bar);
         AlertDialogFragment alertDialogFragment = AlertDialogFragment.newInstance(R.string.confirm_action, true, true);
@@ -96,13 +105,26 @@ public class BoardControl extends AppCompatActivity {
                     Log.w(TAG, "onCreate: data = " + dataPair);
             }
         });
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
+                R.string.all_pins_active,
+                BaseTransientBottomBar.LENGTH_LONG);
+        snackbar.setActionTextColor(MaterialColors.getColor(this, R.attr.colorPrimary, getColor(R.color.pure_red)));
+        TextView snackText = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+        snackText.setMaxLines(5);
+        snackbar.setAction(R.string.ok, v -> snackbar.dismiss());
         toolbar.setOnMenuItemClickListener(item -> {
             if(item.getItemId() == R.id.board_control_menu_item_add_switch) {
+                if(boardRoomUserData.getAccessLevel() <= 1) {
+                    snackbar.setText(R.string.need_higher_access);
+                    snackbar.setDuration(10000);
+                    snackbar.show();
+                    return false;
+                }
                 List<Integer> pinList = getAddablePins();
                 if(CollectionUtils.isEmpty(pinList)) {
-                    Snackbar.make(findViewById(android.R.id.content),
-                            R.string.all_pins_active,
-                            BaseTransientBottomBar.LENGTH_LONG).show();
+                    snackbar.setText(R.string.all_pins_active);
+                    snackbar.setDuration(8000);
+                    snackbar.show();
                     return false;
                 }
                 BoardControlEditFragment.newInstance(getAddablePins(), null, null, null)
@@ -132,12 +154,16 @@ public class BoardControl extends AppCompatActivity {
             setResult(RESULT_CANCELED);
             finish();
         });
-        addBoardButton.setOnClickListener(v -> BoardControlEditFragment.newInstance(getAddablePins(), null, null, null)
-                .show(getSupportFragmentManager(), BoardControlEditFragment.TAG));
-        Intent intent = getIntent();
-        BoardRoomUserData boardRoomUserData = intent.getParcelableExtra("BOARD");
-        user = new AtomicReference<>();
-        String userId = intent.getStringExtra("USERID");
+        addBoardButton.setOnClickListener(v -> {
+            if(boardRoomUserData.getAccessLevel() <= 1) {
+                snackbar.setText(R.string.need_higher_access);
+                snackbar.setDuration(10000);
+                snackbar.show();
+                return;
+            }
+            BoardControlEditFragment.newInstance(getAddablePins(), null, null, null)
+                    .show(getSupportFragmentManager(), BoardControlEditFragment.TAG);
+        });
         pinDataViewModel = new ViewModelProvider(this,
                 new PinDataViewModelFactory(getApplication(), userId, boardRoomUserData))
                 .get(PinDataViewModel.class);
@@ -146,7 +172,7 @@ public class BoardControl extends AppCompatActivity {
             adapter.setRole(role.getAccessLevel());
             pinDataViewModel.getPinData().observe(this, pinListData -> {
                 toolbar.getMenu().findItem(R.id.board_control_menu_item_add_switch)
-                        .setVisible(true);
+                        .setVisible(role.getAccessLevel() >= 1);
                 if (shimmerFrameLayout.isShimmerStarted()) {
                     shimmerFrameLayout.stopShimmer();
                     shimmerFrameLayout.setVisibility(View.GONE);
@@ -163,7 +189,6 @@ public class BoardControl extends AppCompatActivity {
                 pinSet = pinListData.stream().map(PinListData::getPinNumber).collect(Collectors.toSet());
             });
         });
-        userViewModel.getUserData().observe(this, user::set);
         pinDataViewModel.getPinMetaData().observe(this, s -> pinMeta = s);
         toolbar.setTitle(boardRoomUserData.getData().getTitle());
         StatusViewModel statusViewModel = new ViewModelProvider(this,

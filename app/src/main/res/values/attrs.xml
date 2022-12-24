@@ -10,6 +10,8 @@
     <attr name="text_size_percentage" format="float"/>
     <attr name="selectedBackground" format="color"/>
     <attr name="actionModeStatusBarColor" format="color"/>
+    <attr name="settingsScrimColor" format="color"/>
+    <attr name="splashScreenColor" format="color"/>
 
     <declare-styleable name="ProfilePic">
         <attr name="backgroundColor"/>

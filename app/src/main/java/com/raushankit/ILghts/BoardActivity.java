@@ -13,7 +13,6 @@ import android.view.View;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -33,10 +33,9 @@ import com.raushankit.ILghts.fragments.board.BoardEditMemberFragment;
 import com.raushankit.ILghts.fragments.board.BoardFragment;
 import com.raushankit.ILghts.fragments.board.BoardSearch;
 import com.raushankit.ILghts.fragments.board.NotificationFragment;
-import com.raushankit.ILghts.model.User;
+import com.raushankit.ILghts.model.UserCombinedData;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.storage.VolleyRequest;
-import com.raushankit.ILghts.viewModel.BoardCommViewModel;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
 import org.json.JSONException;
@@ -45,6 +44,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class BoardActivity extends AppCompatActivity {
     public static final String FRAG_REQUEST_KEY = "request_key";
@@ -52,36 +52,37 @@ public class BoardActivity extends AppCompatActivity {
     private static final String DELETE_URL = "https://identitytoolkit.googleapis.com/v1/accounts:delete?key=";
     private VolleyRequest requestQueue;
     private UserViewModel userViewModel;
-    private BoardCommViewModel boardCommViewModel;
 
     private BottomNavigationView bottomNavigationView;
-    private MaterialToolbar toolbar;
     private FirebaseAuth mAuth;
     private String currentFrag;
-    private User user;
-
+    private final AtomicReference<UserCombinedData> user = new AtomicReference<>();
     private ActivityResultLauncher<Intent> addBoardLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setTheme(R.style.Theme_ILights_1);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
         mAuth = FirebaseAuth.getInstance();
         requestQueue = VolleyRequest.newInstance(this);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        boardCommViewModel = new ViewModelProvider(this).get(BoardCommViewModel.class);
         init();
         getSupportFragmentManager()
                 .setFragmentResultListener(FRAG_REQUEST_KEY, this,
                         (requestKey, result) -> {
                             Log.e(TAG, "onCreate: data = " + requestKey + "  " + result);
-                            result.putParcelable(BoardConst.USER, user);
+                            if(user != null && user.get() != null) {
+                                result.putParcelable(BoardConst.USER, user.get().getUser());
+                            }
                             if (!TextUtils.equals(requestKey, FRAG_REQUEST_KEY)) {
                                 return;
                             }
                             if (result.containsKey(BoardConst.WHICH_FRAG)) {
                                 switchFrag(result);
+                            }
+                            if(result.containsKey(BoardConst.DELETE_CREDS)) {
+                                deleteBoardCredentials(result.getString(BoardConst.DELETE_CREDS));
                             }
                             else if (result.containsKey(BoardConst.SHOW_SNACK_BAR)) {
                                 if (result.containsKey(BoardConst.SNACK_MESSAGE)) {
@@ -97,7 +98,11 @@ public class BoardActivity extends AppCompatActivity {
                         });
 
         if (savedInstanceState == null) {
-            switchFrag(new Bundle());
+            userViewModel.getCombinedData()
+                    .observe(this, uc -> {
+                        user.set(uc);
+                        switchFrag(new Bundle());
+                    });
         }
     }
 
@@ -119,23 +124,26 @@ public class BoardActivity extends AppCompatActivity {
         switch (key) {
             case BoardConst.FRAG_BOARD:
                 ft.replace(R.id.board_main_frame,
-                                BoardFragment.newInstance(mAuth.getUid()))
+                                BoardFragment.newInstance(mAuth.getUid(), user.get().getUser(), user.get().getApiKey()))
                         .commit();
                 break;
             case BoardConst.FRAG_EDIT_MEMBER:
                 BoardRoomUserData data = result.getParcelable(BoardConst.BOARD_DATA);
                 ft.replace(R.id.board_main_frame,
                                 BoardEditMemberFragment.newInstance(data))
+                        .addToBackStack(BoardConst.FRAG_EDIT_MEMBER)
                         .commit();
                 break;
             case BoardConst.FRAG_EDIT_DETAILS:
                 ft.replace(R.id.board_main_frame,
                                 BoardEditDetails.newInstance(result.getParcelable(BoardConst.BOARD_DATA)))
+                        .addToBackStack(BoardConst.FRAG_EDIT_DETAILS)
                         .commit();
                 break;
             case BoardConst.FRAG_CRED_DETAILS:
                 ft.replace(R.id.board_main_frame,
                                 BoardCredentialViewer.newInstance(result.getParcelable(BoardConst.BOARD_DATA)))
+                        .addToBackStack(BoardConst.FRAG_CRED_DETAILS)
                         .commit();
                 break;
             case BoardConst.FRAG_NOTIFICATION:
@@ -146,7 +154,7 @@ public class BoardActivity extends AppCompatActivity {
                 break;
             case BoardConst.FRAG_SEARCH_BOARDS:
                 ft.replace(R.id.board_main_frame,
-                                BoardSearch.newInstance(user))
+                                BoardSearch.newInstance(user.get().getUser()))
                         .addToBackStack(BoardConst.FRAG_SEARCH_BOARDS)
                         .commit();
                 break;
@@ -156,10 +164,13 @@ public class BoardActivity extends AppCompatActivity {
     }
 
     private void init() {
-        toolbar = findViewById(R.id.board_main_toolbar);
+        MaterialToolbar toolbar = findViewById(R.id.board_main_toolbar);
         bottomNavigationView = findViewById(R.id.board_activity_bottom_navigation);
         setNavMenu();
-        toolbar.setNavigationOnClickListener(v -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO));
+        Intent settingsIntent = new Intent(this, SettingsActivity.class);
+        toolbar.setNavigationOnClickListener(v -> {
+            startActivity(settingsIntent);
+        });
         addBoardLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
@@ -168,14 +179,14 @@ public class BoardActivity extends AppCompatActivity {
                     }
                     if (result.getResultCode() == Activity.RESULT_CANCELED && result.getData() != null) {
                         Intent receiveIntent = result.getData();
-                        deleteBoardCredentials(receiveIntent.getStringExtra(BoardFormConst.API_KEY),
-                                receiveIntent.getStringExtra(BoardFormConst.ID_TOKEN));
+                        deleteBoardCredentials(receiveIntent.getStringExtra(BoardFormConst.ID_TOKEN));
                     }
                 }
         );
     }
 
-    private void deleteBoardCredentials(String apiKey, String idToken) {
+    private void deleteBoardCredentials(String idToken) {
+        String apiKey = user.get().getApiKey();
         if (TextUtils.isEmpty(apiKey) || TextUtils.isEmpty(idToken)) {
             return;
         }
@@ -202,19 +213,27 @@ public class BoardActivity extends AppCompatActivity {
         MenuItem itemAdd = menu.getItem(1);
         MenuItem itemMore = menu.getItem(2);
         MenuItem itemNotification = menu.getItem(3);
+        BadgeDrawable notificationsBadge = bottomNavigationView.getOrCreateBadge(itemNotification.getItemId());
         userViewModel.getRoleData()
                 .observe(this, role -> {
                     itemAdd.setVisible(role.getAccessLevel() >= 2);
                     bottomNavigationView.setVisibility(View.VISIBLE);
                 });
-        userViewModel.getUserData()
-                        .observe(this, u -> user = u);
+        userViewModel.countUnseenNotifications().observe(this, num -> {
+            if(num != null && num > 0) {
+                notificationsBadge.setNumber(num);
+            } else {
+                notificationsBadge.clearNumber();
+            }
+        });
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             Log.w(TAG, "setNavMenu: id = " + id);
             if (id == itemAdd.getItemId()) {
                 Intent intent = new Intent(this, BoardForm.class);
-                intent.putExtra("user_id", mAuth.getUid());
+                intent.putExtra(BoardConst.USER_ID, mAuth.getUid());
+                intent.putExtra(BoardConst.USER, user.get().getUser());
+                intent.putExtra(BoardFormConst.API_KEY, user.get().getApiKey());
                 addBoardLauncher.launch(intent);
                 return true;
             } else if (id == itemMore.getItemId()) {

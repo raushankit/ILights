@@ -3,6 +3,7 @@ package com.raushankit.ILghts.model.room;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Ignore;
@@ -11,6 +12,7 @@ import com.google.firebase.database.Exclude;
 
 import java.util.Objects;
 
+@Keep
 public class BoardEditableData implements Parcelable {
 
     @ColumnInfo(name = "title")

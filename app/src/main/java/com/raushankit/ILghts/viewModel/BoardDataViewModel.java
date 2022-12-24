@@ -10,10 +10,13 @@ import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.model.board.BoardCredModel;
 import com.raushankit.ILghts.model.board.FavBoard;
+import com.raushankit.ILghts.model.room.BoardRoomData;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.room.BoardRepository;
+import com.raushankit.ILghts.utils.callbacks.CallBack;
 
 import java.util.List;
 
@@ -41,11 +44,33 @@ public class BoardDataViewModel extends AndroidViewModel {
         boardIdLiveData.setValue(boardId);
     }
 
-    public LiveData<BoardCredModel> getCredentialLiveData(){
+    public LiveData<BoardCredModel> getCredentialLiveData() {
         return Transformations
                 .switchMap(boardIdLiveData, (input -> LiveDataReactiveStreams
                         .fromPublisher(mRepo.getCredentialData(input)
                                 .toFlowable())));
+    }
+
+    public void deleteBoard(@NonNull BoardRoomUserData board, CallBack<Integer> callBack) {
+        mRepo.deleteBoard(board, callBack);
+    }
+
+    public void leaveBoard(User user, BoardRoomUserData board, @NonNull CallBack<Integer> errorCallBack) {
+        mRepo.leaveBoard(user, board, errorCallBack);
+    }
+
+    public void getEditorLevelAccess(BoardRoomUserData boardRoomData, User user, CallBack<String> callBack) {
+        BoardRoomData data = new BoardRoomData(
+                boardRoomData.getBoardId(),
+                boardRoomData.getData(),
+                boardRoomData.getVisibility(),
+                boardRoomData.getOwnerId(),
+                boardRoomData.getOwnerName(),
+                boardRoomData.getOwnerEmail(),
+                boardRoomData.getTime(),
+                boardRoomData.getLastUpdated()
+        );
+        mRepo.requestAccess(data, user, 2, callBack);
     }
 
     @Override

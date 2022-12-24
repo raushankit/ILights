@@ -44,6 +44,10 @@ public class PinListAdapter extends ListAdapter<PinListData, PinListAdapter.PinL
         notifyDataSetChanged();
     }
 
+    public Role getRole() {
+        return role;
+    }
+
     @NonNull
     @Override
     public PinListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -11,7 +11,6 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
@@ -19,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.raushankit.ILghts.dialogs.LoadingDialogFragment;
+import com.raushankit.ILghts.entity.BoardConst;
 import com.raushankit.ILghts.entity.BoardFormConst;
 import com.raushankit.ILghts.entity.NotificationType;
 import com.raushankit.ILghts.forms.board.BoardCredentials;
@@ -32,7 +32,6 @@ import com.raushankit.ILghts.model.board.BoardCredentialModel;
 import com.raushankit.ILghts.model.board.BoardPinsModel;
 import com.raushankit.ILghts.utils.FormFlowLine;
 import com.raushankit.ILghts.utils.StringUtils;
-import com.raushankit.ILghts.viewModel.UserViewModel;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -66,8 +65,6 @@ public class BoardForm extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTheme(R.style.Theme_ILights_1);
         setContentView(R.layout.activity_board_form);
-        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        userViewModel.getUserData().observe(this, user1 -> user = user1);
         db = FirebaseDatabase.getInstance().getReference();
         getUserData();
         visibilityArray = getResources().getStringArray(R.array.board_form_visibility_options);
@@ -85,9 +82,6 @@ public class BoardForm extends AppCompatActivity {
             if(!TextUtils.equals(requestKey, BoardFormConst.REQUEST)) return;
             if(result.containsKey(BoardFormConst.CHANGE_FRAGMENT)){
                 switchFrags(result.getString(BoardFormConst.CHANGE_FRAGMENT));
-            }
-            if(result.containsKey(BoardFormConst.API_KEY)){
-                apiKey = result.getString(BoardFormConst.API_KEY);
             }
             if(result.containsKey(BoardFormConst.ID_TOKEN)){
                 idToken = result.getString(BoardFormConst.ID_TOKEN);
@@ -146,7 +140,9 @@ public class BoardForm extends AppCompatActivity {
             setCancelResult();
             return;
         }
-        uid = intent.getStringExtra("user_id");
+        uid = intent.getStringExtra(BoardConst.USER_ID);
+        apiKey = intent.getStringExtra(BoardFormConst.API_KEY);
+        user = intent.getParcelableExtra(BoardConst.USER);
     }
 
     private void switchFrags(String key){
@@ -163,7 +159,7 @@ public class BoardForm extends AppCompatActivity {
                         .addToBackStack(null).commit();
                 break;
             case BoardFormConst.FORM3:
-                ft.replace(R.id.board_form_frame, BoardCredentials.newInstance())
+                ft.replace(R.id.board_form_frame, BoardCredentials.newInstance(apiKey))
                         .addToBackStack(null).commit();
                 break;
             case BoardFormConst.FORM4:

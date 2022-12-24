@@ -2,11 +2,12 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    style="@style/Widget.Material3.CardView.Elevated"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="@dimen/_4sdp"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/_5sdp"
     android:elevation="@dimen/_5sdp"
+    app:strokeWidth="0dp"
     app:cardPreventCornerOverlap="true">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -41,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/board_member_list_item_email"
-            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_20sdp"
             android:fontFamily="@font/rubik_variable"
             android:paddingStart="@dimen/_10sdp"
             android:paddingEnd="@dimen/_1sdp"
@@ -77,9 +78,10 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/board_member_list_item_delete_button"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/controller_background"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:insetLeft="0dp"
@@ -97,12 +99,14 @@
             tools:ignore="RelativeOverlap" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/board_member_list_item_promote_button"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/ic_baseline_edit_24"
+            android:backgroundTint="@color/controller_background"
             app:iconSize="@dimen/_14sdp"
             android:insetBottom="0dp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:insetTop="0dp"
             android:insetLeft="0dp"
             android:insetRight="0dp"

@@ -36,6 +36,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.ServerValue;
 import com.raushankit.ILghts.adapter.BoardSearchUserAdapter;
 import com.raushankit.ILghts.dialogs.LoadingDialogFragment;
+import com.raushankit.ILghts.entity.BoardConst;
 import com.raushankit.ILghts.entity.NotificationType;
 import com.raushankit.ILghts.factory.BoardSearchViewModelFactory;
 import com.raushankit.ILghts.model.board.BoardSearchUserModel;
@@ -72,8 +73,8 @@ public class BoardSearchUsers extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setTheme(R.style.Theme_ILights_1);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_search_users);
         setBoardId();
         viewModel = new ViewModelProvider(this, new BoardSearchViewModelFactory(getApplication(), data.getBoardId()))
@@ -87,7 +88,6 @@ public class BoardSearchUsers extends AppCompatActivity {
         messageLayout = findViewById(R.id.board_search_user_error_view);
         lottieAnimationView = findViewById(R.id.board_search_user_error_lottie);
         recyclerView = findViewById(R.id.board_search_user_list);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         Log.w(TAG, "onCreate: ");
         setSupportActionBar(toolbar);
 
@@ -212,7 +212,7 @@ public class BoardSearchUsers extends AppCompatActivity {
         if(intent == null){
             finish();
         }else{
-            data = intent.getParcelableExtra("BOARD");
+            data = intent.getParcelableExtra(BoardConst.BOARD_DATA);
         }
     }
 

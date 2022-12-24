@@ -25,8 +25,6 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.entity.BoardFormConst;
 import com.raushankit.ILghts.model.board.BoardCredentialModel;
@@ -58,23 +56,28 @@ public class BoardCredentials extends Fragment {
     private String usernameSuffix;
     private BoardCredentialModel model;
     private VolleyRequest requestQueue;
-    private DatabaseReference db;
     private String apiKey;
 
     public BoardCredentials() {
         // Required empty public constructor
     }
 
-    public static BoardCredentials newInstance() {
-        return new BoardCredentials();
+    public static BoardCredentials newInstance(@NonNull String apiKey) {
+        BoardCredentials fragment = new BoardCredentials();
+        Bundle args = new Bundle();
+        args.putString(BoardFormConst.API_KEY, apiKey);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestQueue = VolleyRequest.newInstance(requireActivity());
-        db = FirebaseDatabase.getInstance().getReference("metadata/api_key/key");
         model = new BoardCredentialModel();
+        Bundle args = getArguments();
+        assert args != null;
+        apiKey = args.getString(BoardFormConst.API_KEY);
     }
 
     @Override
@@ -139,11 +142,7 @@ public class BoardCredentials extends Fragment {
             }
             if(TextUtils.isEmpty(model.getId())){
                 sendProgressBarMessage(true);
-                if(TextUtils.isEmpty(apiKey)){
-                    getApiKey();
-                }else{
-                    sendRequest(apiKey);
-                }
+                sendRequest();
             }else{
                 Bundle args = new Bundle();
                 args.putString(BoardFormConst.CHANGE_FRAGMENT, BoardFormConst.FORM4);
@@ -196,26 +195,7 @@ public class BoardCredentials extends Fragment {
         passwordText.setInputType(show?InputType.TYPE_NULL:(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD));
     }
 
-    private void getApiKey(){
-        db.get().addOnCompleteListener(task -> {
-            if(task.isSuccessful() && task.getResult() != null){
-                apiKey = String.valueOf(task.getResult().getValue());
-                sendRequest(apiKey);
-                Bundle args = new Bundle();
-                args.putString(BoardFormConst.API_KEY, apiKey);
-                getParentFragmentManager().setFragmentResult(BoardFormConst.REQUEST, args);
-            }else{
-                if((task.getException() != null) && (task.getException().getMessage() != null)){
-                    Snackbar.make(view, task.getException().getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();
-                }else{
-                    Snackbar.make(view, R.string.unknown_error, BaseTransientBottomBar.LENGTH_SHORT).show();
-                }
-                sendProgressBarMessage(false);
-            }
-        });
-    }
-
-    private void sendRequest(String apiKey){
+    private void sendRequest(){
         JSONObject js = new JSONObject();
         try{
            js.put("email", usernameText.getText() + usernameSuffix);
