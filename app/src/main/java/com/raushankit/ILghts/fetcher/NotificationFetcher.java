@@ -166,16 +166,19 @@ public class NotificationFetcher {
     }
 
     public void requestAction(Notification notification, boolean flag,  CallBack<String> callBack) {
-        String key = "board_auth/" + notification.getData().getBoardId() + "/" + notification.getData().getUserId();
+        Log.d(TAG, "requestAction: notification:: " + notification);
         Map<String, Object> mp = new HashMap<>();
         long timestamp = StringUtils.TIMESTAMP();
-        int level = NotificationType.ACTION_USER_REQUEST.equals(notification.getType())? 1: 2;
-        mp.put(key + "/name", notification.getData().getUserName().toLowerCase(Locale.getDefault()));
-        mp.put(key + "/email", notification.getData().getUserEmail().toLowerCase(Locale.getDefault()));
-        mp.put(key + "/level", level);
-        mp.put(key + "/creationTime", timestamp);
-        mp.put("user_boards/" + notification.getData().getUserId() + "/boards/" + notification.getData().getBoardId(), level);
-        mp.put("user_boards/" + notification.getData().getUserId() + "/num", ServerValue.increment(1));
+        int level = NotificationType.ACTION_EDITOR_REQUEST.equals(notification.getType()) || NotificationType.ACTION_USER_PROMOTE.equals(notification.getType())? 2: 1;
+        String key = "board_auth/" + notification.getData().getBoardId() + "/" + notification.getData().getUserId();
+        if(flag) {
+            mp.put(key + "/name", notification.getData().getUserName().toLowerCase(Locale.getDefault()));
+            mp.put(key + "/email", notification.getData().getUserEmail().toLowerCase(Locale.getDefault()));
+            mp.put(key + "/level", level);
+            mp.put(key + "/creationTime", timestamp);
+            mp.put("user_boards/" + notification.getData().getUserId() + "/boards/" + notification.getData().getBoardId(), level);
+            mp.put("user_boards/" + notification.getData().getUserId() + "/num", ServerValue.increment(NotificationType.ACTION_EDITOR_REQUEST.equals(notification.getType()) || NotificationType.ACTION_USER_REQUEST.equals(notification.getType())? 1: 0));
+        }
         key = "user_notif/" + notification.getData().getUserId() + "/" + UUID.randomUUID().toString();
         mp.put(key + "/body", String.format(NOTIFICATION_ACTION_USER,
                 notification.getData().getBoardName(), flag? "accepted": "rejected"));

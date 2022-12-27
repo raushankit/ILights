@@ -97,7 +97,6 @@ public class NotificationAdapter extends PagingDataAdapter<Notification, Notific
             }else{
                 loadingLayout.setVisibility(View.GONE);
             }
-            Log.e(TAG, "bind: item = " + item);
             time.setText(StringUtils.formattedTime(-1*item.getTime()));
             accept.setVisibility(TextUtils.equals(item.getType(), NotificationType.TEXT)? View.GONE: View.VISIBLE);
             reject.setVisibility(TextUtils.equals(item.getType(), NotificationType.TEXT)? View.GONE: View.VISIBLE);

@@ -229,15 +229,15 @@ public class BoardPublicFetcher {
         });
     }
 
-    public void requestAccess(BoardRoomData data, User user, int level, CallBack<String> callBack) {
-        if(response == null) { callBack.onClick("failed to request access"); }
+    public void requestAccess(BoardRoomData data, User user, int level, CallBack<String> callBack, boolean isSearch) {
+        if(isSearch && response == null) { callBack.onClick("failed to request access"); }
         Map<String, Object> mp = new LinkedHashMap<>();
         String key = "user_notif/" + data.getOwnerId() + "/" + UUID.randomUUID().toString();
         long timestamp = StringUtils.TIMESTAMP();
         mp.put(key + "/body", String.format(NOTIF_BODY_OWNER, user.getName(), user.getEmail(),
                 level == 1? "user": "editor", data.getData().getTitle()));
         mp.put(key + "/time", -1* timestamp);
-        mp.put(key + "/type", level == 1? NotificationType.ACTION_USER_REQUEST: NotificationType.ACTION_EDITOR_REQUEST);
+        mp.put(key + "/type", !isSearch? NotificationType.ACTION_USER_PROMOTE: level == 1? NotificationType.ACTION_USER_REQUEST: NotificationType.ACTION_EDITOR_REQUEST);
         mp.put(key + "/data", new NotificationData(data.getBoardId(), userId, user.getName(), user.getEmail(), data.getData().getTitle()));
         key = "user_notif/" + userId + "/" + UUID.randomUUID().toString();
         mp.put(key + "/body", String.format(NOTIF_BODY_REQUESTER, level == 1? "user": "editor", data.getData().getTitle(),
@@ -247,7 +247,7 @@ public class BoardPublicFetcher {
         mp.put("board_requests/" + userId + "/" + data.getBoardId(), new BoardRequestModel(userId, data.getOwnerId(), timestamp, level));
         db.updateChildren(mp, (error, ref) -> {
             if(error == null) {
-                response.setUserBoardIds(data.getBoardId(), false);
+                if(response != null ) { response.setUserBoardIds(data.getBoardId(), false); }
                 callBack.onClick(null);
             } else {
                 callBack.onClick(error.getMessage());

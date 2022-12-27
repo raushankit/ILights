@@ -32,6 +32,10 @@
 -keep class com.firebase.** { *; }
 -keep class org.apache.** { *; }
 -keep class com.raushankit.ILghts.entity.** { *; }
+-keep class * extends androidx.room.RoomDatabase
+
+-keep class * extends androidx.lifecycle.ViewModel { <init>(); }
+-keep class * extends androidx.lifecycle.AndroidViewModel { <init>(...); }
 -keepnames class com.fasterxml.jackson.** { *; }
 -keepnames class javax.servlet.** { *; }
 -keepnames class org.ietf.jgss.** { *; }
@@ -39,3 +43,4 @@
 -keep class com.raushankit.ILghts.forms.board.** { *; }
 -dontwarn org.apache.**
 -dontwarn org.w3c.dom.**
+-dontwarn androidx.room.paging.**

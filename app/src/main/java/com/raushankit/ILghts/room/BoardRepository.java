@@ -18,6 +18,7 @@ import com.raushankit.ILghts.fetcher.BoardSearchUserFetcher;
 import com.raushankit.ILghts.model.FilterModel;
 import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.model.board.BoardCredModel;
+import com.raushankit.ILghts.model.board.BoardRequestModel;
 import com.raushankit.ILghts.model.board.BoardSearchUserModel;
 import com.raushankit.ILghts.model.board.FavBoard;
 import com.raushankit.ILghts.model.room.BoardRoomData;
@@ -95,8 +96,26 @@ public class BoardRepository {
         return boardPublicFetcher.getData(model);
     }
 
-    public void requestAccess(BoardRoomData data, User user, int level, CallBack<String> callBack) {
-        boardPublicFetcher.requestAccess(data, user, level, callBack);
+    public void requestAccess(BoardRoomData data, User user, int level, CallBack<String> callBack, boolean isSearch) {
+        boardPublicFetcher.requestAccess(data, user, level, callBack, isSearch);
+    }
+
+    public void requestEditorAccessFromBoard(BoardRoomData data, User user, int level, CallBack<String> callBack) {
+        db.child("board_requests/" + userId + "/" + data.getBoardId())
+                .get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        BoardRequestModel md = task.getResult().getValue(BoardRequestModel.class);
+                        if(md == null || md.getLevel() != level) {
+                            boardPublicFetcher.requestAccess(data, user, level, callBack,false);
+                        } else {
+                            callBack.onClick(md.getLevel() != level? "unknown error occurred"
+                                    : "You have already requested for " + (level == 1? "user": "editor") + " level access");
+                        }
+                    } else {
+                        callBack.onClick(task.getException() == null
+                                ? "unknown error occurred": task.getException().getLocalizedMessage());
+                    }
+                });
     }
 
     public void deleteBoard(@NonNull BoardRoomUserData board, CallBack<Integer> callBack) {

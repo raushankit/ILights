@@ -57,6 +57,6 @@ public class BoardSearchViewModel extends AndroidViewModel {
     }
 
     public void getAccess(BoardRoomData data, User user, int level, CallBack<String> callBack) {
-        repository.requestAccess(data, user, level, callBack);
+        repository.requestAccess(data, user, level, callBack, true);
     }
 }

@@ -97,6 +97,8 @@ public class BoardActivity extends AppCompatActivity {
                             }
                         });
 
+        Log.e(TAG, "onCreate: savedInsState = " + (savedInstanceState == null));
+
         if (savedInstanceState == null) {
             userViewModel.getCombinedData()
                     .observe(this, uc -> {
@@ -168,9 +170,7 @@ public class BoardActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.board_activity_bottom_navigation);
         setNavMenu();
         Intent settingsIntent = new Intent(this, SettingsActivity.class);
-        toolbar.setNavigationOnClickListener(v -> {
-            startActivity(settingsIntent);
-        });
+        toolbar.setNavigationOnClickListener(v -> startActivity(settingsIntent));
         addBoardLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {

@@ -70,7 +70,7 @@ public class BoardDataViewModel extends AndroidViewModel {
                 boardRoomData.getTime(),
                 boardRoomData.getLastUpdated()
         );
-        mRepo.requestAccess(data, user, 2, callBack);
+        mRepo.requestEditorAccessFromBoard(data, user, 2, callBack);
     }
 
     @Override

@@ -85,7 +85,7 @@ public class BoardSearchResponse {
     }
 
     public void setUserBoardIds(String id, boolean flag) {
-        this.userBoardIds.put(id, flag);
+        this.userBoardIds.putIfAbsent(id, flag);
     }
 
     public void increasePage(int delta) {
