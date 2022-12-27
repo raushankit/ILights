@@ -70,6 +70,7 @@ public class BoardMemberViewModel extends AndroidViewModel {
     public void promoteUser(BoardRoomUserData board, BoardAuthUser user, @NonNull CallBack<DatabaseError> errorCallBack){
         Map<String, Object> mp = new HashMap<>();
         String userId = user.getUserId();
+        Log.e(TAG, "promoteUser: board = " + board + " authUser = " + user);
         int level = user.getLevel() == 1? 2: 1;
         mp.put("board_auth/" + boardId + "/" + userId + "/level", level);
         mp.put("user_boards/" + userId + "/boards/" + boardId, level);
@@ -83,6 +84,7 @@ public class BoardMemberViewModel extends AndroidViewModel {
                 "Admin has removed your EDITOR level access from board ") + board.getData().getTitle());
         mp.put(key + "/time", -1* StringUtils.TIMESTAMP());
         mp.put(key + "/type", NotificationType.TEXT);
+        Log.i(TAG, "promoteUser: data = mp = " + mp);
         remoteDb.updateChildren(mp, (error, ref) -> {
             if(error == null){
                 remoteMediator.updateBoardUser(userId, level);

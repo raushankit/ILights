@@ -35,7 +35,7 @@ public class NotificationViewModel extends AndroidViewModel {
     @ExperimentalCoroutinesApi
     public NotificationViewModel(@NonNull Application application, @NonNull String userId) {
         super(application);
-        Log.e(TAG, "NotificationViewModel: " + userId);
+        Log.i(TAG, "NotificationViewModel: " + userId);
         BoardRoomDatabase db = BoardRoomDatabase.getDatabase(application);
         remoteDb =  FirebaseDatabase.getInstance().getReference();
         this.userId = userId;

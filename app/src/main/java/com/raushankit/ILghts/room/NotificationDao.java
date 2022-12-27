@@ -6,6 +6,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 
 import com.raushankit.ILghts.model.Notification;
 
@@ -14,37 +15,43 @@ import java.util.List;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
-public interface NotificationDao {
+public abstract class NotificationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Notification notification);
+    public abstract void insert(Notification notification);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(List<Notification> notifications);
+    public abstract void insert(List<Notification> notifications);
 
     @Query("DELETE FROM notification_table")
-    void deleteAll();
+    public abstract void deleteAll();
 
     @Query("SELECT * FROM notification_table WHERE id = :id")
-    Notification getNotificationById(String id);
+    public abstract Notification getNotificationById(String id);
 
     @Query("DELETE FROM notification_table WHERE id IN (:ids)")
-    void deleteNotificationsByIdList(List<String> ids);
+    public abstract void deleteNotificationsByIdList(List<String> ids);
 
     @Query("SELECT * FROM notification_table ORDER BY time ASC")
-    LiveData<Notification> getNotifications();
+    public abstract LiveData<Notification> getNotifications();
 
     @Query("SELECT * FROM notification_table ORDER BY time ASC")
-    PagingSource<Integer, Notification> getNotificationsPaging();
+    public abstract PagingSource<Integer, Notification> getNotificationsPaging();
 
     @Query("SELECT * FROM notification_table ORDER BY time ASC LIMIT 1")
-    Single<Notification> getLatestNotification();
+    public abstract Single<Notification> getLatestNotification();
 
     @Query("UPDATE notification_table SET seen = :seen WHERE id = :id")
-    void updateSeen(String id, boolean seen);
+    public abstract void updateSeen(String id, boolean seen);
 
     @Query("SELECT COUNT(*) FROM notification_table WHERE seen = 0")
-    LiveData<Integer> countUnseen();
+    public abstract LiveData<Integer> countUnseen();
 
     @Query("UPDATE notification_table SET type = :type WHERE id = :id")
-    void updateType(String id, String type);
+    public abstract void updateType(String id, String type);
+
+    @Transaction
+    public void updateTypeAndSeen(String id, String type, boolean seen) {
+        updateType(id, type);
+        updateSeen(id, seen);
+    }
 }

@@ -10,8 +10,8 @@ android {
         applicationId "com.raushankit.ILghts"
         minSdk 24
         targetSdk 33
-        versionCode 46
-        versionName "2.5.1"
+        versionCode 47
+        versionName "2.5.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug
@@ -33,6 +33,7 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug{

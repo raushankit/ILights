@@ -122,7 +122,7 @@ public class BoardSearch extends Fragment {
         filterModel.setType(FilterModel.Type.NULL);
         viewModel.setFilterModel(filterModel);
         viewModel.getSearchResults().observe(getViewLifecycleOwner(), data -> {
-            Log.e(TAG, "onCreateView: got data: " + data);
+            Log.d(TAG, "onCreateView: got data: " + data);
             adapter.setUserBoards(data.getUserBoardIds());
             if(data.getData().isEmpty() && !data.isNoData()) {
                 shimmerFrameLayout.setVisibility(View.VISIBLE);

@@ -120,8 +120,6 @@ public class MainActivity extends AppCompatActivity {
         alertDialogFragment.setBodyString(getString(R.string.forced_update_message));
         alertDialogFragment.setNegativeButtonText(R.string.exit);
         webViewDialogFragment = WebViewDialogFragment.newInstance(link);
-//        startActivity(new Intent(this, BoardActivity.class));
-//        finish();
         askAgainForUpdate();
         consentDialogFragment = ConsentDialogFragment.newInstance(true, false);
         snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_network_detected), BaseTransientBottomBar.LENGTH_LONG);

@@ -64,7 +64,6 @@ public class BoardSearchAdapter extends ListAdapter<BoardRoomData, BoardSearchAd
     @Override
     public void onBindViewHolder(@NonNull BoardSearchViewHolder holder, int position) {
         holder.bind(getItem(position));
-        Log.e("HELLO", "onBindViewHolder: position = " + position + " count = " + getItemCount());
         if(trigger != null && position == getItemCount() - 1) {
             trigger.onClick(true);
         }

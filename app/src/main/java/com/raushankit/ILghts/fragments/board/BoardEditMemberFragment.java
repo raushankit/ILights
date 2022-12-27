@@ -28,6 +28,7 @@ import com.raushankit.ILghts.entity.BoardConst;
 import com.raushankit.ILghts.factory.BoardMemberViewModelFactory;
 import com.raushankit.ILghts.model.board.BoardAuthUser;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
+import com.raushankit.ILghts.utils.StringUtils;
 import com.raushankit.ILghts.utils.callbacks.CallBack;
 import com.raushankit.ILghts.viewModel.BoardMemberViewModel;
 
@@ -128,8 +129,8 @@ public class BoardEditMemberFragment extends Fragment {
         });
         callBack = error -> {
             if(error != null){
-                Snackbar.make(view, error.getMessage(), BaseTransientBottomBar.LENGTH_SHORT)
-                        .show();
+                Snackbar.make(view, StringUtils.getDataBaseErrorMessageFromCode(error.getCode())
+                                , BaseTransientBottomBar.LENGTH_SHORT).show();
             }
         };
         return view;

@@ -166,7 +166,7 @@ public class NotificationFetcher {
     }
 
     public void requestAction(Notification notification, boolean flag,  CallBack<String> callBack) {
-        String key = "board_auth/" + notification.getData().getBoardId() + "/" + userId;
+        String key = "board_auth/" + notification.getData().getBoardId() + "/" + notification.getData().getUserId();
         Map<String, Object> mp = new HashMap<>();
         long timestamp = StringUtils.TIMESTAMP();
         int level = NotificationType.ACTION_USER_REQUEST.equals(notification.getType())? 1: 2;
@@ -188,10 +188,11 @@ public class NotificationFetcher {
                 level == 1? "user": "editor", notification.getData().getBoardName()));
         mp.put(key + "/time", -1* timestamp);
         mp.put(key + "/type", NotificationType.TEXT);
+        mp.put("board_requests/" + notification.getData().getUserId() + "/" + notification.getData().getBoardId(), null);
         db.updateChildren(mp, (error, ref) -> {
             callBack.onClick(error == null? null: error.getMessage());
             if(error == null) {
-                notificationDao.updateType(notification.getId(), NotificationType.ACTION_DONE);
+                BoardRoomDatabase.databaseExecutor.execute(() -> notificationDao.updateTypeAndSeen(notification.getId(), NotificationType.ACTION_DONE, true));
             }
         });
     }
