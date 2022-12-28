@@ -41,7 +41,7 @@ public class AdminUserAdapter extends ListAdapter<AdminUser, AdminUserAdapter.Ad
             super(itemView);
             name = itemView.findViewById(R.id.manage_users_recyclerview_list_name);
             email = itemView.findViewById(R.id.manage_users_recyclerview_list_email);
-            itemView.setOnClickListener(view -> callBack.onClick(getCurrentList().get(getAdapterPosition())));
+            itemView.setOnClickListener(view -> callBack.onClick(getCurrentList().get(getBindingAdapterPosition())));
         }
 
         public void bind(AdminUser item) {

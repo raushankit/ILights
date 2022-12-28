@@ -1,5 +1,6 @@
 package com.raushankit.ILghts.fragments.board;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -66,7 +67,9 @@ public class BoardEditDetails extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
-            data = args.getParcelable(BoardConst.BOARD_DATA);
+            data = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    ? args.getParcelable(BoardConst.BOARD_DATA, BoardRoomUserData.class)
+                    : args.getParcelable(BoardConst.BOARD_DATA);
         }else{
             Log.i(TAG, "onCreate: why here empty user data");
         }

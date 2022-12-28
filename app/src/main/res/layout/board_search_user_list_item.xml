@@ -6,7 +6,6 @@
     android:id="@+id/board_search_user_list_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/_2sdp"
-    android:backgroundTint="@color/white"
     app:cardPreventCornerOverlap="true">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -37,7 +36,7 @@
             android:layout_alignParentStart="true"
             android:layout_below="@id/board_search_user_section_header"
             android:checked="true"
-            android:buttonTint="?attr/colorPrimary"
+            android:buttonTint="?attr/splashScreenColor"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
@@ -54,7 +53,7 @@
             android:layout_below="@id/board_search_user_section_header"
             android:layout_toEndOf="@id/board_search_user_list_check_box"
             android:text="@string/title"
-            android:textColor="@color/board_bottom_sheet_text_color"
+            android:textColor="@color/user_info_name_text"
             android:textSize="@dimen/_16sdp" />
 
         <TextView
@@ -69,7 +68,7 @@
             android:paddingEnd="@dimen/_1sdp"
             android:text="@string/email_hint"
             android:layout_marginBottom="@dimen/_8sdp"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="?attr/splashScreenColor"
             android:textSize="@dimen/_10sdp" />
         <LinearLayout
             android:id="@+id/board_search_user_list_item_role_parent_layout"
@@ -83,9 +82,10 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/board_search_user_list_item_role_member"
                 android:layout_width="wrap_content"
-                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:backgroundTint="@color/controller_background"
+                style="@style/Widget.Material3.Button.ElevatedButton"
                 android:layout_height="wrap_content"
+                android:textColor="?attr/splashScreenColor"
                 android:textAllCaps="false"
                 android:layout_marginEnd="@dimen/_60sdp"
                 app:strokeWidth="0dp"
@@ -93,11 +93,12 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/board_search_user_list_item_role_editor"
                 android:layout_width="wrap_content"
-                android:backgroundTint="@color/controller_background"
                 app:strokeWidth="0dp"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:backgroundTint="@color/controller_background"
+                style="@style/Widget.Material3.Button.ElevatedButton"
                 android:layout_height="wrap_content"
                 android:textAllCaps="false"
+                android:textColor="?attr/splashScreenColor"
                 android:text="@string/add_as_editor"/>
         </LinearLayout>
     </RelativeLayout>

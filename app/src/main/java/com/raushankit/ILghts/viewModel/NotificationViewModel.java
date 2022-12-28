@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelKt;
 import androidx.paging.ExperimentalPagingApi;
 import androidx.paging.Pager;
@@ -65,5 +66,13 @@ public class NotificationViewModel extends AndroidViewModel {
 
     public void doAction(Notification notification, boolean flag, CallBack<String> callBack) {
         fetcher.requestAction(notification, flag, callBack);
+    }
+
+    public void updateAllSeen() {
+        fetcher.updateAllSeen();
+    }
+
+    public LiveData<Integer> countUnseen() {
+        return fetcher.countUnseenNotifications();
     }
 }

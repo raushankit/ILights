@@ -3,6 +3,7 @@ package com.raushankit.ILghts;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.util.Pair;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,6 +48,7 @@ import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.raushankit.ILghts.dialogs.AlertDialogFragment;
+import com.raushankit.ILghts.dialogs.AppearanceDialogFragment;
 import com.raushankit.ILghts.dialogs.LoadingDialogFragment;
 import com.raushankit.ILghts.dialogs.WebViewDialogFragment;
 import com.raushankit.ILghts.entity.InfoType;
@@ -59,6 +62,7 @@ import com.raushankit.ILghts.storage.SharedRepo;
 import com.raushankit.ILghts.utils.AnalyticsParam;
 import com.raushankit.ILghts.utils.ColorGen;
 import com.raushankit.ILghts.utils.ProfilePic;
+import com.raushankit.ILghts.utils.StringUtils;
 import com.raushankit.ILghts.utils.UserUpdates;
 import com.raushankit.ILghts.viewModel.SettingCommViewModel;
 import com.raushankit.ILghts.viewModel.SettingUserViewModel;
@@ -90,6 +94,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private AppUpdateManager appUpdateManager;
     private WebViewDialogFragment webViewDialogFragment;
     private LoadingDialogFragment loadingDialogFragment;
+    private AppearanceDialogFragment appearanceDialogFragment;
     private String name = "";
     private SharedRepo sharedRepo;
     private SettingsFragmentViewModel settingsFragmentViewModel;
@@ -114,7 +119,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_ILights_1);
+        int themeIndex = ((BaseApp) getApplication()).getThemeIndex();
+        setTheme(StringUtils.getTheme(themeIndex));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
         if (savedInstanceState == null) {
@@ -131,6 +137,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         appUpdateManager = AppUpdateManagerFactory.create(this);
         webViewDialogFragment = WebViewDialogFragment.newInstance(link);
         loadingDialogFragment = LoadingDialogFragment.newInstance();
+        appearanceDialogFragment = AppearanceDialogFragment.newInstance(StringUtils.colors, StringUtils.colorNames, themeIndex);
         mAuth = FirebaseAuth.getInstance();
         Bundle bundle1 = new Bundle();
         bundle1.putString(FirebaseAnalytics.Param.SCREEN_NAME, getClass().getSimpleName());
@@ -149,6 +156,13 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             finish();
         };
         settingsFragmentViewModel = new ViewModelProvider(this).get(SettingsFragmentViewModel.class);
+        settingsFragmentViewModel.setAppearance(StringUtils.colorNames[themeIndex]);
+        appearanceDialogFragment.addCallback(pp -> {
+            if(pp.first == themeIndex) {return; }
+            settingsFragmentViewModel.setAppearance(pp.second);
+            sharedRepo.insert(SharedRefKeys.THEME_INDEX, String.valueOf(pp.first));
+            Toast.makeText(this, R.string.appearance_change_toast, Toast.LENGTH_SHORT).show();
+        });
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         settingUserViewModel = new ViewModelProvider(this).get(SettingUserViewModel.class);
         settingUserViewModel.addUserSource(userViewModel.getUserData());
@@ -160,10 +174,18 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         alertDialogFragment.setNegativeButtonText(R.string.no);
         alertDialogFragment.addWhichButtonClickedListener(whichButton -> {
             if (whichButton.equals(AlertDialogFragment.WhichButton.POSITIVE)) {
-                if (alertDialogFragment.getActionType().equals("sign_out")) {
-                    mAuth.signOut();
-                } else {
-                    Log.w(TAG, "onCreate: bad event");
+                switch (alertDialogFragment.getActionType()) {
+                    case "sign_out":
+                        mAuth.signOut();
+                        break;
+                    case "board_offline_data":
+                        userViewModel.clearBoardDb();
+                        break;
+                    case "notifications_offline_data":
+                        userViewModel.clearNotificationsDb();
+                        break;
+                    default:
+                        Log.w(TAG, "onCreate: bad event type " + alertDialogFragment.getActionType());
                 }
             }
             alertDialogFragment.dismiss();
@@ -224,6 +246,25 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     break;
                 case "sign_out":
                     alertDialogFragment.setBodyString(getString(R.string.sign_out_body_text));
+                    alertDialogFragment.setActionType(requestKey);
+                    if (!alertDialogFragment.isAdded())
+                        alertDialogFragment.show(getSupportFragmentManager(), AlertDialogFragment.TAG);
+                    break;
+                case "notifications_offline_data":
+                    alertDialogFragment.setBodyString(getString(R.string.reset_database_alert_dialog_text, "notifications"));
+                    alertDialogFragment.setActionType(requestKey);
+                    if (!alertDialogFragment.isAdded())
+                        alertDialogFragment.show(getSupportFragmentManager(), AlertDialogFragment.TAG);
+                    break;
+                case "appearance":
+                    String checkedIndex = sharedRepo.getValue(SharedRefKeys.THEME_INDEX);
+                    Log.e(TAG, "implementListeners: checkedIndex = " + checkedIndex);
+                    appearanceDialogFragment.setCheckedIndex(Integer.parseInt(
+                            SharedRefKeys.DEFAULT_VALUE.name().equals(checkedIndex)? "0": checkedIndex));
+                    appearanceDialogFragment.show(getSupportFragmentManager(), AppearanceDialogFragment.TAG);
+                    break;
+                case "board_offline_data":
+                    alertDialogFragment.setBodyString(getString(R.string.reset_database_alert_dialog_text, "boards"));
                     alertDialogFragment.setActionType(requestKey);
                     if (!alertDialogFragment.isAdded())
                         alertDialogFragment.show(getSupportFragmentManager(), AlertDialogFragment.TAG);
@@ -293,6 +334,11 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             }
             settingCommViewModel.selectItem(SettingCommViewModel.DEFAULT_KEY, null);
         });
+    }
+
+    @Override
+    public Resources.Theme getTheme() {
+        return super.getTheme();
     }
 
     private void showSnack(boolean isSuccessful, @StringRes int successMessage, @StringRes int failureMessage, @Nullable Exception exception) {
@@ -498,12 +544,12 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
         private SettingCommViewModel settingCommViewModelFrag;
-        private ListPreference themePreference;
         private PreferenceCategory profileCategory;
         private PreferenceCategory adminCategory;
         private Preference verifyEmailPreference;
         private Preference updatePreference;
         private Preference changePWPreference;
+        private Preference appearancePreference;
 
         @Override
         public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -539,18 +585,22 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 updatePreference.setVisible(true);
                 updatePreference.setSummary(getString(R.string.update_summary, vInfo.getVersionCode()));
             });
+            sFViewModel.getAppearance().observe(getViewLifecycleOwner(), appearancePreference::setSummary);
         }
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
-            themePreference = findPreference("theme");
+            ListPreference themePreference = findPreference("theme");
             profileCategory = findPreference("profile_category");
             adminCategory = findPreference("admin_category");
             verifyEmailPreference = findPreference("verify_email");
             Preference versionNamePreference = findPreference("version_name");
             Preference privacyPolicyPreference = findPreference("privacy_policy");
+            Preference resetBoardDataPreference = findPreference("board_offline_data");
+            Preference resetNotificationsDataPreference = findPreference("notifications_offline_data");
+            appearancePreference = findPreference("appearance");
             updatePreference = findPreference("update_available");
             Preference signOutPreference = findPreference("sign_out");
             changePWPreference = findPreference("change_password");
@@ -564,6 +614,15 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             }
             if (verifyEmailPreference != null) {
                 verifyEmailPreference.setOnPreferenceClickListener(this);
+            }
+            if (resetBoardDataPreference != null) {
+                resetBoardDataPreference.setOnPreferenceClickListener(this);
+            }
+            if (resetNotificationsDataPreference != null) {
+                resetNotificationsDataPreference.setOnPreferenceClickListener(this);
+            }
+            if (appearancePreference != null) {
+                appearancePreference.setOnPreferenceClickListener(this);
             }
             if (checkBoxPreference != null) {
                 checkBoxPreference.setOnPreferenceChangeListener(this);
@@ -589,9 +648,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 case "send_statistics":
                     settingCommViewModelFrag.selectItem("edit_analytics_state", newValue);
                     return true;
-                case "battery_saver_theme":
-                    settingCommViewModelFrag.selectItem("theme", new ThemeData(themePreference.getValue(), (Boolean) newValue));
-                    return true;
             }
             return false;
         }
@@ -610,6 +666,15 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     return true;
                 case "privacy_policy":
                     settingCommViewModelFrag.selectItem("privacy_policy", null);
+                    return true;
+                case "board_offline_data":
+                    settingCommViewModelFrag.selectItem("board_offline_data", null);
+                    return true;
+                case "notifications_offline_data":
+                    settingCommViewModelFrag.selectItem("notifications_offline_data", null);
+                    return true;
+                case "appearance":
+                    settingCommViewModelFrag.selectItem("appearance", null);
                     return true;
                 default:
                     Log.w(TAG, "onPreferenceClick: unknown click event");

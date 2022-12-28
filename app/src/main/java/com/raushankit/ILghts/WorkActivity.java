@@ -3,6 +3,7 @@ package com.raushankit.ILghts;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
@@ -28,11 +29,11 @@ import com.raushankit.ILghts.dialogs.ConsentDialogFragment;
 import com.raushankit.ILghts.entity.ControllerFragActions;
 import com.raushankit.ILghts.entity.PageKeys;
 import com.raushankit.ILghts.entity.SharedRefKeys;
-import com.raushankit.ILghts.fragments.ControllerFragment;
 import com.raushankit.ILghts.fragments.ForgotPasswordFragment;
 import com.raushankit.ILghts.fragments.LoginFragment;
 import com.raushankit.ILghts.fragments.SignUpFragment;
 import com.raushankit.ILghts.storage.SharedRepo;
+import com.raushankit.ILghts.utils.StringUtils;
 import com.raushankit.ILghts.utils.callbacks.CallBack;
 import com.raushankit.ILghts.viewModel.FragViewModel;
 
@@ -51,7 +52,7 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_ILights_1);
+        setTheme(StringUtils.getTheme(((BaseApp)getApplication()).getThemeIndex()));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work);
         Intent settingsIntent = new Intent(this, SettingsActivity.class);
@@ -115,6 +116,11 @@ public class WorkActivity extends AppCompatActivity implements InstallStateUpdat
                 appUpdateManager.registerListener(this);
             }
         });
+    }
+
+    @Override
+    public Resources.Theme getTheme() {
+        return super.getTheme();
     }
 
     private void popupSnackbarForCompleteUpdate() {

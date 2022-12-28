@@ -1,5 +1,6 @@
 package com.raushankit.ILghts.fragments.board;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -58,7 +59,9 @@ public class BoardSearch extends Fragment {
         Bundle args = getArguments();
         userTemp = null;
         if(args != null) {
-            userTemp = args.getParcelable("user-data");
+            userTemp = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    ? args.getParcelable("user-data", User.class)
+                    : args.getParcelable("user-data");
         }
         filterDialogFragment = FilterDialogFragment.newInstance();
         filterModel = new FilterModel();

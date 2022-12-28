@@ -10,6 +10,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
@@ -55,6 +56,7 @@ import com.raushankit.ILghts.model.Role;
 import com.raushankit.ILghts.observer.UpdateTypeLiveData;
 import com.raushankit.ILghts.storage.SharedRepo;
 import com.raushankit.ILghts.utils.AnalyticsParam;
+import com.raushankit.ILghts.utils.StringUtils;
 import com.raushankit.ILghts.utils.UserUpdates;
 import com.raushankit.ILghts.viewModel.SplashViewModel;
 import com.raushankit.ILghts.viewModel.UserViewModel;
@@ -79,11 +81,13 @@ public class MainActivity extends AppCompatActivity {
     private WebViewDialogFragment webViewDialogFragment;
     private FirebaseAnalytics mAnalytics;
     private SharedPreferences sharedPreferences;
+    private SharedRepo sharedRepo;
     private ConsentDialogFragment consentDialogFragment;
 
     @Override
     protected void attachBaseContext(Context newBase) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(newBase.getApplicationContext());
+        sharedRepo = SharedRepo.newInstance(newBase.getApplicationContext());
         boolean isv29 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
         String themeType = sharedPreferences.getString("theme", isv29 ? "follow_system" : "light");
         if (themeType.equals("light")) {
@@ -100,11 +104,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_ILights_1);
+        String checkedIndex = sharedRepo.getValue(SharedRefKeys.THEME_INDEX);
+        int themeIndex = Integer.parseInt(SharedRefKeys.DEFAULT_VALUE.name().equals(checkedIndex) ? "0": checkedIndex);
+        setTheme(StringUtils.getTheme(themeIndex));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAnalytics = FirebaseAnalytics.getInstance(this);
         appUpdateManager = AppUpdateManagerFactory.create(this);
+        ((BaseApp)getApplication()).setThemeIndex(themeIndex);
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -125,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_network_detected), BaseTransientBottomBar.LENGTH_LONG);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         splashViewModel = new ViewModelProvider(this).get(SplashViewModel.class);
-        mHandler = new Handler();
+        mHandler = new Handler(Looper.getMainLooper());
         Bundle bundle1 = new Bundle();
         bundle1.putString(FirebaseAnalytics.Param.SCREEN_NAME, getClass().getSimpleName());
         mAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle1);

@@ -32,13 +32,34 @@
         </LinearLayout>
     </com.facebook.shimmer.ShimmerFrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_notification_recyclerview"
+    <LinearLayout
+        android:id="@+id/fragment_notification_recyclerview_parent_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
-        android:background="@color/board_recyclerview_background"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:nestedScrollingEnabled="true"/>
+        android:visibility="gone"
+        android:orientation="vertical">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/fragment_notification_update_seen_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:insetTop="0dp"
+            app:icon="@drawable/ic_baseline_remove_red_eye_24"
+            app:iconTint="?attr/splashScreenColor"
+            android:insetRight="0dp"
+            android:insetLeft="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/mark_as_read"
+            android:textColor="?attr/splashScreenColor"
+            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            app:cornerRadius="0dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/fragment_notification_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/board_recyclerview_background"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:nestedScrollingEnabled="true"/>
+    </LinearLayout>
+
 
 </FrameLayout>

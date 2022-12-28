@@ -92,4 +92,10 @@ public abstract class BoardDao {
         deleteUserBoardById(id);
     }
 
+    @Transaction
+    public void deleteAll() {
+        deleteAllBoards();
+        deleteAllUserBoards();
+    }
+
 }

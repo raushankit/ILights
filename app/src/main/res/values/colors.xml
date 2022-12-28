@@ -14,8 +14,10 @@
     <color name="shamrock_green">#009e60</color>
     <color name="pink">#fe019a</color>
     <color name="transparent">#00000000</color>
+    <color name="charcoal">#36454f</color>
     <color name="dark_pink">#920058</color>
     <color name="scarlet_red">#ff0800</color>
+    <color name="sky_blue">#00BFFF</color>
     <color name="gray33">#444444</color>
 
     <color name="splash_screen_bg_start">@color/white</color>

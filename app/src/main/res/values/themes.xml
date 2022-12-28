@@ -46,6 +46,7 @@
         <item name="actionModeStatusBarColor">@color/gray33</item>
         <item name="settingsScrimColor">#009e60</item>
         <item name="splashScreenColor">#009e60</item>
+        <item name="baseColor">#009e60</item>
     </style>
 
     <style name="Theme.ILights.1.ActionModeStyle" parent="@style/Widget.AppCompat.ActionMode">
@@ -59,5 +60,114 @@
         <item name="android:textSize">@dimen/_15sdp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="Theme.ILights.2" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#00bfff</item>
+        <item name="colorPrimaryVariant">#009aee</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">#00bfff</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="actionModeStyle">@style/Theme.ILights.1.ActionModeStyle</item>
+        <!-- Customize your theme here. -->
+        <item name="toolbarColor">#00bfff</item>
+        <item name="inactive_color">#515151</item>
+        <item name="flowBackgroundColor">#1900bfff</item>
+        <item name="actionModeStatusBarColor">@color/gray33</item>
+        <item name="settingsScrimColor">#00bfff</item>
+        <item name="splashScreenColor">#00bfff</item>
+        <item name="baseColor">#00bfff</item>
+    </style>
+
+    <style name="Theme.ILights.3" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#fe019a</item>
+        <item name="colorPrimaryVariant">#ce015a</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">#fe019a</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="actionModeStyle">@style/Theme.ILights.1.ActionModeStyle</item>
+        <!-- Customize your theme here. -->
+        <item name="toolbarColor">#fe019a</item>
+        <item name="inactive_color">#515151</item>
+        <item name="flowBackgroundColor">#19fe019a</item>
+        <item name="actionModeStatusBarColor">@color/gray33</item>
+        <item name="settingsScrimColor">#fe019a</item>
+        <item name="splashScreenColor">#fe019a</item>
+        <item name="baseColor">#fe019a</item>
+    </style>
+
+    <style name="Theme.ILights.4" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#DE5426</item>
+        <item name="colorPrimaryVariant">#BE5426</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">#DE5426</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="actionModeStyle">@style/Theme.ILights.1.ActionModeStyle</item>
+        <!-- Customize your theme here. -->
+        <item name="toolbarColor">#DE5426</item>
+        <item name="inactive_color">#515151</item>
+        <item name="flowBackgroundColor">#19DE5426</item>
+        <item name="actionModeStatusBarColor">@color/gray33</item>
+        <item name="settingsScrimColor">#DE5426</item>
+        <item name="splashScreenColor">#DE5426</item>
+        <item name="baseColor">#DE5426</item>
+    </style>
+
+    <style name="Theme.ILights.5" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#ff0800</item>
+        <item name="colorPrimaryVariant">#BD0701</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">#ff0800</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="actionModeStyle">@style/Theme.ILights.1.ActionModeStyle</item>
+        <!-- Customize your theme here. -->
+        <item name="toolbarColor">#ff0800</item>
+        <item name="inactive_color">#515151</item>
+        <item name="flowBackgroundColor">#19ff0800</item>
+        <item name="actionModeStatusBarColor">@color/gray33</item>
+        <item name="settingsScrimColor">#ff0800</item>
+        <item name="splashScreenColor">#ff0800</item>
+        <item name="baseColor">#ff0800</item>
+    </style>
+
 
 </resources>

@@ -1,5 +1,6 @@
 package com.raushankit.ILghts.fragments.board;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -64,8 +65,10 @@ public class BoardEditMemberFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        if(args != null){
-            boardData = args.getParcelable(BoardConst.BOARD_DATA);
+        if(args != null) {
+            boardData = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    ? args.getParcelable(BoardConst.BOARD_DATA, BoardRoomUserData.class)
+                    : args.getParcelable(BoardConst.BOARD_DATA);
             Log.i(TAG, "onCreate: BoardData = " + boardData);
         }
     }

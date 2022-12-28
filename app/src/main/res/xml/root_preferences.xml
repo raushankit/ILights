@@ -1,29 +1,28 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory
+    <com.raushankit.ILghts.utils.ColoredPreferenceCategory
         app:iconSpaceReserved="false"
         app:title="@string/display_header">
 
         <ListPreference
             app:icon="@drawable/ic_baseline_brightness_6_24"
-            app:entries="@array/theme_entries"
-            app:entryValues="@array/theme_values"
+            app:entries="@array/theme_entries_v29"
+            app:entryValues="@array/theme_values_v29"
             app:key="theme"
             app:defaultValue="light"
             app:dialogTitle="Choose Theme"
             app:title="@string/theme_header"
             app:useSimpleSummaryProvider="true" />
-        <CheckBoxPreference
-            app:icon="@drawable/ic_baseline_battery_saver_24"
-            app:key="battery_saver_theme"
-            app:defaultValue="true"
-            app:isPreferenceVisible="false"
-            app:title="@string/battery_saver_header"
-            app:summary="@string/battery_saver_summary"/>
 
-    </PreferenceCategory>
+        <Preference
+            app:title="@string/appearance"
+            app:key="appearance"
+            app:defaultValue="shamrock green"
+            app:icon="@drawable/ic_baseline_panorama_fish_eye_24"/>
 
-    <PreferenceCategory
+    </com.raushankit.ILghts.utils.ColoredPreferenceCategory>
+
+    <com.raushankit.ILghts.utils.ColoredPreferenceCategory
         app:key="profile_category"
         app:iconSpaceReserved="false"
         app:enabled="true"
@@ -60,9 +59,9 @@
             app:icon="@drawable/ic_baseline_delete_forever_24"
             app:fragment="com.raushankit.ILghts.fragments.settings.ReAuthFragment"/>
 
-    </PreferenceCategory>
+    </com.raushankit.ILghts.utils.ColoredPreferenceCategory>
 
-    <PreferenceCategory
+    <com.raushankit.ILghts.utils.ColoredPreferenceCategory
         app:isPreferenceVisible="true"
         app:iconSpaceReserved="false"
         app:key="admin_category"
@@ -83,8 +82,25 @@
             app:title="@string/manage_users"
             app:fragment="com.raushankit.ILghts.fragments.settings.ManageUserFragment"
             app:key="manage_users"/>
-    </PreferenceCategory>
-    <PreferenceCategory
+    </com.raushankit.ILghts.utils.ColoredPreferenceCategory>
+
+    <com.raushankit.ILghts.utils.ColoredPreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/reset_database"
+        app:summary="@string/reset_database_summary">
+        <Preference
+            app:key="board_offline_data"
+            app:icon="@drawable/ic_arrow_forward_preference_ios_48px"
+            app:summary="@string/board_reset_database_summary"
+            app:title="@string/board_data"/>
+        <Preference
+            app:key="notifications_offline_data"
+            app:icon="@drawable/ic_arrow_forward_preference_ios_48px"
+            app:summary="@string/notifications_reset_database_summary"
+            app:title="@string/notifications_data"/>
+    </com.raushankit.ILghts.utils.ColoredPreferenceCategory>
+
+    <com.raushankit.ILghts.utils.ColoredPreferenceCategory
         app:iconSpaceReserved="false"
         app:title="@string/privacy_header">
         <Preference
@@ -98,8 +114,9 @@
             app:title="@string/send_statistics"
             app:summary="@string/send_statistics_summary"
             app:defaultValue="false" />
-    </PreferenceCategory>
-    <PreferenceCategory
+    </com.raushankit.ILghts.utils.ColoredPreferenceCategory>
+
+    <com.raushankit.ILghts.utils.ColoredPreferenceCategory
         app:iconSpaceReserved="false"
         app:title="@string/about_header">
         <Preference
@@ -111,6 +128,6 @@
             app:icon="@drawable/ic_baseline_info_24"
             app:title="@string/version_name"
             app:key="version_name"/>
-    </PreferenceCategory>
+    </com.raushankit.ILghts.utils.ColoredPreferenceCategory>
 
 </PreferenceScreen>

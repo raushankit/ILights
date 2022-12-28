@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.paging.PagingSource;
 
 import com.google.firebase.database.ChildEventListener;
@@ -38,8 +39,8 @@ public class NotificationFetcher {
     private Disposable disposable;
     private Query query;
     private final NotificationDao notificationDao;
-    public static final String NOTIFICATION_ACTION_USER = "Your access request for board(%s) was %s";
-    public static final String NOTIFICATION_ACTION_ADMIN = "%s (%s)%s as %s to board %s.";
+    public static final String NOTIFICATION_ACTION_USER = "Your access request for board (%s) was %s";
+    public static final String NOTIFICATION_ACTION_ADMIN = "%s (%s) %s as %s to board %s.";
 
     private final ChildEventListener realTimeListener = new ChildEventListener() {
         @Override
@@ -200,4 +201,11 @@ public class NotificationFetcher {
         });
     }
 
+    public void updateAllSeen() {
+        BoardRoomDatabase.databaseExecutor.execute(notificationDao::updateAllSeen);
+    }
+
+    public LiveData<Integer> countUnseenNotifications() {
+        return notificationDao.countUnseen();
+    }
 }

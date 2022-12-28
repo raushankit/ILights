@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -37,6 +39,7 @@ public class NotificationFragment extends Fragment {
     private NotificationViewModel notificationViewModel;
     private boolean action;
     private Notification actionNotification;
+    private MaterialButton seenButton;
     private CallBack<String> callBack;
 
     public NotificationFragment() {
@@ -86,9 +89,11 @@ public class NotificationFragment extends Fragment {
             snackbar.setText(value).setAction(R.string.retry, v -> notificationViewModel
                     .doAction(actionNotification, action, callBack));
         };
+        LinearLayout layout = view.findViewById(R.id.fragment_notification_recyclerview_parent_layout);
         RecyclerView recyclerView = view.findViewById(R.id.fragment_notification_recyclerview);
         ShimmerFrameLayout shimmerFrameLayout = view.findViewById(R.id.fragment_notification_shimmer_frame);
-        recyclerView.setVisibility(View.VISIBLE);
+        seenButton = view.findViewById(R.id.fragment_notification_update_seen_button);
+        layout.setVisibility(View.VISIBLE);
         shimmerFrameLayout.setVisibility(View.GONE);
         recyclerView.setAdapter(adapter);
         return view;
@@ -104,6 +109,10 @@ public class NotificationFragment extends Fragment {
         notificationViewModel.getFlowable()
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(notificationPagingData -> adapter.submitData (getLifecycle(), notificationPagingData));
+
+        notificationViewModel.countUnseen().observe(getViewLifecycleOwner(), c -> seenButton.setVisibility(c != null && c > 0? View.VISIBLE: View.GONE));
+
+        seenButton.setOnClickListener(v -> notificationViewModel.updateAllSeen());
     }
 
     @Override

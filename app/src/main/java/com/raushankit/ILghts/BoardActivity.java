@@ -3,6 +3,7 @@ package com.raushankit.ILghts;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -36,6 +37,7 @@ import com.raushankit.ILghts.fragments.board.NotificationFragment;
 import com.raushankit.ILghts.model.UserCombinedData;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.storage.VolleyRequest;
+import com.raushankit.ILghts.utils.StringUtils;
 import com.raushankit.ILghts.viewModel.UserViewModel;
 
 import org.json.JSONException;
@@ -61,7 +63,7 @@ public class BoardActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_ILights_1);
+        setTheme(StringUtils.getTheme(((BaseApp)getApplication()).getThemeIndex()));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
         mAuth = FirebaseAuth.getInstance();
@@ -130,7 +132,9 @@ public class BoardActivity extends AppCompatActivity {
                         .commit();
                 break;
             case BoardConst.FRAG_EDIT_MEMBER:
-                BoardRoomUserData data = result.getParcelable(BoardConst.BOARD_DATA);
+                BoardRoomUserData data = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                        ? result.getParcelable(BoardConst.BOARD_DATA, BoardRoomUserData.class)
+                        : result.getParcelable(BoardConst.BOARD_DATA);
                 ft.replace(R.id.board_main_frame,
                                 BoardEditMemberFragment.newInstance(data))
                         .addToBackStack(BoardConst.FRAG_EDIT_MEMBER)
@@ -138,13 +142,17 @@ public class BoardActivity extends AppCompatActivity {
                 break;
             case BoardConst.FRAG_EDIT_DETAILS:
                 ft.replace(R.id.board_main_frame,
-                                BoardEditDetails.newInstance(result.getParcelable(BoardConst.BOARD_DATA)))
+                                BoardEditDetails.newInstance(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                                        ? result.getParcelable(BoardConst.BOARD_DATA, BoardRoomUserData.class)
+                                        : result.getParcelable(BoardConst.BOARD_DATA)))
                         .addToBackStack(BoardConst.FRAG_EDIT_DETAILS)
                         .commit();
                 break;
             case BoardConst.FRAG_CRED_DETAILS:
                 ft.replace(R.id.board_main_frame,
-                                BoardCredentialViewer.newInstance(result.getParcelable(BoardConst.BOARD_DATA)))
+                                BoardCredentialViewer.newInstance(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                                        ? result.getParcelable(BoardConst.BOARD_DATA, BoardRoomUserData.class)
+                                        : result.getParcelable(BoardConst.BOARD_DATA)))
                         .addToBackStack(BoardConst.FRAG_CRED_DETAILS)
                         .commit();
                 break;

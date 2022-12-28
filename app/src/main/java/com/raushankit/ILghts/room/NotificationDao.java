@@ -43,6 +43,9 @@ public abstract class NotificationDao {
     @Query("UPDATE notification_table SET seen = :seen WHERE id = :id")
     public abstract void updateSeen(String id, boolean seen);
 
+    @Query("UPDATE notification_table SET seen = 1")
+    public abstract void updateAllSeen();
+
     @Query("SELECT COUNT(*) FROM notification_table WHERE seen = 0")
     public abstract LiveData<Integer> countUnseen();
 

@@ -14,6 +14,7 @@ import java.util.Set;
 public class SettingsFragmentViewModel extends ViewModel {
     private final Set<InfoType> infoTypeSet = new HashSet<>();
     private final ListLiveData<InfoType.Keys,InfoType> profileInfo = new ListLiveData<>();
+    private final MutableLiveData<String> appearance = new MutableLiveData<>();
     private final MutableLiveData<VersionInfo> versionInfo = new MutableLiveData<>();
 
     public LiveData<VersionInfo> getLiveVersionInfo() {
@@ -22,6 +23,14 @@ public class SettingsFragmentViewModel extends ViewModel {
 
     public LiveData<InfoType> getLiveProfileInfo() {
         return profileInfo;
+    }
+
+    public LiveData<String> getAppearance() {
+        return appearance;
+    }
+
+    public void setAppearance(String name) {
+        appearance.setValue(name);
     }
 
     public void setProfileInfo(InfoType.Keys key, InfoType infoType) {

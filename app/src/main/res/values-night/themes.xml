@@ -24,8 +24,8 @@
     </style>
     <style name="Theme.ILights.1" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">#009e60</item>
+        <item name="colorPrimaryVariant">#007E4C</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -42,10 +42,11 @@
         <!-- Customize your theme here. -->
         <item name="toolbarColor">#212121</item>
         <item name="inactive_color">#919191</item>
-        <item name="flowBackgroundColor">#29BB86FC</item>
+        <item name="flowBackgroundColor">#19009e60</item>
         <item name="actionModeStatusBarColor">@color/shamrock_green</item>
         <item name="settingsScrimColor">#222222</item>
         <item name="splashScreenColor">@color/teal_200</item>
+        <item name="baseColor">#009e60</item>
     </style>
 
     <style name="Theme.ILights.1.ActionModeStyleDark" parent="@style/Widget.AppCompat.ActionMode">
@@ -58,6 +59,67 @@
         <item name="android:textColor">#fff</item>
         <item name="android:textSize">@dimen/_15sdp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <style name="Theme.ILights.2" parent="Theme.ILights.1">
+        <item name="colorPrimary">#00bfff</item>
+        <item name="colorPrimaryVariant">#0083CB</item>
+        <item name="actionModeStyle">@style/Theme.ILights.2.ActionModeStyleDark</item>
+        <item name="actionModeStatusBarColor">#00bfff</item>
+        <item name="baseColor">#00bfff</item>
+        <item name="flowBackgroundColor">#1900bfff</item>
+    </style>
+
+    <style name="Theme.ILights.2.ActionModeStyleDark" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/sky_blue</item>
+        <item name="titleTextStyle">@style/Theme.ILights.1.ActionModeTitleStyleDark</item>
+        <item name="closeItemLayout">@layout/cab_close_icon</item>
+    </style>
+
+    <style name="Theme.ILights.3" parent="Theme.ILights.1">
+        <item name="colorPrimary">#fe019a</item>
+        <item name="colorPrimaryVariant">#C00255</item>
+        <item name="actionModeStyle">@style/Theme.ILights.3.ActionModeStyleDark</item>
+        <item name="actionModeStatusBarColor">#fe019a</item>
+        <item name="baseColor">#fe019a</item>
+        <item name="flowBackgroundColor">#19fe019a</item>
+    </style>
+
+    <style name="Theme.ILights.3.ActionModeStyleDark" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/pink</item>
+        <item name="titleTextStyle">@style/Theme.ILights.1.ActionModeTitleStyleDark</item>
+        <item name="closeItemLayout">@layout/cab_close_icon</item>
+    </style>
+
+    <style name="Theme.ILights.4" parent="Theme.ILights.1">
+        <item name="colorPrimary">#DE5426</item>
+        <item name="colorPrimaryVariant">#A3471F</item>
+        <item name="actionModeStyle">@style/Theme.ILights.4.ActionModeStyleDark</item>
+        <item name="actionModeStatusBarColor">#DE5426</item>
+        <item name="baseColor">#DE5426</item>
+        <item name="flowBackgroundColor">#19DE5426</item>
+    </style>
+
+    <style name="Theme.ILights.4.ActionModeStyleDark" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/google_red</item>
+        <item name="titleTextStyle">@style/Theme.ILights.1.ActionModeTitleStyleDark</item>
+        <item name="closeItemLayout">@layout/cab_close_icon</item>
+    </style>
+
+    <style name="Theme.ILights.5" parent="Theme.ILights.1">
+        <item name="colorPrimary">#ff0800</item>
+        <item name="colorPrimaryVariant">#BD0701</item>
+        <item name="actionModeStyle">@style/Theme.ILights.5.ActionModeStyleDark</item>
+        <item name="actionModeStatusBarColor">#ff0800</item>
+        <item name="baseColor">#ff0800</item>
+        <item name="flowBackgroundColor">#19ff0800</item>
+    </style>
+
+    <style name="Theme.ILights.5.ActionModeStyleDark" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/scarlet_red</item>
+        <item name="titleTextStyle">@style/Theme.ILights.1.ActionModeTitleStyleDark</item>
+        <item name="closeItemLayout">@layout/cab_close_icon</item>
     </style>
 
 </resources>

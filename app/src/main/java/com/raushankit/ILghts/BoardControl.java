@@ -1,6 +1,8 @@
 package com.raushankit.ILghts;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +31,7 @@ import com.raushankit.ILghts.model.PinInfo;
 import com.raushankit.ILghts.model.PinListData;
 import com.raushankit.ILghts.model.User;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
+import com.raushankit.ILghts.utils.StringUtils;
 import com.raushankit.ILghts.viewModel.PinDataViewModel;
 import com.raushankit.ILghts.viewModel.PinEditDataViewModel;
 import com.raushankit.ILghts.viewModel.StatusViewModel;
@@ -56,13 +59,17 @@ public class BoardControl extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_ILights_1);
+        setTheme(StringUtils.getTheme(((BaseApp)getApplication()).getThemeIndex()));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_control);
 
         Intent intent = getIntent();
-        BoardRoomUserData boardRoomUserData = intent.getParcelableExtra(BoardConst.BOARD_DATA);
-        user = new AtomicReference<>(intent.getParcelableExtra(BoardConst.USER));
+        BoardRoomUserData boardRoomUserData = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                ? intent.getParcelableExtra(BoardConst.BOARD_DATA, BoardRoomUserData.class)
+                : intent.getParcelableExtra(BoardConst.BOARD_DATA);
+        user = new AtomicReference<>(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                ? intent.getParcelableExtra(BoardConst.USER, User.class)
+                : intent.getParcelableExtra(BoardConst.USER));
         String userId = intent.getStringExtra(BoardConst.USER_ID);
 
         RelativeLayout noPinLayout = findViewById(R.id.no_switch_parent_layout);
@@ -210,6 +217,11 @@ public class BoardControl extends AppCompatActivity {
                     });
         });
         statusViewModel.getStatusData().observe(this, aBoolean -> toolbar.setSubtitle(Boolean.TRUE.equals(aBoolean)? "Online": null));
+    }
+
+    @Override
+    public Resources.Theme getTheme() {
+        return super.getTheme();
     }
 
     private List<Integer> getAddablePins() {

@@ -352,4 +352,17 @@
     <string name="need_higher_access">You don\'t have required permissions to add/edit pins. Request a higher level access from board owner from BOARDS menu.</string>
     <string name="ok">OK</string>
     <string name="deleting_board_title">Deleting board</string>
+    <string name="mark_as_read">Mark all as seen</string>
+    <string name="reset_database">Reset Database</string>
+    <string name="reset_database_summary">Clear offline database</string>
+    <string name="board_data">Board data</string>
+    <string name="board_reset_database_summary">Contains various board related data which do not changes frequently like the creation and owner details.\n<b>Tap to clear.</b></string>
+    <string name="notifications_data">Notification data</string>
+    <string name="notifications_reset_database_summary">Older notifications data are stored in the database\n<b>Tap to clear.</b></string>
+    <string name="reset_database_alert_dialog_text">Are you sure to clear offline $1%s data ?</string>
+    <string name="board_data_deleted">Board data deleted</string>
+    <string name="notification_data_deleted">Notification data deleted</string>
+    <string name="appearance">Appearance</string>
+    <string name="pick_color">Pick a color</string>
+    <string name="appearance_change_toast">This setting will take effect from next app launch</string>
 </resources>

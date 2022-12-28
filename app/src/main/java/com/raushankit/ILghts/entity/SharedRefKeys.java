@@ -14,7 +14,8 @@ public enum SharedRefKeys {
     BOARD_FORM_EMAIL("board_form_email"),
     BOARD_FORM_PASSWORD("board_form_password"),
     BOARD_FORM_ID_TOKEN("board_form_id_token"),
-    BOARD_FORM_REFRESH_TOKEN("board_form_refresh_token");
+    BOARD_FORM_REFRESH_TOKEN("board_form_refresh_token"),
+    THEME_INDEX("theme-index");
 
     SharedRefKeys(String key) {
     }

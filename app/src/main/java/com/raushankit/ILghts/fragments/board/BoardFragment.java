@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -88,7 +89,9 @@ public class BoardFragment extends Fragment {
         requestQueue = VolleyRequest.newInstance(requireActivity());
         if(args1 != null){
             userId = args1.getString(BoardConst.USER_ID);
-            user = args1.getParcelable(BoardConst.USER);
+            user = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    ? args1.getParcelable(BoardConst.USER, User.class)
+                    : args1.getParcelable(BoardConst.USER);
             apiKey = args1.getString(BoardFormConst.API_KEY);
         }
         alertDialogFragment = AlertDialogFragment.newInstance(R.string.confirm_action, true, true);
@@ -161,7 +164,9 @@ public class BoardFragment extends Fragment {
             }
             Bundle alertDialogArgs = alertDialogFragment.getExtraArgs();
             String type = alertDialogArgs.getString("type");
-            BoardRoomUserData details = alertDialogArgs.getParcelable("data");
+            BoardRoomUserData details = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    ? alertDialogArgs.getParcelable("data", BoardRoomUserData.class)
+                    : alertDialogArgs.getParcelable("data");
             if (BoardBottomSheetFragment.WhichButton.DELETE_BOARD.name().equals(type)) {
                 boardDataViewModel.getCredentials(details.getBoardId());
                 getIdToken(getString(R.string.board_form_credential_username_suffix), apiKey, idToken -> {

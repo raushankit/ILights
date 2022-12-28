@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.color.MaterialColors;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.model.PinListData;
@@ -29,6 +30,7 @@ public class PinListAdapter extends ListAdapter<PinListData, PinListAdapter.PinL
     private final String detailsString;
     private final CallBack<Pair<WhichButton, PinListData>> callBack;
     private final Role role;
+    private int activeColor  = -1;
 
     public PinListAdapter(@NonNull String detailsString,
                           @NonNull CallBack<Pair<WhichButton, PinListData>> callBack) {
@@ -51,6 +53,10 @@ public class PinListAdapter extends ListAdapter<PinListData, PinListAdapter.PinL
     @NonNull
     @Override
     public PinListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if(activeColor == -1) {
+            boolean isNight = Color.BLACK == MaterialColors.getColor(parent, R.attr.colorOnPrimary);
+            activeColor = isNight? MaterialColors.getColor(parent, R.attr.colorPrimary): Color.GREEN;
+        }
         return new PinListViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.pin_list_items, parent, false));
     }
 
@@ -84,7 +90,7 @@ public class PinListAdapter extends ListAdapter<PinListData, PinListAdapter.PinL
         void bind(PinListData data) {
             name.setText(data.getPinName());
             _switch.setChecked(data.isStatus());
-            cardView.setStrokeColor(data.isStatus()? Color.GREEN: Color.TRANSPARENT);
+            cardView.setStrokeColor(data.isStatus()? activeColor: Color.TRANSPARENT);
             details.setText(String.format(detailsString, data.getPinNumber(), (data.isStatus() ? "ON" : "OFF"), (data.isYou() ? "You" : StringUtils.capitalize(data.getChangedBy())), StringUtils.formattedTime(data.getChangedAt()), data.getPinDescription()));
         }
 

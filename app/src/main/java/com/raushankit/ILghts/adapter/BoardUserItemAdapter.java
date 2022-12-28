@@ -9,12 +9,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.color.MaterialColors;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 import com.raushankit.ILghts.utils.StringUtils;
@@ -39,7 +39,8 @@ public class BoardUserItemAdapter extends ListAdapter<BoardRoomUserData, BoardUs
     public BoardUserItemAdapter.BoardUserItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         detailsString = parent.getContext().getString(R.string.board_list_item_details);
         boardIdString = parent.getContext().getString(R.string.board_list_item_board_id);
-        activeColor = parent.getContext().getColor(R.color.scarlet_red);
+        activeColor = MaterialColors.getColor(parent.getContext(), R.attr.baseColor,
+                parent.getContext().getColor(R.color.scarlet_red));
         inactiveColor = parent.getContext().getColor(R.color.board_list_item_title_text);
         return new BoardUserItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.board_list_item, parent, false));
     }

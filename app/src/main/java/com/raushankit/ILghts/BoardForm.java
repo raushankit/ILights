@@ -3,6 +3,7 @@ package com.raushankit.ILghts;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -55,15 +56,9 @@ public class BoardForm extends AppCompatActivity {
     private User user = new User();
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(newBase);
-        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(StringUtils.getTheme(((BaseApp)getApplication()).getThemeIndex()));
         super.onCreate(savedInstanceState);
-        setTheme(R.style.Theme_ILights_1);
         setContentView(R.layout.activity_board_form);
         db = FirebaseDatabase.getInstance().getReference();
         getUserData();
@@ -102,15 +97,21 @@ public class BoardForm extends AppCompatActivity {
             Bundle args = new Bundle();
             if(result.containsKey(BoardFormConst.FORM1_BUNDLE_KEY)){
                 count++;
-                args.putParcelable(BoardFormConst.FORM1_BUNDLE_KEY, result.getParcelable(BoardFormConst.FORM1_BUNDLE_KEY));
+                args.putParcelable(BoardFormConst.FORM1_BUNDLE_KEY, Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                        ? args.getParcelable(BoardFormConst.FORM1_BUNDLE_KEY, BoardBasicModel.class)
+                        : args.getParcelable(BoardFormConst.FORM1_BUNDLE_KEY));
             }
             if(result.containsKey(BoardFormConst.FORM2_BUNDLE_KEY)){
                 count++;
-                args.putParcelable(BoardFormConst.FORM2_BUNDLE_KEY, result.getParcelable(BoardFormConst.FORM2_BUNDLE_KEY));
+                args.putParcelable(BoardFormConst.FORM2_BUNDLE_KEY, Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                        ? args.getParcelable(BoardFormConst.FORM2_BUNDLE_KEY, BoardPinsModel.class)
+                        : args.getParcelable(BoardFormConst.FORM2_BUNDLE_KEY));
             }
             if(result.containsKey(BoardFormConst.FORM3_BUNDLE_KEY)){
                 count++;
-                args.putParcelable(BoardFormConst.FORM3_BUNDLE_KEY, result.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY));
+                args.putParcelable(BoardFormConst.FORM3_BUNDLE_KEY, Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                        ? args.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY, BoardCredentialModel.class)
+                        : args.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY));
             }
             if(count == 3){
                 if(TextUtils.isEmpty(user.getName())){
@@ -142,7 +143,9 @@ public class BoardForm extends AppCompatActivity {
         }
         uid = intent.getStringExtra(BoardConst.USER_ID);
         apiKey = intent.getStringExtra(BoardFormConst.API_KEY);
-        user = intent.getParcelableExtra(BoardConst.USER);
+        user = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                ? intent.getParcelableExtra(BoardConst.USER, User.class)
+                : intent.getParcelableExtra(BoardConst.USER);
     }
 
     private void switchFrags(String key){
@@ -195,9 +198,15 @@ public class BoardForm extends AppCompatActivity {
     }
 
     private void create_new_board(String boardId, Bundle args){
-        BoardBasicModel basicModel = args.getParcelable(BoardFormConst.FORM1_BUNDLE_KEY);
-        BoardPinsModel pinsModel = args.getParcelable(BoardFormConst.FORM2_BUNDLE_KEY);
-        BoardCredentialModel credModel = args.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY);
+        BoardBasicModel basicModel = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                ? args.getParcelable(BoardFormConst.FORM1_BUNDLE_KEY, BoardBasicModel.class)
+                : args.getParcelable(BoardFormConst.FORM1_BUNDLE_KEY);
+        BoardPinsModel pinsModel = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                ? args.getParcelable(BoardFormConst.FORM2_BUNDLE_KEY, BoardPinsModel.class)
+                : args.getParcelable(BoardFormConst.FORM2_BUNDLE_KEY);
+        BoardCredentialModel credModel = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                ? args.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY, BoardCredentialModel.class)
+                : args.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY);
 
         Log.w(TAG, "create_new_board: id = " + boardId + " basic = " + basicModel + " cred = " + credModel + " pinsModel = " + pinsModel);
 

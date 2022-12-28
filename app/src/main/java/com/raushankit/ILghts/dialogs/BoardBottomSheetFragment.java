@@ -1,5 +1,6 @@
 package com.raushankit.ILghts.dialogs;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.raushankit.ILghts.R;
+import com.raushankit.ILghts.entity.BoardConst;
 import com.raushankit.ILghts.model.room.BoardRoomUserData;
 
 public class BoardBottomSheetFragment extends BottomSheetDialogFragment implements View.OnClickListener{
@@ -132,7 +134,9 @@ public class BoardBottomSheetFragment extends BottomSheetDialogFragment implemen
             dismiss();
             return;
         }
-        data = args.getParcelable(DATA_PARAM_1);
+        data = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                ? args.getParcelable(DATA_PARAM_1, BoardRoomUserData.class)
+                : args.getParcelable(DATA_PARAM_1);
     }
 
     public interface WhichButtonCLickedListener {

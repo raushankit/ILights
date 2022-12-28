@@ -12,6 +12,27 @@ import java.util.Locale;
 
 public class StringUtils {
 
+    private static final Integer[] themes = {
+            R.style.Theme_ILights_1,
+            R.style.Theme_ILights_2,
+            R.style.Theme_ILights_3,
+            R.style.Theme_ILights_4,
+            R.style.Theme_ILights_5
+    };
+
+    public static final int[] colors = {
+            R.color.shamrock_green,
+            R.color.sky_blue,
+            R.color.pink,
+            R.color.google_red,
+            R.color.scarlet_red
+    };
+
+    public static final String[] colorNames = {
+            "shamrock green", "deep sky blue", "neon pink",
+            "red orange", "scarlet red"
+    };
+
     public static String capitalize(String str) {
         if (str == null) return null;
         String[] splits = str.toLowerCase(Locale.getDefault()).split(" ");
@@ -37,6 +58,10 @@ public class StringUtils {
     public static long TIMESTAMP(){
         return Calendar.getInstance()
                 .getTimeInMillis();
+    }
+
+    public static int getTheme(int index) {
+        return (int) themes[Math.max(0, Math.min(themes.length - 1, index))];
     }
 
     @StringRes

@@ -37,8 +37,8 @@ import io.reactivex.rxjava3.core.FlowableEmitter;
 public class BoardPublicFetcher {
 
     private static final String TAG = "BoardPublicFetcher";
-    private static final String NOTIF_BODY_OWNER = "%s(%s) has requested %s level access for board(%s).";
-    private static final String NOTIF_BODY_REQUESTER = "Requested %s level access for board(%s) from %s(%s)";
+    private static final String NOTIF_BODY_OWNER = "%s (%s) has requested %s level access for board (%s).";
+    private static final String NOTIF_BODY_REQUESTER = "Requested %s level access for board (%s) from %s (%s)";
 
     private final BoardDao boardDao;
     private final DatabaseReference db;

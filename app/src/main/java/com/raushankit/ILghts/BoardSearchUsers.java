@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,7 +25,6 @@ import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -73,7 +73,7 @@ public class BoardSearchUsers extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_ILights_1);
+        setTheme(StringUtils.getTheme(((BaseApp)getApplication()).getThemeIndex()));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_search_users);
         setBoardId();
@@ -190,7 +190,7 @@ public class BoardSearchUsers extends AppCompatActivity {
                 mp.put(key + "/time", -1*StringUtils.TIMESTAMP());
                 mp.put(key + "/type", NotificationType.TEXT);
                 builder.append(StringUtils.capitalize(it.getName()))
-                        .append("(")
+                        .append(" (")
                         .append(it.getEmail())
                         .append(")")
                         .append(" as ")
@@ -209,11 +209,18 @@ public class BoardSearchUsers extends AppCompatActivity {
 
     private void setBoardId() {
         Intent intent = getIntent();
-        if(intent == null){
+        if (intent == null){
             finish();
-        }else{
-            data = intent.getParcelableExtra(BoardConst.BOARD_DATA);
+        }else {
+            data = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    ? intent.getParcelableExtra(BoardConst.BOARD_DATA, BoardRoomUserData.class)
+                    : intent.getParcelableExtra(BoardConst.BOARD_DATA);
         }
+    }
+
+    @Override
+    public Resources.Theme getTheme() {
+        return super.getTheme();
     }
 
     @Override
