@@ -19,6 +19,12 @@
     <color name="scarlet_red">#ff0800</color>
     <color name="sky_blue">#00BFFF</color>
     <color name="gray33">#444444</color>
+    
+    <color name="monte_carlo">#78C9BA</color>
+    <color name="ultra_blue">#020686</color>
+    <color name="brunswick_green">#174333</color>
+    <color name="dying_rose">#951233</color>
+    <color name="dull_pink">#D899AF</color>
 
     <color name="splash_screen_bg_start">@color/white</color>
     <color name="splash_screen_bg_end">#ece9e6</color>

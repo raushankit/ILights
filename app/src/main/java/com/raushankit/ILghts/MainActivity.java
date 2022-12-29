@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         networkLoader.addValueCallback(
                 new KeyPath("**"),
                 LottieProperty.COLOR_FILTER,
-                frameInfo -> new PorterDuffColorFilter(MaterialColors.getColor(MainActivity.this, R.attr.splashScreenColor, getColor(R.color.splash_screen_btn))
+                frameInfo -> new PorterDuffColorFilter(MaterialColors.getColor(MainActivity.this, R.attr.colorPrimary, getColor(R.color.splash_screen_btn))
                         , PorterDuff.Mode.SRC_ATOP)
         );
         TextView spText = findViewById(R.id.splash_main_text);

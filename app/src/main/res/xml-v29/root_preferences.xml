@@ -1,15 +1,16 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
-
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.raushankit.ILghts.utils.ColoredPreferenceCategory
         app:iconSpaceReserved="false"
         app:title="@string/display_header">
 
         <ListPreference
             app:icon="@drawable/ic_baseline_brightness_6_24"
-            app:entries="@array/theme_entries"
-            app:entryValues="@array/theme_values"
+            app:entries="@array/theme_entries_v29"
+            app:entryValues="@array/theme_values_v29"
             app:key="theme"
-            app:defaultValue="light"
+            app:defaultValue="follow_system"
             app:dialogTitle="Choose Theme"
             app:title="@string/theme_header"
             app:useSimpleSummaryProvider="true" />

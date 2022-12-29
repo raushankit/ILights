@@ -196,7 +196,7 @@ public class NotificationFetcher {
         db.updateChildren(mp, (error, ref) -> {
             callBack.onClick(error == null? null: error.getMessage());
             if(error == null) {
-                BoardRoomDatabase.databaseExecutor.execute(() -> notificationDao.updateTypeAndSeen(notification.getId(), NotificationType.ACTION_DONE, true));
+                BoardRoomDatabase.databaseExecutor.execute(() -> notificationDao.updateTypeAndSeen(notification.getId(), NotificationType.ACTION_DONE));
             }
         });
     }

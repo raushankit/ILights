@@ -17,7 +17,12 @@ public class StringUtils {
             R.style.Theme_ILights_2,
             R.style.Theme_ILights_3,
             R.style.Theme_ILights_4,
-            R.style.Theme_ILights_5
+            R.style.Theme_ILights_5,
+            R.style.Theme_ILights_6,
+            R.style.Theme_ILights_7,
+            R.style.Theme_ILights_8,
+            R.style.Theme_ILights_9,
+            R.style.Theme_ILights_10
     };
 
     public static final int[] colors = {
@@ -25,12 +30,19 @@ public class StringUtils {
             R.color.sky_blue,
             R.color.pink,
             R.color.google_red,
-            R.color.scarlet_red
+            R.color.scarlet_red,
+            R.color.monte_carlo,
+            R.color.ultra_blue,
+            R.color.brunswick_green,
+            R.color.dying_rose,
+            R.color.dull_pink
     };
 
     public static final String[] colorNames = {
             "shamrock green", "deep sky blue", "neon pink",
-            "red orange", "scarlet red"
+            "red orange", "scarlet red", "monte carlo",
+            "ultra blue", "brunswick green", "dying rose",
+            "dull pink"
     };
 
     public static String capitalize(String str) {
@@ -49,7 +61,8 @@ public class StringUtils {
         return sb.toString();
     }
 
-    public static String formattedTime(long millis) {
+    public static String formattedTime(Long millis) {
+        if(millis == null) { return  ""; }
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(millis);
         return DateFormat.format("dd-MM-yyyy hh:mm:ss aaa", cal).toString();

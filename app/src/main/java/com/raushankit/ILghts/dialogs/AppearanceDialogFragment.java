@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.color.MaterialColors;
 import com.raushankit.ILghts.R;
 import com.raushankit.ILghts.adapter.ColorSelectorAdapter;
 import com.raushankit.ILghts.utils.callbacks.CallBack;
@@ -65,10 +64,8 @@ public class AppearanceDialogFragment extends DialogFragment implements View.OnC
         String[] colorNames = args.getStringArray(COLOR_NAMES);
         checkedIndex = args.getInt(CHECKED_INDEX);
         ColorSelectorAdapter adapter;
-        boolean isNight = Color.BLACK == MaterialColors.getColor(inflater.getContext(), R.attr.colorOnPrimary, Color.BLACK);
         int colorPrimary = inflater.getContext().getColor(colors[checkedIndex]);
-        int defColor = isNight? colorPrimary: inflater.getContext().getColor(R.color.charcoal);
-        layout.setBackgroundColor(defColor);
+        layout.setBackgroundColor(colorPrimary);
         cancel.setTextColor(colorPrimary);
         done.setBackgroundColor(colorPrimary);
         cardView.setStrokeColor(colorPrimary);
@@ -80,9 +77,7 @@ public class AppearanceDialogFragment extends DialogFragment implements View.OnC
             cancel.setTextColor(color);
             done.setBackgroundColor(color);
             cardView.setStrokeColor(color);
-            if(isNight) {
-                layout.setBackgroundColor(color);
-            }
+            layout.setBackgroundColor(color);
             selectedData = dt;
         });
         done.setOnClickListener(this);
@@ -106,7 +101,7 @@ public class AppearanceDialogFragment extends DialogFragment implements View.OnC
         if (dialog != null) {
             dialog.getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.setCancelable(false);
+            dialog.setCancelable(true);
         }
         super.onStart();
     }

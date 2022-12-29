@@ -144,7 +144,7 @@
     <string name="controller_title">Controller</string>
     <string name="controller_board_status">Board is %1$s</string>
     <string name="controller_update_failure">Failed to update data</string>
-    <string name="controller_item_details">%5$s\nPin Configuration %1$d\n\nTurned %2$s by %3$s\nat %4$s</string>
+    <string name="controller_item_details">%5$s\nPin Configuration %1$d\n\nSwitched %2$s by %3$s\nat %4$s</string>
 
     <!-- Board Activity -->
     <string name="board">Boards</string>

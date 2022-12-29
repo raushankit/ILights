@@ -42,7 +42,7 @@
         <!-- Customize your theme here. -->
         <item name="toolbarColor">#212121</item>
         <item name="inactive_color">#919191</item>
-        <item name="flowBackgroundColor">#19009e60</item>
+        <item name="flowBackgroundColor">#29009e60</item>
         <item name="actionModeStatusBarColor">@color/shamrock_green</item>
         <item name="settingsScrimColor">#222222</item>
         <item name="splashScreenColor">@color/teal_200</item>
@@ -68,7 +68,7 @@
         <item name="actionModeStyle">@style/Theme.ILights.2.ActionModeStyleDark</item>
         <item name="actionModeStatusBarColor">#00bfff</item>
         <item name="baseColor">#00bfff</item>
-        <item name="flowBackgroundColor">#1900bfff</item>
+        <item name="flowBackgroundColor">#2900bfff</item>
     </style>
 
     <style name="Theme.ILights.2.ActionModeStyleDark" parent="@style/Widget.AppCompat.ActionMode">
@@ -83,7 +83,7 @@
         <item name="actionModeStyle">@style/Theme.ILights.3.ActionModeStyleDark</item>
         <item name="actionModeStatusBarColor">#fe019a</item>
         <item name="baseColor">#fe019a</item>
-        <item name="flowBackgroundColor">#19fe019a</item>
+        <item name="flowBackgroundColor">#29fe019a</item>
     </style>
 
     <style name="Theme.ILights.3.ActionModeStyleDark" parent="@style/Widget.AppCompat.ActionMode">
@@ -98,7 +98,7 @@
         <item name="actionModeStyle">@style/Theme.ILights.4.ActionModeStyleDark</item>
         <item name="actionModeStatusBarColor">#DE5426</item>
         <item name="baseColor">#DE5426</item>
-        <item name="flowBackgroundColor">#19DE5426</item>
+        <item name="flowBackgroundColor">#29DE5426</item>
     </style>
 
     <style name="Theme.ILights.4.ActionModeStyleDark" parent="@style/Widget.AppCompat.ActionMode">
@@ -113,11 +113,86 @@
         <item name="actionModeStyle">@style/Theme.ILights.5.ActionModeStyleDark</item>
         <item name="actionModeStatusBarColor">#ff0800</item>
         <item name="baseColor">#ff0800</item>
-        <item name="flowBackgroundColor">#19ff0800</item>
+        <item name="flowBackgroundColor">#29ff0800</item>
     </style>
 
     <style name="Theme.ILights.5.ActionModeStyleDark" parent="@style/Widget.AppCompat.ActionMode">
         <item name="background">@color/scarlet_red</item>
+        <item name="titleTextStyle">@style/Theme.ILights.1.ActionModeTitleStyleDark</item>
+        <item name="closeItemLayout">@layout/cab_close_icon</item>
+    </style>
+
+    <style name="Theme.ILights.6" parent="Theme.ILights.1">
+        <item name="colorPrimary">#78C9BA</item>
+        <item name="colorPrimaryVariant">#4D8178</item>
+        <item name="actionModeStyle">@style/Theme.ILights.6.ActionModeStyleDark</item>
+        <item name="actionModeStatusBarColor">#78C9BA</item>
+        <item name="baseColor">#78C9BA</item>
+        <item name="flowBackgroundColor">#2978C9BA</item>
+    </style>
+
+    <style name="Theme.ILights.6.ActionModeStyleDark" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/monte_carlo</item>
+        <item name="titleTextStyle">@style/Theme.ILights.1.ActionModeTitleStyleDark</item>
+        <item name="closeItemLayout">@layout/cab_close_icon</item>
+    </style>
+
+    <style name="Theme.ILights.7" parent="Theme.ILights.1">
+        <item name="colorPrimary">#020686</item>
+        <item name="colorPrimaryVariant">#02044D</item>
+        <item name="actionModeStyle">@style/Theme.ILights.7.ActionModeStyleDark</item>
+        <item name="actionModeStatusBarColor">#020686</item>
+        <item name="baseColor">#020686</item>
+        <item name="flowBackgroundColor">#29020686</item>
+    </style>
+
+    <style name="Theme.ILights.7.ActionModeStyleDark" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/ultra_blue</item>
+        <item name="titleTextStyle">@style/Theme.ILights.1.ActionModeTitleStyleDark</item>
+        <item name="closeItemLayout">@layout/cab_close_icon</item>
+    </style>
+
+    <style name="Theme.ILights.8" parent="Theme.ILights.1">
+        <item name="colorPrimary">#174333</item>
+        <item name="colorPrimaryVariant">#123226</item>
+        <item name="actionModeStyle">@style/Theme.ILights.8.ActionModeStyleDark</item>
+        <item name="actionModeStatusBarColor">#174333</item>
+        <item name="baseColor">#174333</item>
+        <item name="flowBackgroundColor">#29174333</item>
+    </style>
+
+    <style name="Theme.ILights.8.ActionModeStyleDark" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/brunswick_green</item>
+        <item name="titleTextStyle">@style/Theme.ILights.1.ActionModeTitleStyleDark</item>
+        <item name="closeItemLayout">@layout/cab_close_icon</item>
+    </style>
+
+    <style name="Theme.ILights.9" parent="Theme.ILights.1">
+        <item name="colorPrimary">#951233</item>
+        <item name="colorPrimaryVariant">#5D0C20</item>
+        <item name="actionModeStyle">@style/Theme.ILights.9.ActionModeStyleDark</item>
+        <item name="actionModeStatusBarColor">#951233</item>
+        <item name="baseColor">#951233</item>
+        <item name="flowBackgroundColor">#29951233</item>
+    </style>
+
+    <style name="Theme.ILights.9.ActionModeStyleDark" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/dying_rose</item>
+        <item name="titleTextStyle">@style/Theme.ILights.1.ActionModeTitleStyleDark</item>
+        <item name="closeItemLayout">@layout/cab_close_icon</item>
+    </style>
+
+    <style name="Theme.ILights.10" parent="Theme.ILights.1">
+        <item name="colorPrimary">#D899AF</item>
+        <item name="colorPrimaryVariant">#90566A</item>
+        <item name="actionModeStyle">@style/Theme.ILights.10.ActionModeStyleDark</item>
+        <item name="actionModeStatusBarColor">#D899AF</item>
+        <item name="baseColor">#D899AF</item>
+        <item name="flowBackgroundColor">#29D899AF</item>
+    </style>
+
+    <style name="Theme.ILights.10.ActionModeStyleDark" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/dull_pink</item>
         <item name="titleTextStyle">@style/Theme.ILights.1.ActionModeTitleStyleDark</item>
         <item name="closeItemLayout">@layout/cab_close_icon</item>
     </style>
