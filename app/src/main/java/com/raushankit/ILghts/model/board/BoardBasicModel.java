@@ -6,8 +6,6 @@ import android.os.Parcelable;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
-import com.raushankit.ILghts.entity.BoardVisibility;
-
 import java.util.Objects;
 
 @Keep
@@ -45,7 +43,7 @@ public class BoardBasicModel implements Parcelable {
         return 0;
     }
 
-    public static final Creator<BoardBasicModel> CREATOR = new Creator<BoardBasicModel>() {
+    public static final Creator<BoardBasicModel> CREATOR = new Creator<>() {
         @Override
         public BoardBasicModel createFromParcel(Parcel in) {
             return new BoardBasicModel(in);

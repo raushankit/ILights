@@ -10,8 +10,8 @@ android {
         applicationId "com.raushankit.ILghts"
         minSdk 24
         targetSdk 33
-        versionCode 50
-        versionName "2.5.5"
+        versionCode 51
+        versionName "2.5.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug
@@ -47,7 +47,7 @@ android {
 }
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:30.5.0')
+    implementation platform('com.google.firebase:firebase-bom:31.1.1')
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'

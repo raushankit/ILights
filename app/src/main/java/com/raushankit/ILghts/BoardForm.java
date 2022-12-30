@@ -1,6 +1,5 @@
 package com.raushankit.ILghts;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
@@ -98,20 +97,20 @@ public class BoardForm extends AppCompatActivity {
             if(result.containsKey(BoardFormConst.FORM1_BUNDLE_KEY)){
                 count++;
                 args.putParcelable(BoardFormConst.FORM1_BUNDLE_KEY, Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-                        ? args.getParcelable(BoardFormConst.FORM1_BUNDLE_KEY, BoardBasicModel.class)
-                        : args.getParcelable(BoardFormConst.FORM1_BUNDLE_KEY));
+                        ? result.getParcelable(BoardFormConst.FORM1_BUNDLE_KEY, BoardBasicModel.class)
+                        : result.getParcelable(BoardFormConst.FORM1_BUNDLE_KEY));
             }
             if(result.containsKey(BoardFormConst.FORM2_BUNDLE_KEY)){
                 count++;
                 args.putParcelable(BoardFormConst.FORM2_BUNDLE_KEY, Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-                        ? args.getParcelable(BoardFormConst.FORM2_BUNDLE_KEY, BoardPinsModel.class)
-                        : args.getParcelable(BoardFormConst.FORM2_BUNDLE_KEY));
+                        ? result.getParcelable(BoardFormConst.FORM2_BUNDLE_KEY, BoardPinsModel.class)
+                        : result.getParcelable(BoardFormConst.FORM2_BUNDLE_KEY));
             }
             if(result.containsKey(BoardFormConst.FORM3_BUNDLE_KEY)){
                 count++;
                 args.putParcelable(BoardFormConst.FORM3_BUNDLE_KEY, Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-                        ? args.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY, BoardCredentialModel.class)
-                        : args.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY));
+                        ? result.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY, BoardCredentialModel.class)
+                        : result.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY));
             }
             if(count == 3){
                 if(TextUtils.isEmpty(user.getName())){
@@ -207,8 +206,6 @@ public class BoardForm extends AppCompatActivity {
         BoardCredentialModel credModel = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
                 ? args.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY, BoardCredentialModel.class)
                 : args.getParcelable(BoardFormConst.FORM3_BUNDLE_KEY);
-
-        Log.w(TAG, "create_new_board: id = " + boardId + " basic = " + basicModel + " cred = " + credModel + " pinsModel = " + pinsModel);
 
         Map<String, Object> mp = new LinkedHashMap<>();
         long timeStamp = StringUtils.TIMESTAMP();

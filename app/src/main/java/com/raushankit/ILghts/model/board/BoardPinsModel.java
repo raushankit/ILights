@@ -6,9 +6,6 @@ import android.os.Parcelable;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 @Keep
@@ -37,7 +34,7 @@ public class BoardPinsModel implements Parcelable{
         n = in.readInt();
     }
 
-    public static final Creator<BoardPinsModel> CREATOR = new Creator<BoardPinsModel>() {
+    public static final Creator<BoardPinsModel> CREATOR = new Creator<>() {
         @Override
         public BoardPinsModel createFromParcel(Parcel in) {
             return new BoardPinsModel(in);

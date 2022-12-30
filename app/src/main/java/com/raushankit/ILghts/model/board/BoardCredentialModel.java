@@ -7,9 +7,6 @@ import android.os.Parcelable;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Objects;
 
 @Keep
@@ -41,7 +38,7 @@ public class BoardCredentialModel implements Parcelable {
         password = in.readString();
     }
 
-    public static final Creator<BoardCredentialModel> CREATOR = new Creator<BoardCredentialModel>() {
+    public static final Creator<BoardCredentialModel> CREATOR = new Creator<>() {
         @Override
         public BoardCredentialModel createFromParcel(Parcel in) {
             return new BoardCredentialModel(in);
