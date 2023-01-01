@@ -3,8 +3,27 @@
 #include <Firebase.h>
 #include <FirebaseResponse.h>
 
+/**
+ * This code will work on ESP8266 boards only 
+ * 
+ * @brief These variables need to initialized based on
+ * board details and wifi-credentials.
+ * 
+ * @param BOARD_ID: the board id of the board.
+ * @param EMAIL: the email used for the board credentials 
+ *        at the time of board creation.
+ * @param PASSWORD: the password used for board credentials
+ *        at the time of board creation.
+ * 
+ * @author Ankit Raushan
+ */
 #define WIFI_SSID "Airtel-MW40-8C3B"
 #define WIFI_PASSWORD "71883955"
+
+const char* Firebase::BOARD_ID = "";
+const String Firebase::EMAIL = "";
+const String Firebase::PASSWORD = "";
+/////////////////////////////////////////////////////////////////////
 
 const int usable_pins[10] = {2, 4, 5, 10, 12, 13, 14, 15, 16, 17};
 bool parse(String rsponse);
@@ -12,9 +31,10 @@ void parse_asJSON(String json);
 void parseString(String response);
 
 const char *HOST = "https://pcs-project-71dcd-default-rtdb.firebaseio.com";
-const char *PULSE_PATH = "/metadata/board_data/heart_beat";
-const char *STATUS_PATH = "/control/status";
+const char *PULSE_PATH = "/board_details/${BOARD_ID}/heartBeat";
+const char *STATUS_PATH = "/board_control/${BOARD_ID}/status";
 const char *PULSE_DATA = "{\".sv\":\"timestamp\"}";
+
 Firebase firebase;
 unsigned long lastTime = 0;
 const unsigned long BEAT_DELAY = 5000;
